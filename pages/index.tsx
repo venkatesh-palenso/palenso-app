@@ -1,319 +1,402 @@
-import Head from "next/head";
-import { Box, Container, Typography, Button, Grid, Card, CardContent, Avatar, Chip } from '@mui/material';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, Building, Users, Calendar, ArrowRight, Star, MapPin, DollarSign } from 'lucide-react';
+import {
+  Search,
+  Briefcase,
+  Building,
+  Users,
+  Calendar,
+  BookOpen,
+  ArrowRight,
+} from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { useUser } from '@/components/UserProvider';
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 }
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-export default function Home() {
-  const featuredJobs = [
-    {
-      id: 1,
-      title: "Software Engineer",
-      company: "Google",
-      location: "Mountain View, CA",
-      salary: "$120k - $180k",
-      type: "Full-time",
-      logo: "G",
-      rating: 4.8
-    },
-    {
-      id: 2,
-      title: "Product Manager",
-      company: "Microsoft",
-      location: "Seattle, WA",
-      salary: "$130k - $200k",
-      type: "Full-time",
-      logo: "M",
-      rating: 4.6
-    },
-    {
-      id: 3,
-      title: "Data Scientist",
-      company: "Amazon",
-      location: "Seattle, WA",
-      salary: "$110k - $170k",
-      type: "Full-time",
-      logo: "A",
-      rating: 4.7
-    }
-  ];
+const HomePage: React.FC = () => {
+  const { user, isLoggedIn } = useUser();
 
   const stats = [
-    { label: "Active Jobs", value: "50K+", icon: Search },
-    { label: "Companies", value: "2K+", icon: Building },
-    { label: "Students", value: "1M+", icon: Users },
-    { label: "Events", value: "500+", icon: Calendar }
+    { label: 'Active Jobs', value: '10,000+' },
+    { label: 'Companies', value: '500+' },
+    { label: 'Students Hired', value: '50,000+' },
+    { label: 'Success Rate', value: '85%' },
   ];
 
-  return (
-    <>
-      <Head>
-        <title>Handshake - Find Your Dream Job</title>
-        <meta name="description" content="Connect with top employers and find your dream job on Handshake" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  const features = [
+    {
+      icon: Search,
+      title: 'Smart Job Matching',
+      description:
+        'AI-powered job recommendations based on your skills and preferences',
+    },
+    {
+      icon: Building,
+      title: 'Company Insights',
+      description: 'Detailed company profiles and culture information',
+    },
+    {
+      icon: Users,
+      title: 'Networking',
+      description: 'Connect with professionals and alumni in your field',
+    },
+    {
+      icon: Calendar,
+      title: 'Career Events',
+      description: 'Attend workshops, career fairs, and networking events',
+    },
+    {
+      icon: BookOpen,
+      title: 'Learning Resources',
+      description:
+        'Access career guides, interview tips, and skill development',
+    },
+    {
+      icon: Briefcase,
+      title: 'Application Tracking',
+      description: 'Track your job applications and interview status',
+    },
+  ];
 
-      {/* Hero Section */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          py: { xs: 8, md: 12 },
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <Container maxWidth="xl">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <Typography variant="h1" sx={{ mb: 3, fontWeight: 700 }}>
-                  Find Your Dream Job
-                </Typography>
-                <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
-                  Connect with top employers and discover opportunities that match your skills and aspirations.
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    sx={{
-                      bgcolor: 'white',
-                      color: 'primary.main',
-                      '&:hover': { bgcolor: 'grey.100' }
-                    }}
-                    component={Link}
-                    href="/jobs"
-                  >
-                    Browse Jobs
-                    <ArrowRight size={20} style={{ marginLeft: 8 }} />
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                      borderColor: 'white',
-                      color: 'white',
-                      '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
-                    }}
-                    component={Link}
-                    href="/companies"
-                  >
-                    Explore Companies
-                  </Button>
-                </Box>
-              </motion.div>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <Box
-                  sx={{
-                    bgcolor: 'rgba(255,255,255,0.1)',
-                    borderRadius: 4,
-                    p: 4,
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.2)'
-                  }}
-                >
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Quick Search
-                  </Typography>
-                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    <Button variant="contained" sx={{ bgcolor: 'white', color: 'primary.main' }}>
-                      Software Engineering
-                    </Button>
-                    <Button variant="contained" sx={{ bgcolor: 'white', color: 'primary.main' }}>
-                      Marketing
-                    </Button>
-                    <Button variant="contained" sx={{ bgcolor: 'white', color: 'primary.main' }}>
-                      Data Science
-                    </Button>
-                  </Box>
-                </Box>
-              </motion.div>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+  if (isLoggedIn) {
+    // Logged-in user dashboard
+    return (
+      <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
+        {/* Hero Section */}
+        <section className='pt-20 pb-16 px-4'>
+          <div className='container mx-auto text-center'>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className='text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6'>
+                Welcome back, {user?.name}! 👋
+              </h1>
+              <p className='text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto'>
+                Ready to take the next step in your career? Explore
+                opportunities tailored just for you.
+              </p>
 
-      {/* Stats Section */}
-      <Container maxWidth="xl" sx={{ py: 8 }}>
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-        >
-          <Grid container spacing={4}>
-            {stats.map((stat, index) => (
-              <Grid item xs={6} md={3} key={index}>
-                <motion.div variants={fadeInUp}>
-                  <Card sx={{ textAlign: 'center', p: 3, height: '100%' }}>
+              <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                {user?.role === 'student' ? (
+                  <>
+                    <Link href='/jobs'>
+                      <Button size='lg' className='text-lg px-8'>
+                        <Search className='mr-2 h-5 w-5' />
+                        Browse Jobs
+                      </Button>
+                    </Link>
+                    <Link href='/profile'>
+                      <Button
+                        variant='outline'
+                        size='lg'
+                        className='text-lg px-8'
+                      >
+                        <Users className='mr-2 h-5 w-5' />
+                        View Profile
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href='/post-job'>
+                      <Button size='lg' className='text-lg px-8'>
+                        <Briefcase className='mr-2 h-5 w-5' />
+                        Post a Job
+                      </Button>
+                    </Link>
+                    <Link href='/jobs'>
+                      <Button
+                        variant='outline'
+                        size='lg'
+                        className='text-lg px-8'
+                      >
+                        <Search className='mr-2 h-5 w-5' />
+                        View Jobs
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Quick Actions */}
+        <section className='py-16 px-4'>
+          <div className='container mx-auto'>
+            <h2 className='text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white'>
+              Quick Actions
+            </h2>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto'>
+              {user?.role === 'student' ? (
+                <>
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <Search className='mr-2 h-5 w-5 text-primary' />
+                        Find Jobs
+                      </CardTitle>
+                    </CardHeader>
                     <CardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                        <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
-                          <stat.icon size={28} />
-                        </Avatar>
-                      </Box>
-                      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                        {stat.value}
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        {stat.label}
-                      </Typography>
+                      <p className='text-muted-foreground mb-4'>
+                        Discover opportunities that match your skills and
+                        interests
+                      </p>
+                      <Link href='/jobs'>
+                        <Button variant='outline' className='w-full'>
+                          Browse Jobs
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
-                </motion.div>
-              </Grid>
-            ))}
-          </Grid>
-        </motion.div>
-      </Container>
 
-      {/* Featured Jobs Section */}
-      <Box sx={{ bgcolor: 'grey.50', py: 8 }}>
-        <Container maxWidth="xl">
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <Users className='mr-2 h-5 w-5 text-primary' />
+                        My Applications
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-muted-foreground mb-4'>
+                        Track your job applications and interview status
+                      </p>
+                      <Link href='/applications'>
+                        <Button variant='outline' className='w-full'>
+                          View Applications
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <BookOpen className='mr-2 h-5 w-5 text-primary' />
+                        Resources
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-muted-foreground mb-4'>
+                        Access career guides and learning materials
+                      </p>
+                      <Link href='/resources'>
+                        <Button variant='outline' className='w-full'>
+                          Explore Resources
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </>
+              ) : (
+                <>
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <Briefcase className='mr-2 h-5 w-5 text-primary' />
+                        Post Job
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-muted-foreground mb-4'>
+                        Create a new job posting to attract top talent
+                      </p>
+                      <Link href='/post-job'>
+                        <Button variant='outline' className='w-full'>
+                          Create Posting
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <Users className='mr-2 h-5 w-5 text-primary' />
+                        Manage Jobs
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-muted-foreground mb-4'>
+                        View and manage your active job postings
+                      </p>
+                      <Link href='/manage-jobs'>
+                        <Button variant='outline' className='w-full'>
+                          View Jobs
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+
+                  <Card className='hover:shadow-lg transition-shadow cursor-pointer'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center'>
+                        <Building className='mr-2 h-5 w-5 text-primary' />
+                        Company Profile
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className='text-muted-foreground mb-4'>
+                        Update your company information and branding
+                      </p>
+                      <Link href='/company-profile'>
+                        <Button variant='outline' className='w-full'>
+                          Edit Profile
+                          <ArrowRight className='ml-2 h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Non-logged-in user landing page
+  return (
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
+      {/* Hero Section */}
+      <section className='pt-20 pb-16 px-4'>
+        <div className='container mx-auto text-center'>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Box sx={{ textAlign: 'center', mb: 6 }}>
-              <Typography variant="h2" sx={{ mb: 2 }}>
-                Featured Jobs
-              </Typography>
-              <Typography variant="h6" color="text.secondary">
-                Discover opportunities from top companies
-              </Typography>
-            </Box>
+            <h1 className='text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6'>
+              Connect. Grow. Succeed.
+            </h1>
+            <p className='text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto'>
+              Palenso is the #1 platform for students and recent graduates to
+              find jobs and internships. Connect with employers, discover
+              opportunities, and launch your career.
+            </p>
 
-            <Grid container spacing={3}>
-              {featuredJobs.map((job, index) => (
-                <Grid item xs={12} md={4} key={job.id}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    <Card sx={{ height: '100%', cursor: 'pointer', '&:hover': { transform: 'translateY(-4px)', boxShadow: 4 } }}>
-                      <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                            {job.logo}
-                          </Avatar>
-                          <Box>
-                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                              {job.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {job.company}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <MapPin size={16} style={{ marginRight: 4, color: '#64748b' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {job.location}
-                          </Typography>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <DollarSign size={16} style={{ marginRight: 4, color: '#64748b' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {job.salary}
-                          </Typography>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Chip label={job.type} size="small" color="primary" />
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Star size={16} style={{ color: '#fbbf24', marginRight: 4 }} />
-                            <Typography variant="body2">
-                              {job.rating}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Box sx={{ textAlign: 'center', mt: 6 }}>
-              <Button
-                variant="contained"
-                size="large"
-                component={Link}
-                href="/jobs"
-                sx={{ px: 4 }}
-              >
-                View All Jobs
-                <ArrowRight size={20} style={{ marginLeft: 8 }} />
-              </Button>
-            </Box>
+            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+              <Link href='/signup'>
+                <Button size='lg' className='text-lg px-8'>
+                  Get Started
+                  <ArrowRight className='ml-2 h-5 w-5' />
+                </Button>
+              </Link>
+              <Link href='/login'>
+                <Button variant='outline' size='lg' className='text-lg px-8'>
+                  Sign In
+                </Button>
+              </Link>
+            </div>
           </motion.div>
-        </Container>
-      </Box>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className='py-16 px-4'>
+        <div className='container mx-auto'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-8'>
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className='text-center'
+              >
+                <div className='text-3xl md:text-4xl font-bold text-primary mb-2'>
+                  {stat.value}
+                </div>
+                <div className='text-gray-600 dark:text-gray-300'>
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className='py-16 px-4'>
+        <div className='container mx-auto'>
+          <h2 className='text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white'>
+            Why Choose Palenso?
+          </h2>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className='h-full hover:shadow-lg transition-shadow'>
+                  <CardHeader>
+                    <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4'>
+                      <feature.icon className='h-6 w-6 text-primary' />
+                    </div>
+                    <CardTitle className='text-xl'>{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className='text-base'>
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <Container maxWidth="xl" sx={{ py: 8 }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <Card sx={{ bgcolor: 'primary.main', color: 'white', p: 6, textAlign: 'center' }}>
-            <Typography variant="h3" sx={{ mb: 3, fontWeight: 700 }}>
-              Ready to Start Your Career?
-            </Typography>
-            <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
-              Join millions of students and recent graduates who have found their dream jobs on Handshake.
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
-                bgcolor: 'white',
-                color: 'primary.main',
-                px: 4,
-                '&:hover': { bgcolor: 'grey.100' }
-              }}
-              component={Link}
-              href="/signup"
-            >
-              Get Started Today
-            </Button>
-          </Card>
-        </motion.div>
-      </Container>
-    </>
+      <section className='py-16 px-4'>
+        <div className='container mx-auto text-center'>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className='text-3xl font-bold mb-6 text-gray-900 dark:text-white'>
+              Ready to start your journey?
+            </h2>
+            <p className='text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto'>
+              Join thousands of students and employers who are already using
+              Palenso to connect and grow.
+            </p>
+            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+              <Link href='/signup'>
+                <Button size='lg' className='text-lg px-8'>
+                  Create Account
+                  <ArrowRight className='ml-2 h-5 w-5' />
+                </Button>
+              </Link>
+              <Link href='/jobs'>
+                <Button variant='outline' size='lg' className='text-lg px-8'>
+                  Browse Jobs
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
-}
+};
+
+export default HomePage;

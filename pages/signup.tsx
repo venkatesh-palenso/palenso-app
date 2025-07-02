@@ -1,436 +1,582 @@
-import Head from "next/head";
-import { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Card, 
-  CardContent, 
-  TextField, 
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  Divider,
-  Avatar,
-  Stepper,
-  Step,
-  StepLabel,
-  Grid,
-  RadioGroup,
-  Radio,
-  FormLabel
-} from '@mui/material';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, School, MapPin, ArrowRight, Building, GraduationCap } from 'lucide-react';
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Building,
+  GraduationCap,
+  Phone,
+  MessageSquare,
+} from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { useUser } from '@/components/UserProvider';
+import { signIn } from 'next-auth/react';
 
 export default function Signup() {
-  const [activeStep, setActiveStep] = useState(0);
-  const [userRole, setUserRole] = useState<'student' | 'employer' | ''>('');
+  const router = useRouter();
+  const { setUser } = useUser();
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
+    phoneNumber: '',
     password: '',
     confirmPassword: '',
-    school: '',
-    major: '',
-    graduationYear: '',
-    location: '',
-    companyName: '',
-    companySize: '',
-    industry: '',
-    agreeToTerms: false
+    role: '' as 'student' | 'employer' | '',
   });
+  const [otpData, setOtpData] = useState({
+    sessionId: '',
+    otp: '',
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const steps = userRole === 'student' 
-    ? ['Role Selection', 'Personal Info', 'Education', 'Location']
-    : ['Role Selection', 'Personal Info', 'Company Info', 'Location'];
-
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
-
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const isStepValid = (step: number) => {
-    switch (step) {
-      case 0:
-        return userRole !== '';
-      case 1:
-        return formData.firstName && formData.lastName && formData.email && formData.password && formData.confirmPassword;
-      case 2:
-        if (userRole === 'student') {
-          return formData.school && formData.major && formData.graduationYear;
-        } else {
-          return formData.companyName && formData.companySize && formData.industry;
-        }
-      case 3:
-        return formData.location && formData.agreeToTerms;
-      default:
-        return false;
-    }
-  };
-
-  const renderStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return (
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center' }}>
-              I am a...
-            </Typography>
-            <RadioGroup
-              value={userRole}
-              onChange={(e) => setUserRole(e.target.value as 'student' | 'employer')}
-            >
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Card 
-                    sx={{ 
-                      p: 3, 
-                      cursor: 'pointer',
-                      border: userRole === 'student' ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                      bgcolor: userRole === 'student' ? '#f0f9ff' : 'white'
-                    }}
-                    onClick={() => setUserRole('student')}
-                  >
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64, mx: 'auto', mb: 2 }}>
-                        <GraduationCap size={32} />
-                      </Avatar>
-                      <Typography variant="h6" sx={{ mb: 1 }}>
-                        Student
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Looking for internships and full-time opportunities
-                      </Typography>
-                    </Box>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Card 
-                    sx={{ 
-                      p: 3, 
-                      cursor: 'pointer',
-                      border: userRole === 'employer' ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                      bgcolor: userRole === 'employer' ? '#f0f9ff' : 'white'
-                    }}
-                    onClick={() => setUserRole('employer')}
-                  >
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64, mx: 'auto', mb: 2 }}>
-                        <Building size={32} />
-                      </Avatar>
-                      <Typography variant="h6" sx={{ mb: 1 }}>
-                        Employer
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Hiring talent for your organization
-                      </Typography>
-                    </Box>
-                  </Card>
-                </Grid>
-              </Grid>
-            </RadioGroup>
-          </Box>
-        );
-      case 1:
-        return (
-          <Box sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="First Name"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  InputProps={{
-                    startAdornment: <User size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Last Name"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  InputProps={{
-                    startAdornment: <Mail size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  InputProps={{
-                    startAdornment: <Lock size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Confirm Password"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                  InputProps={{
-                    startAdornment: <Lock size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                  }}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        );
-      case 2:
-        if (userRole === 'student') {
-          return (
-            <Box sx={{ mt: 3 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="School/University"
-                    value={formData.school}
-                    onChange={(e) => handleInputChange('school', e.target.value)}
-                    InputProps={{
-                      startAdornment: <School size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Major/Field of Study"
-                    value={formData.major}
-                    onChange={(e) => handleInputChange('major', e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel>Expected Graduation Year</InputLabel>
-                    <Select
-                      value={formData.graduationYear}
-                      label="Expected Graduation Year"
-                      onChange={(e) => handleInputChange('graduationYear', e.target.value)}
-                    >
-                      <MenuItem value="2024">2024</MenuItem>
-                      <MenuItem value="2025">2025</MenuItem>
-                      <MenuItem value="2026">2026</MenuItem>
-                      <MenuItem value="2027">2027</MenuItem>
-                      <MenuItem value="2028">2028</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
-          );
-        } else {
-          return (
-            <Box sx={{ mt: 3 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Company Name"
-                    value={formData.companyName}
-                    onChange={(e) => handleInputChange('companyName', e.target.value)}
-                    InputProps={{
-                      startAdornment: <Building size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel>Company Size</InputLabel>
-                    <Select
-                      value={formData.companySize}
-                      label="Company Size"
-                      onChange={(e) => handleInputChange('companySize', e.target.value)}
-                    >
-                      <MenuItem value="1-10">1-10 employees</MenuItem>
-                      <MenuItem value="11-50">11-50 employees</MenuItem>
-                      <MenuItem value="51-200">51-200 employees</MenuItem>
-                      <MenuItem value="201-500">201-500 employees</MenuItem>
-                      <MenuItem value="501-1000">501-1000 employees</MenuItem>
-                      <MenuItem value="1000+">1000+ employees</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Industry"
-                    value={formData.industry}
-                    onChange={(e) => handleInputChange('industry', e.target.value)}
-                    placeholder="e.g., Technology, Healthcare, Finance"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          );
-        }
-      case 3:
-        return (
-          <Box sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Location"
-                  placeholder="City, State or Country"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  InputProps={{
-                    startAdornment: <MapPin size={20} style={{ marginRight: 8, color: '#64748b' }} />
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formData.agreeToTerms}
-                      onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
-                    />
-                  }
-                  label={
-                    <Typography variant="body2">
-                      I agree to the{' '}
-                      <Link href="/terms" style={{ color: '#2563eb', textDecoration: 'none' }}>
-                        Terms of Service
-                      </Link>
-                      {' '}and{' '}
-                      <Link href="/privacy" style={{ color: '#2563eb', textDecoration: 'none' }}>
-                        Privacy Policy
-                      </Link>
-                    </Typography>
-                  }
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Signup attempt:', { userRole, ...formData });
-    // Here you would typically send the data to your backend
+    setLoading(true);
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          password: formData.password,
+          role: formData.role,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create account');
+      }
+
+      const { user, tokens } = await response.json();
+
+      // Store tokens and user data
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      setUser(user);
+
+      // Redirect based on user role
+      if (user.role === 'employer') {
+        router.push('/post-job');
+      } else {
+        router.push('/jobs');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create account');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSendOTP = async () => {
+    if (!formData.phoneNumber) {
+      setError('Please enter a phone number first');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: formData.phoneNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setOtpData({ ...otpData, sessionId: data.sessionId });
+        setError('');
+      } else {
+        setError(data.message);
+      }
+    } catch {
+      setError('Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (!otpData.otp) {
+      setError('Please enter the OTP');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId: otpData.sessionId,
+          otp: otpData.otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.verified) {
+        setStep(4); // Move to final step
+        setError('');
+      } else {
+        setError(data.message);
+      }
+    } catch {
+      setError('Failed to verify OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtpData({
+      ...otpData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRoleSelect = (role: 'student' | 'employer') => {
+    setFormData({
+      ...formData,
+      role,
+    });
+    setStep(2);
+  };
+
+  const canProceedToStep2 = formData.name && formData.email && formData.role;
+  const canSubmit =
+    formData.password &&
+    formData.confirmPassword &&
+    formData.password === formData.confirmPassword;
 
   return (
-    <>
-      <Head>
-        <title>Sign Up - Handshake</title>
-        <meta name="description" content="Create your Handshake account" />
-      </Head>
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4'>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className='w-full max-w-md'
+      >
+        <Card className='shadow-xl'>
+          <CardHeader className='space-y-1'>
+            <CardTitle className='text-2xl font-bold text-center'>
+              Create your account
+            </CardTitle>
+            <CardDescription className='text-center'>
+              Join Palenso to connect with opportunities
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              type='button'
+              variant='outline'
+              className='w-full mb-4 flex items-center justify-center gap-2'
+              onClick={() => signIn('google', { callbackUrl: '/' })}
+            >
+              <svg className='h-5 w-5' viewBox='0 0 48 48'>
+                <g>
+                  <path
+                    fill='#4285F4'
+                    d='M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.85-6.85C36.68 2.69 30.74 0 24 0 14.82 0 6.71 5.48 2.69 13.44l7.98 6.2C12.13 13.13 17.62 9.5 24 9.5z'
+                  />
+                  <path
+                    fill='#34A853'
+                    d='M46.1 24.55c0-1.64-.15-3.22-.42-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.65 7.01l7.19 5.59C43.93 37.13 46.1 31.36 46.1 24.55z'
+                  />
+                  <path
+                    fill='#FBBC05'
+                    d='M10.67 28.65c-1.01-2.99-1.01-6.21 0-9.2l-7.98-6.2C.99 17.1 0 20.43 0 24c0 3.57.99 6.9 2.69 10.55l7.98-6.2z'
+                  />
+                  <path
+                    fill='#EA4335'
+                    d='M24 48c6.74 0 12.68-2.22 16.98-6.05l-7.19-5.59c-2.01 1.35-4.59 2.15-7.79 2.15-6.38 0-11.87-3.63-14.33-8.9l-7.98 6.2C6.71 42.52 14.82 48 24 48z'
+                  />
+                  <path fill='none' d='M0 0h48v48H0z' />
+                </g>
+              </svg>
+              Sign up with Google
+            </Button>
 
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Card sx={{ p: 4 }}>
-            {/* Header */}
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64, mx: 'auto', mb: 2 }}>
-                <User size={32} />
-              </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
-                Join Handshake
-              </Typography>
-              <Typography variant="h6" color="text.secondary">
-                Create your account to get started
-              </Typography>
-            </Box>
+            {/* Step Indicator */}
+            <div className='flex items-center justify-center mb-6'>
+              <div className='flex items-center space-x-2'>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    step >= 1
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  1
+                </div>
+                <div className='w-8 h-1 bg-muted'></div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    step >= 2
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  2
+                </div>
+                <div className='w-8 h-1 bg-muted'></div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    step >= 3
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  3
+                </div>
+                <div className='w-8 h-1 bg-muted'></div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    step >= 4
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  4
+                </div>
+              </div>
+            </div>
 
-            {/* Stepper */}
-            <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            {error && (
+              <div className='p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md mb-4'>
+                {error}
+              </div>
+            )}
 
-            {/* Form Content */}
-            {renderStepContent(activeStep)}
-
-            {/* Navigation Buttons */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
+            {step === 1 ? (
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  setStep(2);
+                }}
+                className='space-y-4'
               >
-                Back
-              </Button>
-              <Box>
-                {activeStep === steps.length - 1 ? (
-                  <Button
-                    variant="contained"
-                    onClick={handleSubmit}
-                    disabled={!isStepValid(activeStep)}
-                  >
-                    Create Account
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    disabled={!isStepValid(activeStep)}
-                  >
-                    Next
-                    <ArrowRight size={20} style={{ marginLeft: 8 }} />
-                  </Button>
-                )}
-              </Box>
-            </Box>
+                <div className='space-y-2'>
+                  <Label htmlFor='name'>Full Name</Label>
+                  <div className='relative'>
+                    <User className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      id='name'
+                      name='name'
+                      type='text'
+                      placeholder='Enter your full name'
+                      value={formData.name}
+                      onChange={handleChange}
+                      className='pl-10'
+                      required
+                    />
+                  </div>
+                </div>
 
-            {/* Sign In Link */}
-            <Box sx={{ textAlign: 'center', mt: 4 }}>
-              <Typography variant="body2" color="text.secondary">
+                <div className='space-y-2'>
+                  <Label htmlFor='email'>Email</Label>
+                  <div className='relative'>
+                    <Mail className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      id='email'
+                      name='email'
+                      type='email'
+                      placeholder='Enter your email'
+                      value={formData.email}
+                      onChange={handleChange}
+                      className='pl-10'
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label>I am a...</Label>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <Button
+                      type='button'
+                      variant={
+                        formData.role === 'student' ? 'default' : 'outline'
+                      }
+                      className='h-20 flex flex-col items-center justify-center space-y-2'
+                      onClick={() => handleRoleSelect('student')}
+                    >
+                      <GraduationCap className='h-6 w-6' />
+                      <span className='text-sm'>Student</span>
+                    </Button>
+                    <Button
+                      type='button'
+                      variant={
+                        formData.role === 'employer' ? 'default' : 'outline'
+                      }
+                      className='h-20 flex flex-col items-center justify-center space-y-2'
+                      onClick={() => handleRoleSelect('employer')}
+                    >
+                      <Building className='h-6 w-6' />
+                      <span className='text-sm'>Employer</span>
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  type='submit'
+                  className='w-full'
+                  disabled={!canProceedToStep2}
+                >
+                  Continue
+                </Button>
+              </form>
+            ) : step === 2 ? (
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  setStep(3);
+                }}
+                className='space-y-4'
+              >
+                <div className='space-y-2'>
+                  <Label htmlFor='phoneNumber'>Phone Number</Label>
+                  <div className='relative'>
+                    <Phone className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      id='phoneNumber'
+                      name='phoneNumber'
+                      type='tel'
+                      placeholder='+1 (555) 123-4567'
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      className='pl-10'
+                      required
+                    />
+                  </div>
+                  <p className='text-xs text-muted-foreground'>
+                    We&apos;ll send a verification code to this number
+                  </p>
+                </div>
+
+                <div className='flex space-x-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='flex-1'
+                    onClick={() => setStep(1)}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type='submit'
+                    className='flex-1'
+                    disabled={!formData.phoneNumber}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </form>
+            ) : step === 3 ? (
+              <div className='space-y-4'>
+                <div className='text-center'>
+                  <MessageSquare className='h-12 w-12 text-primary mx-auto mb-4' />
+                  <h3 className='text-lg font-semibold mb-2'>
+                    Verify Your Phone
+                  </h3>
+                  <p className='text-sm text-muted-foreground mb-4'>
+                    We&apos;ve sent a 6-digit code to {formData.phoneNumber}
+                  </p>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='otp'>Enter Verification Code</Label>
+                  <Input
+                    id='otp'
+                    name='otp'
+                    type='text'
+                    placeholder='123456'
+                    value={otpData.otp}
+                    onChange={handleOtpChange}
+                    maxLength={6}
+                    className='text-center text-lg tracking-widest'
+                  />
+                </div>
+
+                <div className='flex space-x-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='flex-1'
+                    onClick={() => setStep(2)}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type='button'
+                    className='flex-1'
+                    onClick={handleVerifyOTP}
+                    disabled={loading || !otpData.otp}
+                  >
+                    {loading ? 'Verifying...' : 'Verify'}
+                  </Button>
+                </div>
+
+                <div className='text-center'>
+                  <Button
+                    type='button'
+                    variant='link'
+                    onClick={handleSendOTP}
+                    disabled={loading}
+                    className='text-sm'
+                  >
+                    Didn&apos;t receive the code? Resend
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='password'>Password</Label>
+                  <div className='relative'>
+                    <Lock className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      id='password'
+                      name='password'
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder='Create a password'
+                      value={formData.password}
+                      onChange={handleChange}
+                      className='pl-10 pr-10'
+                      required
+                    />
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='confirmPassword'>Confirm Password</Label>
+                  <div className='relative'>
+                    <Lock className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      id='confirmPassword'
+                      name='confirmPassword'
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder='Confirm your password'
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className='pl-10 pr-10'
+                      required
+                    />
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon'
+                      className='absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent'
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className='flex space-x-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='flex-1'
+                    onClick={() => setStep(3)}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type='submit'
+                    className='flex-1'
+                    disabled={loading || !canSubmit}
+                  >
+                    {loading ? 'Creating account...' : 'Create account'}
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            <div className='mt-6 text-center text-sm'>
+              <span className='text-muted-foreground'>
                 Already have an account?{' '}
-                <Link href="/login" style={{ color: '#2563eb', textDecoration: 'none' }}>
-                  Sign in
-                </Link>
-              </Typography>
-            </Box>
-          </Card>
-        </motion.div>
-      </Container>
-    </>
+              </span>
+              <Link
+                href='/login'
+                className='font-medium text-primary hover:underline'
+              >
+                Sign in
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
   );
-} 
+}

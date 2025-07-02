@@ -1,132 +1,148 @@
-import Head from "next/head";
+import Head from 'next/head';
 import { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
-  TextField, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem, 
-  Chip, 
-  Avatar, 
-  Button,
-  Rating,
-  InputAdornment
-} from '@mui/material';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Users, Building, Star, Filter } from 'lucide-react';
+import { Search, MapPin, Users, Star, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function Companies() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [industry, setIndustry] = useState('');
+  const [industry, setIndustry] = useState('all');
   const [location, setLocation] = useState('');
 
   const companies = [
     {
       id: 1,
-      name: "Google",
-      logo: "G",
-      industry: "Technology",
-      location: "Mountain View, CA",
-      employees: "150,000+",
+      name: 'Google',
+      logo: 'G',
+      industry: 'Technology',
+      location: 'Mountain View, CA',
+      employees: '150,000+',
       rating: 4.8,
       reviews: 1250,
       openJobs: 45,
-      description: "Google is a multinational technology company that specializes in Internet-related services and products.",
-      benefits: ["Health Insurance", "401k", "Remote Work", "Free Food"]
+      description:
+        'Google is a multinational technology company that specializes in Internet-related services and products.',
+      benefits: ['Health Insurance', '401k', 'Remote Work', 'Free Food'],
     },
     {
       id: 2,
-      name: "Microsoft",
-      logo: "M",
-      industry: "Technology",
-      location: "Seattle, WA",
-      employees: "200,000+",
+      name: 'Microsoft',
+      logo: 'M',
+      industry: 'Technology',
+      location: 'Seattle, WA',
+      employees: '200,000+',
       rating: 4.6,
       reviews: 980,
       openJobs: 32,
-      description: "Microsoft Corporation is an American multinational technology company which produces computer software.",
-      benefits: ["Health Insurance", "401k", "Stock Options", "Flexible Hours"]
+      description:
+        'Microsoft Corporation is an American multinational technology company which produces computer software.',
+      benefits: ['Health Insurance', '401k', 'Stock Options', 'Flexible Hours'],
     },
     {
       id: 3,
-      name: "Amazon",
-      logo: "A",
-      industry: "E-commerce",
-      location: "Seattle, WA",
-      employees: "1,500,000+",
+      name: 'Amazon',
+      logo: 'A',
+      industry: 'E-commerce',
+      location: 'Seattle, WA',
+      employees: '1,500,000+',
       rating: 4.4,
       reviews: 2100,
       openJobs: 78,
-      description: "Amazon is an American multinational technology company focusing on e-commerce, cloud computing, and digital streaming.",
-      benefits: ["Health Insurance", "401k", "Career Growth", "Innovation"]
+      description:
+        'Amazon is an American multinational technology company focusing on e-commerce, cloud computing, and digital streaming.',
+      benefits: ['Health Insurance', '401k', 'Career Growth', 'Innovation'],
     },
     {
       id: 4,
-      name: "Apple",
-      logo: "A",
-      industry: "Technology",
-      location: "Cupertino, CA",
-      employees: "160,000+",
+      name: 'Apple',
+      logo: 'A',
+      industry: 'Technology',
+      location: 'Cupertino, CA',
+      employees: '160,000+',
       rating: 4.7,
       reviews: 890,
       openJobs: 28,
-      description: "Apple Inc. is an American multinational technology company that specializes in consumer electronics.",
-      benefits: ["Health Insurance", "401k", "Product Discounts", "Creative Environment"]
+      description:
+        'Apple Inc. is an American multinational technology company that specializes in consumer electronics.',
+      benefits: [
+        'Health Insurance',
+        '401k',
+        'Product Discounts',
+        'Creative Environment',
+      ],
     },
     {
       id: 5,
-      name: "Netflix",
-      logo: "N",
-      industry: "Entertainment",
-      location: "Los Gatos, CA",
-      employees: "12,000+",
+      name: 'Netflix',
+      logo: 'N',
+      industry: 'Entertainment',
+      location: 'Los Gatos, CA',
+      employees: '12,000+',
       rating: 4.5,
       reviews: 650,
       openJobs: 15,
-      description: "Netflix is an American subscription streaming service and production company.",
-      benefits: ["Health Insurance", "401k", "Unlimited PTO", "Remote Work"]
+      description:
+        'Netflix is an American subscription streaming service and production company.',
+      benefits: ['Health Insurance', '401k', 'Unlimited PTO', 'Remote Work'],
     },
     {
       id: 6,
-      name: "Meta",
-      logo: "M",
-      industry: "Technology",
-      location: "Menlo Park, CA",
-      employees: "87,000+",
+      name: 'Meta',
+      logo: 'M',
+      industry: 'Technology',
+      location: 'Menlo Park, CA',
+      employees: '87,000+',
       rating: 4.3,
       reviews: 1100,
       openJobs: 52,
-      description: "Meta Platforms, Inc. is an American multinational technology conglomerate.",
-      benefits: ["Health Insurance", "401k", "Social Impact", "Innovation"]
-    }
+      description:
+        'Meta Platforms, Inc. is an American multinational technology conglomerate.',
+      benefits: ['Health Insurance', '401k', 'Social Impact', 'Innovation'],
+    },
   ];
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        size={16}
+        className={`${i < Math.floor(rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+      />
+    ));
+  };
 
   return (
     <>
       <Head>
-        <title>Companies - Handshake</title>
-        <meta name="description" content="Explore companies and their job opportunities on Handshake" />
+        <title>Companies - Palenso</title>
+        <meta
+          name='description'
+          content='Explore companies and their job opportunities on Palenso'
+        />
       </Head>
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <div className='container mx-auto px-4 py-8'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Typography variant="h2" sx={{ mb: 2, fontWeight: 700 }}>
-            Explore Companies
-          </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+          <h1 className='text-4xl font-bold mb-2'>Explore Companies</h1>
+          <p className='text-xl text-gray-600 mb-8'>
             Discover top employers and their opportunities
-          </Typography>
+          </p>
         </motion.div>
 
         {/* Search and Filters */}
@@ -135,169 +151,147 @@ export default function Companies() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <Card sx={{ p: 3, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  placeholder="Search companies"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Industry</InputLabel>
-                  <Select
-                    value={industry}
-                    label="Industry"
-                    onChange={(e) => setIndustry(e.target.value)}
-                  >
-                    <MenuItem value="">All Industries</MenuItem>
-                    <MenuItem value="technology">Technology</MenuItem>
-                    <MenuItem value="e-commerce">E-commerce</MenuItem>
-                    <MenuItem value="entertainment">Entertainment</MenuItem>
-                    <MenuItem value="finance">Finance</MenuItem>
-                    <MenuItem value="healthcare">Healthcare</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField
-                  fullWidth
-                  placeholder="Location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <MapPin size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ height: '56px' }}
-                  startIcon={<Filter size={20} />}
-                >
+          <Card className='p-6 mb-8'>
+            <div className='grid grid-cols-1 md:grid-cols-12 gap-4'>
+              <div className='md:col-span-4'>
+                <div className='relative'>
+                  <Search
+                    className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                    size={20}
+                  />
+                  <Input
+                    placeholder='Search companies'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className='pl-10'
+                  />
+                </div>
+              </div>
+              <div className='md:col-span-3'>
+                <Select value={industry} onValueChange={setIndustry}>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Industry' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='all'>All Industries</SelectItem>
+                    <SelectItem value='technology'>Technology</SelectItem>
+                    <SelectItem value='e-commerce'>E-commerce</SelectItem>
+                    <SelectItem value='entertainment'>Entertainment</SelectItem>
+                    <SelectItem value='finance'>Finance</SelectItem>
+                    <SelectItem value='healthcare'>Healthcare</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className='md:col-span-3'>
+                <div className='relative'>
+                  <MapPin
+                    className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                    size={20}
+                  />
+                  <Input
+                    placeholder='Location'
+                    value={location}
+                    onChange={e => setLocation(e.target.value)}
+                    className='pl-10'
+                  />
+                </div>
+              </div>
+              <div className='md:col-span-2'>
+                <Button className='w-full h-14'>
+                  <Filter size={20} className='mr-2' />
                   Filter
                 </Button>
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           </Card>
         </motion.div>
 
         {/* Results Count */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="body1" color="text.secondary">
-            Showing {companies.length} companies
-          </Typography>
-        </Box>
+        <div className='mb-6'>
+          <p className='text-gray-600'>Showing {companies.length} companies</p>
+        </div>
 
         {/* Companies Grid */}
-        <Grid container spacing={3}>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {companies.map((company, index) => (
-            <Grid item xs={12} md={6} lg={4} key={company.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card sx={{ 
-                  height: '100%', 
-                  cursor: 'pointer', 
-                  '&:hover': { 
-                    transform: 'translateY(-4px)', 
-                    boxShadow: 4 
-                  },
-                  transition: 'all 0.3s ease'
-                }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                      <Avatar sx={{ bgcolor: 'primary.main', mr: 3, width: 64, height: 64, fontSize: '1.5rem' }}>
-                        {company.logo}
-                      </Avatar>
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-                          {company.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                          {company.industry}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                          <Rating value={company.rating} precision={0.1} size="small" readOnly />
-                          <Typography variant="body2" color="text.secondary">
-                            ({company.reviews})
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
+            <motion.div
+              key={company.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <Card className='h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300'>
+                <CardContent className='p-6'>
+                  <div className='flex items-start mb-6'>
+                    <Avatar className='w-16 h-16 mr-4 bg-blue-600 text-white text-xl'>
+                      <AvatarFallback>{company.logo}</AvatarFallback>
+                    </Avatar>
+                    <div className='flex-1'>
+                      <h3 className='text-xl font-semibold mb-1'>
+                        {company.name}
+                      </h3>
+                      <p className='text-gray-600 text-sm mb-1'>
+                        {company.industry}
+                      </p>
+                      <div className='flex items-center gap-1 mb-1'>
+                        <div className='flex'>
+                          {renderStars(company.rating)}
+                        </div>
+                        <span className='text-gray-600 text-sm'>
+                          ({company.reviews})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <MapPin size={16} style={{ marginRight: 4, color: '#64748b' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {company.location}
-                      </Typography>
-                    </Box>
+                  <div className='flex items-center mb-3'>
+                    <MapPin size={16} className='text-gray-500 mr-2' />
+                    <span className='text-gray-600 text-sm'>
+                      {company.location}
+                    </span>
+                  </div>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Users size={16} style={{ marginRight: 4, color: '#64748b' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {company.employees} employees
-                      </Typography>
-                    </Box>
+                  <div className='flex items-center mb-3'>
+                    <Users size={16} className='text-gray-500 mr-2' />
+                    <span className='text-gray-600 text-sm'>
+                      {company.employees} employees
+                    </span>
+                  </div>
 
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {company.description}
-                    </Typography>
+                  <p className='text-gray-600 text-sm mb-6'>
+                    {company.description}
+                  </p>
 
-                    <Box sx={{ mb: 3 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                        Benefits:
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {company.benefits.slice(0, 3).map((benefit, benefitIndex) => (
-                          <Chip
+                  <div className='mb-6'>
+                    <p className='text-sm font-semibold mb-2'>Benefits:</p>
+                    <div className='flex flex-wrap gap-2'>
+                      {company.benefits
+                        .slice(0, 3)
+                        .map((benefit, benefitIndex) => (
+                          <Badge
                             key={benefitIndex}
-                            label={benefit}
-                            size="small"
-                            sx={{ bgcolor: 'grey.100' }}
-                          />
+                            variant='secondary'
+                            className='text-xs'
+                          >
+                            {benefit}
+                          </Badge>
                         ))}
-                      </Box>
-                    </Box>
+                    </div>
+                  </div>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                      <Typography variant="body2" color="primary.main" sx={{ fontWeight: 600 }}>
-                        {company.openJobs} open jobs
-                      </Typography>
-                    </Box>
+                  <div className='flex justify-between items-center mb-4'>
+                    <span className='text-blue-600 font-semibold text-sm'>
+                      {company.openJobs} open jobs
+                    </span>
+                  </div>
 
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{ mt: 'auto' }}
-                    >
-                      View Jobs
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
+                  <Button className='w-full'>View Jobs</Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </Grid>
-      </Container>
+        </div>
+      </div>
     </>
   );
-} 
+}

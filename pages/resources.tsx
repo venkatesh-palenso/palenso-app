@@ -1,139 +1,159 @@
-import Head from "next/head";
+import Head from 'next/head';
 import { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
-  TextField, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem, 
-  Chip, 
-  Button,
-  InputAdornment,
-  Tabs,
-  Tab
-} from '@mui/material';
 import { motion } from 'framer-motion';
-import { Search, FileText, Video, BookOpen, Download, Filter } from 'lucide-react';
+import {
+  Search,
+  FileText,
+  Video,
+  BookOpen,
+  Download,
+  Filter,
+  Star,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function Resources() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [resourceType, setResourceType] = useState('');
-  const [tabValue, setTabValue] = useState(0);
+  const [resourceType, setResourceType] = useState('all');
+  const [category, setCategory] = useState('all');
+  const [activeTab, setActiveTab] = useState('all');
 
   const resources = [
     {
       id: 1,
-      title: "Resume Writing Guide",
-      type: "Guide",
-      category: "Resume",
-      description: "Learn how to create a compelling resume that stands out to employers. Includes templates and examples.",
-      downloads: "2.5k",
+      title: 'Resume Writing Guide',
+      type: 'Guide',
+      category: 'Resume',
+      description:
+        'Learn how to create a compelling resume that stands out to employers. Includes templates and examples.',
+      downloads: '2.5k',
       rating: 4.8,
-      format: "PDF",
-      size: "2.3 MB"
+      format: 'PDF',
+      size: '2.3 MB',
     },
     {
       id: 2,
-      title: "Interview Preparation Tips",
-      type: "Video",
-      category: "Interview",
-      description: "Master common interview questions and learn techniques to ace your next interview.",
-      downloads: "1.8k",
+      title: 'Interview Preparation Tips',
+      type: 'Video',
+      category: 'Interview',
+      description:
+        'Master common interview questions and learn techniques to ace your next interview.',
+      downloads: '1.8k',
       rating: 4.6,
-      format: "MP4",
-      size: "45 MB"
+      format: 'MP4',
+      size: '45 MB',
     },
     {
       id: 3,
-      title: "Networking Strategies",
-      type: "Guide",
-      category: "Networking",
-      description: "Build your professional network and create meaningful connections in your industry.",
-      downloads: "1.2k",
+      title: 'Networking Strategies',
+      type: 'Guide',
+      category: 'Networking',
+      description:
+        'Build your professional network and create meaningful connections in your industry.',
+      downloads: '1.2k',
       rating: 4.7,
-      format: "PDF",
-      size: "1.8 MB"
+      format: 'PDF',
+      size: '1.8 MB',
     },
     {
       id: 4,
-      title: "Salary Negotiation Guide",
-      type: "Guide",
-      category: "Negotiation",
-      description: "Learn how to negotiate your salary and benefits effectively.",
-      downloads: "950",
+      title: 'Salary Negotiation Guide',
+      type: 'Guide',
+      category: 'Negotiation',
+      description:
+        'Learn how to negotiate your salary and benefits effectively.',
+      downloads: '950',
       rating: 4.5,
-      format: "PDF",
-      size: "3.1 MB"
+      format: 'PDF',
+      size: '3.1 MB',
     },
     {
       id: 5,
-      title: "LinkedIn Profile Optimization",
-      type: "Video",
-      category: "Social Media",
-      description: "Optimize your LinkedIn profile to attract recruiters and opportunities.",
-      downloads: "1.5k",
+      title: 'LinkedIn Profile Optimization',
+      type: 'Video',
+      category: 'Social Media',
+      description:
+        'Optimize your LinkedIn profile to attract recruiters and opportunities.',
+      downloads: '1.5k',
       rating: 4.4,
-      format: "MP4",
-      size: "32 MB"
+      format: 'MP4',
+      size: '32 MB',
     },
     {
       id: 6,
-      title: "Career Change Guide",
-      type: "Guide",
-      category: "Career Planning",
-      description: "Navigate a successful career transition with step-by-step guidance.",
-      downloads: "800",
+      title: 'Career Change Guide',
+      type: 'Guide',
+      category: 'Career Planning',
+      description:
+        'Navigate a successful career transition with step-by-step guidance.',
+      downloads: '800',
       rating: 4.9,
-      format: "PDF",
-      size: "4.2 MB"
-    }
+      format: 'PDF',
+      size: '4.2 MB',
+    },
   ];
 
   const categories = [
-    { label: "All Resources", value: "all" },
-    { label: "Resume", value: "resume" },
-    { label: "Interview", value: "interview" },
-    { label: "Networking", value: "networking" },
-    { label: "Career Planning", value: "career-planning" }
+    { label: 'All Resources', value: 'all' },
+    { label: 'Resume', value: 'resume' },
+    { label: 'Interview', value: 'interview' },
+    { label: 'Networking', value: 'networking' },
+    { label: 'Career Planning', value: 'career-planning' },
   ];
 
   const getIcon = (type: string) => {
     switch (type) {
       case 'Video':
-        return <Video size={24} />;
+        return <Video size={24} className='text-blue-600' />;
       case 'Guide':
-        return <FileText size={24} />;
+        return <FileText size={24} className='text-blue-600' />;
       default:
-        return <BookOpen size={24} />;
+        return <BookOpen size={24} className='text-blue-600' />;
     }
+  };
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        size={16}
+        className={`${i < Math.floor(rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+      />
+    ));
   };
 
   return (
     <>
       <Head>
-        <title>Resources - Handshake</title>
-        <meta name="description" content="Access career resources, guides, and tools on Handshake" />
+        <title>Resources - Palenso</title>
+        <meta
+          name='description'
+          content='Access career resources, guides, and tools on Palenso'
+        />
       </Head>
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <div className='container mx-auto px-4 py-8'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Typography variant="h2" sx={{ mb: 2, fontWeight: 700 }}>
-            Career Resources
-          </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+          <h1 className='text-4xl font-bold mb-2'>Career Resources</h1>
+          <p className='text-xl text-gray-600 mb-8'>
             Access guides, templates, and tools to advance your career
-          </Typography>
+          </p>
         </motion.div>
 
         {/* Search and Filters */}
@@ -142,66 +162,59 @@ export default function Resources() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <Card sx={{ p: 3, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  placeholder="Search resources"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search size={20} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Resource Type</InputLabel>
-                  <Select
-                    value={resourceType}
-                    label="Resource Type"
-                    onChange={(e) => setResourceType(e.target.value)}
-                  >
-                    <MenuItem value="">All Types</MenuItem>
-                    <MenuItem value="guide">Guides</MenuItem>
-                    <MenuItem value="video">Videos</MenuItem>
-                    <MenuItem value="template">Templates</MenuItem>
-                    <MenuItem value="tool">Tools</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Category</InputLabel>
-                  <Select
-                    value={resourceType}
-                    label="Category"
-                    onChange={(e) => setResourceType(e.target.value)}
-                  >
-                    <MenuItem value="">All Categories</MenuItem>
-                    <MenuItem value="resume">Resume</MenuItem>
-                    <MenuItem value="interview">Interview</MenuItem>
-                    <MenuItem value="networking">Networking</MenuItem>
-                    <MenuItem value="career-planning">Career Planning</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ height: '56px' }}
-                  startIcon={<Filter size={20} />}
-                >
+          <Card className='p-6 mb-8'>
+            <div className='grid grid-cols-1 md:grid-cols-12 gap-4'>
+              <div className='md:col-span-4'>
+                <div className='relative'>
+                  <Search
+                    className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                    size={20}
+                  />
+                  <Input
+                    placeholder='Search resources'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className='pl-10'
+                  />
+                </div>
+              </div>
+              <div className='md:col-span-3'>
+                <Select value={resourceType} onValueChange={setResourceType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Resource Type' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='all'>All Types</SelectItem>
+                    <SelectItem value='guide'>Guides</SelectItem>
+                    <SelectItem value='video'>Videos</SelectItem>
+                    <SelectItem value='template'>Templates</SelectItem>
+                    <SelectItem value='tool'>Tools</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className='md:col-span-3'>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Category' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='all'>All Categories</SelectItem>
+                    <SelectItem value='resume'>Resume</SelectItem>
+                    <SelectItem value='interview'>Interview</SelectItem>
+                    <SelectItem value='networking'>Networking</SelectItem>
+                    <SelectItem value='career-planning'>
+                      Career Planning
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className='md:col-span-2'>
+                <Button className='w-full h-14'>
+                  <Filter size={20} className='mr-2' />
                   Filter
                 </Button>
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           </Card>
         </motion.div>
 
@@ -211,109 +224,84 @@ export default function Resources() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-            <Tabs 
-              value={tabValue} 
-              onChange={(e, newValue) => setTabValue(newValue)}
-              variant="scrollable"
-              scrollButtons="auto"
-            >
+          <Tabs value={activeTab} onValueChange={setActiveTab} className='mb-8'>
+            <TabsList className='grid w-full grid-cols-5'>
               {categories.map((category, index) => (
-                <Tab key={index} label={category.label} />
+                <TabsTrigger key={index} value={category.value}>
+                  {category.label}
+                </TabsTrigger>
               ))}
-            </Tabs>
-          </Box>
+            </TabsList>
+          </Tabs>
         </motion.div>
 
         {/* Results Count */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="body1" color="text.secondary">
-            Showing {resources.length} resources
-          </Typography>
-        </Box>
+        <div className='mb-6'>
+          <p className='text-gray-600'>Showing {resources.length} resources</p>
+        </div>
 
         {/* Resources Grid */}
-        <Grid container spacing={3}>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {resources.map((resource, index) => (
-            <Grid item xs={12} md={6} lg={4} key={resource.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card sx={{ 
-                  height: '100%', 
-                  cursor: 'pointer', 
-                  '&:hover': { 
-                    transform: 'translateY(-4px)', 
-                    boxShadow: 4 
-                  },
-                  transition: 'all 0.3s ease'
-                }}>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                      <Chip 
-                        label={resource.type} 
-                        color="primary" 
-                        size="small"
-                        sx={{ mb: 1 }}
-                      />
-                      <Chip 
-                        label={resource.format} 
-                        variant="outlined"
-                        size="small"
-                      />
-                    </Box>
+            <motion.div
+              key={resource.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <Card className='h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300'>
+                <CardContent className='p-6'>
+                  <div className='flex justify-between items-start mb-4'>
+                    <Badge variant='default' className='mb-2'>
+                      {resource.type}
+                    </Badge>
+                    <Badge variant='outline'>{resource.format}</Badge>
+                  </div>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box sx={{ mr: 2, color: 'primary.main' }}>
-                        {getIcon(resource.type)}
-                      </Box>
-                      <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        {resource.title}
-                      </Typography>
-                    </Box>
+                  <div className='flex items-center mb-4'>
+                    <div className='mr-3'>{getIcon(resource.type)}</div>
+                    <h3 className='text-xl font-semibold'>{resource.title}</h3>
+                  </div>
 
-                    <Chip 
-                      label={resource.category} 
-                      size="small"
-                      sx={{ bgcolor: 'grey.100', mb: 2 }}
-                    />
+                  <Badge variant='secondary' className='mb-4'>
+                    {resource.category}
+                  </Badge>
 
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {resource.description}
-                    </Typography>
+                  <p className='text-gray-600 text-sm mb-6'>
+                    {resource.description}
+                  </p>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Downloads: {resource.downloads}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Size: {resource.size}
-                      </Typography>
-                    </Box>
+                  <div className='flex justify-between items-center mb-3'>
+                    <span className='text-gray-600 text-sm'>
+                      Downloads: {resource.downloads}
+                    </span>
+                    <span className='text-gray-600 text-sm'>
+                      Size: {resource.size}
+                    </span>
+                  </div>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Rating: ⭐ {resource.rating}
-                      </Typography>
-                    </Box>
+                  <div className='flex justify-between items-center mb-6'>
+                    <div className='flex items-center gap-1'>
+                      <span className='text-gray-600 text-sm mr-1'>
+                        Rating:
+                      </span>
+                      <div className='flex'>{renderStars(resource.rating)}</div>
+                      <span className='text-gray-600 text-sm ml-1'>
+                        {resource.rating}
+                      </span>
+                    </div>
+                  </div>
 
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      startIcon={<Download size={20} />}
-                      sx={{ mt: 'auto' }}
-                    >
-                      Download
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </Grid>
+                  <Button className='w-full'>
+                    <Download size={20} className='mr-2' />
+                    Download
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </Grid>
-      </Container>
+        </div>
+      </div>
     </>
   );
-} 
+}

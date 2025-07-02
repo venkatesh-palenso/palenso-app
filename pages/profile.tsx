@@ -1,50 +1,25 @@
-import Head from "next/head";
-import { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Card, 
-  CardContent, 
-  TextField, 
-  Button,
-  Grid,
-  Chip,
-  Avatar,
-  IconButton,
-  Divider,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextareaAutosize,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  LinearProgress
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import { 
-  User, 
-  Upload, 
-  Edit, 
-  Trash2, 
-  Plus, 
-  Briefcase, 
-  GraduationCap, 
-  Code, 
-  Heart, 
-  BookOpen, 
+import React, { useState } from 'react';
+import {
+  User,
+  Upload,
+  Edit,
+  Trash2,
+  Plus,
+  Briefcase,
+  GraduationCap,
+  Code,
+  Heart,
+  BookOpen,
   Globe,
-  Save,
-  X
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface WorkExperience {
   id: string;
@@ -80,7 +55,7 @@ interface Language {
   proficiency: 'Beginner' | 'Intermediate' | 'Advanced' | 'Native';
 }
 
-export default function Profile() {
+const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [profileData, setProfileData] = useState({
     firstName: 'John',
@@ -90,9 +65,10 @@ export default function Profile() {
     location: 'San Francisco, CA',
     linkedin: 'linkedin.com/in/johndoe',
     github: 'github.com/johndoe',
-    summary: 'Passionate software engineer with 2+ years of experience in full-stack development. Skilled in React, Node.js, and Python. Looking for opportunities to work on challenging projects and grow my career.',
+    summary:
+      'Passionate software engineer with 2+ years of experience in full-stack development. Skilled in React, Node.js, and Python. Looking for opportunities to work on challenging projects and grow my career.',
     resume: null as File | null,
-    uploadProgress: 0
+    uploadProgress: 0,
   });
 
   const [workExperience, setWorkExperience] = useState<WorkExperience[]>([
@@ -102,9 +78,10 @@ export default function Profile() {
       position: 'Software Engineer',
       startDate: '2023-01',
       endDate: '2024-01',
-      description: 'Developed and maintained web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality software solutions.',
-      current: false
-    }
+      description:
+        'Developed and maintained web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality software solutions.',
+      current: false,
+    },
   ]);
 
   const [education, setEducation] = useState<Education[]>([
@@ -115,30 +92,48 @@ export default function Profile() {
       field: 'Computer Science',
       startDate: '2019-09',
       endDate: '2023-05',
-      gpa: '3.8'
-    }
+      gpa: '3.8',
+    },
   ]);
 
-  const [skills, setSkills] = useState<string[]>(['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git']);
-  const [interests, setInterests] = useState<string[]>(['Machine Learning', 'Web Development', 'Open Source', 'Hiking']);
-  const [courses, setCourses] = useState<string[]>(['Data Structures & Algorithms', 'Database Systems', 'Software Engineering', 'Machine Learning']);
+  const [skills] = useState<string[]>([
+    'JavaScript',
+    'React',
+    'Node.js',
+    'Python',
+    'SQL',
+    'Git',
+  ]);
+  const [interests] = useState<string[]>([
+    'Machine Learning',
+    'Web Development',
+    'Open Source',
+    'Hiking',
+  ]);
+  const [courses] = useState<string[]>([
+    'Data Structures & Algorithms',
+    'Database Systems',
+    'Software Engineering',
+    'Machine Learning',
+  ]);
   const [projects, setProjects] = useState<Project[]>([
     {
       id: '1',
       title: 'E-commerce Platform',
-      description: 'Built a full-stack e-commerce platform using React, Node.js, and MongoDB',
+      description:
+        'Built a full-stack e-commerce platform using React, Node.js, and MongoDB',
       technologies: ['React', 'Node.js', 'MongoDB', 'Express'],
-      link: 'https://github.com/johndoe/ecommerce'
-    }
+      link: 'https://github.com/johndoe/ecommerce',
+    },
   ]);
 
   const [languages, setLanguages] = useState<Language[]>([
     { id: '1', language: 'English', proficiency: 'Native' },
-    { id: '2', language: 'Spanish', proficiency: 'Intermediate' }
+    { id: '2', language: 'Spanish', proficiency: 'Intermediate' },
   ]);
 
-  const [openDialog, setOpenDialog] = useState<string | null>(null);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [, setOpenDialog] = useState<string | null>(null);
+  const [, setEditingItem] = useState<unknown>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -150,7 +145,11 @@ export default function Profile() {
         setProfileData(prev => ({ ...prev, uploadProgress: progress }));
         if (progress >= 100) {
           clearInterval(interval);
-          setProfileData(prev => ({ ...prev, resume: file, uploadProgress: 0 }));
+          setProfileData(prev => ({
+            ...prev,
+            resume: file,
+            uploadProgress: 0,
+          }));
         }
       }, 100);
     }
@@ -161,7 +160,7 @@ export default function Profile() {
     setEditingItem(null);
   };
 
-  const handleEditItem = (type: string, item: any) => {
+  const handleEditItem = (type: string, item: unknown) => {
     setOpenDialog(type);
     setEditingItem(item);
   };
@@ -183,491 +182,438 @@ export default function Profile() {
     }
   };
 
-  const handleSaveItem = (type: string, data: any) => {
-    switch (type) {
-      case 'work':
-        if (editingItem) {
-          setWorkExperience(prev => prev.map(item => item.id === editingItem.id ? { ...data, id: editingItem.id } : item));
-        } else {
-          setWorkExperience(prev => [...prev, { ...data, id: Date.now().toString() }]);
-        }
-        break;
-      case 'education':
-        if (editingItem) {
-          setEducation(prev => prev.map(item => item.id === editingItem.id ? { ...data, id: editingItem.id } : item));
-        } else {
-          setEducation(prev => [...prev, { ...data, id: Date.now().toString() }]);
-        }
-        break;
-      case 'project':
-        if (editingItem) {
-          setProjects(prev => prev.map(item => item.id === editingItem.id ? { ...data, id: editingItem.id } : item));
-        } else {
-          setProjects(prev => [...prev, { ...data, id: Date.now().toString() }]);
-        }
-        break;
-      case 'language':
-        if (editingItem) {
-          setLanguages(prev => prev.map(item => item.id === editingItem.id ? { ...data, id: editingItem.id } : item));
-        } else {
-          setLanguages(prev => [...prev, { ...data, id: Date.now().toString() }]);
-        }
-        break;
-    }
-    setOpenDialog(null);
-    setEditingItem(null);
-  };
-
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: User },
-    { id: 'experience', label: 'Work Experience', icon: Briefcase },
-    { id: 'education', label: 'Education', icon: GraduationCap },
-    { id: 'skills', label: 'Skills & Interests', icon: Code },
-    { id: 'projects', label: 'Projects', icon: BookOpen },
-    { id: 'languages', label: 'Languages', icon: Globe }
-  ];
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Personal Information</Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="First Name"
-                        value={profileData.firstName}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, firstName: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Last Name"
-                        value={profileData.lastName}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, lastName: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label="Email"
-                        value={profileData.email}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Phone"
-                        value={profileData.phone}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Location"
-                        value={profileData.location}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, location: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="LinkedIn"
-                        value={profileData.linkedin}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, linkedin: e.target.value }))}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="GitHub"
-                        value={profileData.github}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, github: e.target.value }))}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-
-              <Card sx={{ mt: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Professional Summary</Typography>
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={4}
-                    value={profileData.summary}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, summary: e.target.value }))}
-                    placeholder="Write a brief summary of your professional background and career goals..."
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Resume Upload</Typography>
-                  <Box sx={{ textAlign: 'center', p: 3, border: '2px dashed #e2e8f0', borderRadius: 2 }}>
-                    <Upload size={48} style={{ color: '#64748b', marginBottom: 16 }} />
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {profileData.resume ? profileData.resume.name : 'Upload your resume (PDF, DOC, DOCX)'}
-                    </Typography>
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileUpload}
-                      style={{ display: 'none' }}
-                      id="resume-upload"
-                    />
-                    <label htmlFor="resume-upload">
-                      <Button variant="outlined" component="span">
-                        Choose File
-                      </Button>
-                    </label>
-                    {profileData.uploadProgress > 0 && (
-                      <Box sx={{ mt: 2 }}>
-                        <LinearProgress variant="determinate" value={profileData.uploadProgress} />
-                        <Typography variant="caption">{profileData.uploadProgress}%</Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        );
-
-      case 'experience':
-        return (
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">Work Experience</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Plus size={20} />}
-                  onClick={() => handleAddItem('work')}
-                >
-                  Add Experience
-                </Button>
-              </Box>
-              <List>
-                {workExperience.map((exp) => (
-                  <ListItem key={exp.id} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, mb: 2 }}>
-                    <ListItemText
-                      primary={
-                        <Box>
-                          <Typography variant="h6">{exp.position}</Typography>
-                          <Typography variant="subtitle1" color="primary">{exp.company}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={exp.description}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={() => handleEditItem('work', exp)}>
-                        <Edit size={20} />
-                      </IconButton>
-                      <IconButton onClick={() => handleDeleteItem('work', exp.id)}>
-                        <Trash2 size={20} />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        );
-
-      case 'education':
-        return (
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">Education</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Plus size={20} />}
-                  onClick={() => handleAddItem('education')}
-                >
-                  Add Education
-                </Button>
-              </Box>
-              <List>
-                {education.map((edu) => (
-                  <ListItem key={edu.id} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, mb: 2 }}>
-                    <ListItemText
-                      primary={
-                        <Box>
-                          <Typography variant="h6">{edu.degree} in {edu.field}</Typography>
-                          <Typography variant="subtitle1" color="primary">{edu.institution}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {edu.startDate} - {edu.endDate} {edu.gpa && `• GPA: ${edu.gpa}`}
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={() => handleEditItem('education', edu)}>
-                        <Edit size={20} />
-                      </IconButton>
-                      <IconButton onClick={() => handleDeleteItem('education', edu.id)}>
-                        <Trash2 size={20} />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        );
-
-      case 'skills':
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Skills</Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                    {skills.map((skill, index) => (
-                      <Chip key={index} label={skill} color="primary" variant="outlined" />
-                    ))}
-                  </Box>
-                  <TextField
-                    fullWidth
-                    placeholder="Add a skill and press Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                        setSkills(prev => [...prev, e.currentTarget.value.trim()]);
-                        e.currentTarget.value = '';
-                      }
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Interests</Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                    {interests.map((interest, index) => (
-                      <Chip key={index} label={interest} color="secondary" variant="outlined" />
-                    ))}
-                  </Box>
-                  <TextField
-                    fullWidth
-                    placeholder="Add an interest and press Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                        setInterests(prev => [...prev, e.currentTarget.value.trim()]);
-                        e.currentTarget.value = '';
-                      }
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Courses</Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                    {courses.map((course, index) => (
-                      <Chip key={index} label={course} variant="outlined" />
-                    ))}
-                  </Box>
-                  <TextField
-                    fullWidth
-                    placeholder="Add a course and press Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                        setCourses(prev => [...prev, e.currentTarget.value.trim()]);
-                        e.currentTarget.value = '';
-                      }
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        );
-
-      case 'projects':
-        return (
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">Projects</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Plus size={20} />}
-                  onClick={() => handleAddItem('project')}
-                >
-                  Add Project
-                </Button>
-              </Box>
-              <Grid container spacing={3}>
-                {projects.map((project) => (
-                  <Grid item xs={12} md={6} key={project.id}>
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="h6" sx={{ mb: 1 }}>{project.title}</Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                          {project.description}
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                          {project.technologies.map((tech, index) => (
-                            <Chip key={index} label={tech} size="small" />
-                          ))}
-                        </Box>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton onClick={() => handleEditItem('project', project)}>
-                            <Edit size={16} />
-                          </IconButton>
-                          <IconButton onClick={() => handleDeleteItem('project', project.id)}>
-                            <Trash2 size={16} />
-                          </IconButton>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        );
-
-      case 'languages':
-        return (
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">Languages</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Plus size={20} />}
-                  onClick={() => handleAddItem('language')}
-                >
-                  Add Language
-                </Button>
-              </Box>
-              <List>
-                {languages.map((lang) => (
-                  <ListItem key={lang.id} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, mb: 2 }}>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="h6">{lang.language}</Typography>
-                          <Chip label={lang.proficiency} color="primary" size="small" />
-                        </Box>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={() => handleEditItem('language', lang)}>
-                        <Edit size={20} />
-                      </IconButton>
-                      <IconButton onClick={() => handleDeleteItem('language', lang.id)}>
-                        <Trash2 size={20} />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
-    <>
-      <Head>
-        <title>Profile - Handshake</title>
-        <meta name="description" content="Manage your student profile" />
-      </Head>
-
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+    <div className='min-h-screen bg-muted/30'>
+      <div className='container mx-auto px-4 py-8'>
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-foreground mb-2'>
+            My Profile
+          </h1>
+          <p className='text-muted-foreground'>
+            Manage your professional profile and information
+          </p>
+        </div>
+
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className='space-y-6'
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-            <Avatar sx={{ width: 64, height: 64, bgcolor: 'primary.main', mr: 3 }}>
-              <User size={32} />
-            </Avatar>
-            <Box>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                {profileData.firstName} {profileData.lastName}
-              </Typography>
-              <Typography variant="h6" color="text.secondary">
-                Student Profile
-              </Typography>
-            </Box>
-          </Box>
-        </motion.div>
+          <TabsList className='grid w-full grid-cols-6'>
+            <TabsTrigger value='overview'>Overview</TabsTrigger>
+            <TabsTrigger value='experience'>Experience</TabsTrigger>
+            <TabsTrigger value='education'>Education</TabsTrigger>
+            <TabsTrigger value='skills'>Skills</TabsTrigger>
+            <TabsTrigger value='projects'>Projects</TabsTrigger>
+            <TabsTrigger value='languages'>Languages</TabsTrigger>
+          </TabsList>
 
-        {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-          <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                variant={activeTab === tab.id ? 'contained' : 'text'}
-                onClick={() => setActiveTab(tab.id)}
-                startIcon={<tab.icon size={20} />}
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                {tab.label}
-              </Button>
-            ))}
-          </Box>
-        </Box>
+          <TabsContent value='overview' className='space-y-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center gap-2'>
+                  <User className='h-5 w-5' />
+                  Personal Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                <div className='grid md:grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='firstName'>First Name</Label>
+                    <Input
+                      id='firstName'
+                      value={profileData.firstName}
+                      onChange={e =>
+                        setProfileData(prev => ({
+                          ...prev,
+                          firstName: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className='space-y-2'>
+                    <Label htmlFor='lastName'>Last Name</Label>
+                    <Input
+                      id='lastName'
+                      value={profileData.lastName}
+                      onChange={e =>
+                        setProfileData(prev => ({
+                          ...prev,
+                          lastName: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className='grid md:grid-cols-2 gap-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='email'>Email</Label>
+                    <Input
+                      id='email'
+                      type='email'
+                      value={profileData.email}
+                      onChange={e =>
+                        setProfileData(prev => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className='space-y-2'>
+                    <Label htmlFor='phone'>Phone</Label>
+                    <Input
+                      id='phone'
+                      value={profileData.phone}
+                      onChange={e =>
+                        setProfileData(prev => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='location'>Location</Label>
+                  <Input
+                    id='location'
+                    value={profileData.location}
+                    onChange={e =>
+                      setProfileData(prev => ({
+                        ...prev,
+                        location: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='summary'>Professional Summary</Label>
+                  <Textarea
+                    id='summary'
+                    value={profileData.summary}
+                    onChange={e =>
+                      setProfileData(prev => ({
+                        ...prev,
+                        summary: e.target.value,
+                      }))
+                    }
+                    rows={4}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label>Resume</Label>
+                  <div className='border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center'>
+                    <Upload className='h-8 w-8 mx-auto mb-2 text-muted-foreground' />
+                    <p className='text-sm text-muted-foreground mb-2'>
+                      {profileData.resume
+                        ? profileData.resume.name
+                        : 'Upload your resume'}
+                    </p>
+                    {profileData.uploadProgress > 0 && (
+                      <Progress
+                        value={profileData.uploadProgress}
+                        className='mb-2'
+                      />
+                    )}
+                    <input
+                      type='file'
+                      accept='.pdf,.doc,.docx'
+                      onChange={handleFileUpload}
+                      className='hidden'
+                      id='resume-upload'
+                    />
+                    <Button variant='outline' asChild>
+                      <label htmlFor='resume-upload'>Choose File</label>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Tab Content */}
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {renderTabContent()}
-        </motion.div>
+          <TabsContent value='experience' className='space-y-6'>
+            <Card>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Briefcase className='h-5 w-5' />
+                    Work Experience
+                  </CardTitle>
+                  <Button onClick={() => handleAddItem('work')}>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Add Experience
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {workExperience.map(exp => (
+                  <div key={exp.id} className='border rounded-lg p-4'>
+                    <div className='flex items-start justify-between'>
+                      <div className='flex-1'>
+                        <h3 className='font-semibold'>{exp.position}</h3>
+                        <p className='text-muted-foreground'>{exp.company}</p>
+                        <p className='text-sm text-muted-foreground'>
+                          {exp.startDate} -{' '}
+                          {exp.current ? 'Present' : exp.endDate}
+                        </p>
+                        <p className='text-sm mt-2'>{exp.description}</p>
+                      </div>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEditItem('work', exp)}
+                        >
+                          <Edit className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleDeleteItem('work', exp.id)}
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Save Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<Save size={20} />}
-            sx={{ px: 4 }}
-          >
-            Save Profile
-          </Button>
-        </Box>
-      </Container>
+          <TabsContent value='education' className='space-y-6'>
+            <Card>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <CardTitle className='flex items-center gap-2'>
+                    <GraduationCap className='h-5 w-5' />
+                    Education
+                  </CardTitle>
+                  <Button onClick={() => handleAddItem('education')}>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Add Education
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {education.map(edu => (
+                  <div key={edu.id} className='border rounded-lg p-4'>
+                    <div className='flex items-start justify-between'>
+                      <div className='flex-1'>
+                        <h3 className='font-semibold'>
+                          {edu.degree} in {edu.field}
+                        </h3>
+                        <p className='text-muted-foreground'>
+                          {edu.institution}
+                        </p>
+                        <p className='text-sm text-muted-foreground'>
+                          {edu.startDate} - {edu.endDate}
+                          {edu.gpa && ` • GPA: ${edu.gpa}`}
+                        </p>
+                      </div>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEditItem('education', edu)}
+                        >
+                          <Edit className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleDeleteItem('education', edu.id)}
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-      {/* Dialogs for adding/editing items */}
-      {/* This would include dialog components for work experience, education, projects, and languages */}
-    </>
+          <TabsContent value='skills' className='space-y-6'>
+            <div className='grid md:grid-cols-2 gap-6'>
+              <Card>
+                <CardHeader>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Code className='h-5 w-5' />
+                    Skills
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className='flex flex-wrap gap-2'>
+                    {skills.map((skill, index) => (
+                      <Badge key={index} variant='secondary'>
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Heart className='h-5 w-5' />
+                    Interests
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className='flex flex-wrap gap-2'>
+                    {interests.map((interest, index) => (
+                      <Badge key={index} variant='outline'>
+                        {interest}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className='flex items-center gap-2'>
+                    <BookOpen className='h-5 w-5' />
+                    Courses
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className='space-y-2'>
+                    {courses.map((course, index) => (
+                      <div key={index} className='text-sm'>
+                        • {course}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value='projects' className='space-y-6'>
+            <Card>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Code className='h-5 w-5' />
+                    Projects
+                  </CardTitle>
+                  <Button onClick={() => handleAddItem('project')}>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Add Project
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {projects.map(project => (
+                  <div key={project.id} className='border rounded-lg p-4'>
+                    <div className='flex items-start justify-between'>
+                      <div className='flex-1'>
+                        <h3 className='font-semibold'>{project.title}</h3>
+                        <p className='text-sm text-muted-foreground mt-1'>
+                          {project.description}
+                        </p>
+                        <div className='flex flex-wrap gap-2 mt-2'>
+                          {project.technologies.map((tech, index) => (
+                            <Badge
+                              key={index}
+                              variant='secondary'
+                              className='text-xs'
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                        {project.link && (
+                          <a
+                            href={project.link}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-primary hover:underline text-sm mt-2 inline-block'
+                          >
+                            View Project →
+                          </a>
+                        )}
+                      </div>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEditItem('project', project)}
+                        >
+                          <Edit className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() =>
+                            handleDeleteItem('project', project.id)
+                          }
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value='languages' className='space-y-6'>
+            <Card>
+              <CardHeader>
+                <div className='flex items-center justify-between'>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Globe className='h-5 w-5' />
+                    Languages
+                  </CardTitle>
+                  <Button onClick={() => handleAddItem('language')}>
+                    <Plus className='h-4 w-4 mr-2' />
+                    Add Language
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {languages.map(lang => (
+                  <div key={lang.id} className='border rounded-lg p-4'>
+                    <div className='flex items-center justify-between'>
+                      <div>
+                        <h3 className='font-semibold'>{lang.language}</h3>
+                        <p className='text-sm text-muted-foreground'>
+                          {lang.proficiency}
+                        </p>
+                      </div>
+                      <div className='flex gap-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleEditItem('language', lang)}
+                        >
+                          <Edit className='h-4 w-4' />
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => handleDeleteItem('language', lang.id)}
+                        >
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
   );
-} 
+};
+
+export default ProfilePage;

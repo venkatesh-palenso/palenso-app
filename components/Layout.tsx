@@ -1,41 +1,37 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Container, Avatar, Menu, MenuItem, IconButton, Divider } from '@mui/material';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Bell, MessageCircle, Menu as MenuIcon, User, Building, LogOut } from 'lucide-react';
+import {
+  Search,
+  Bell,
+  MessageCircle,
+  Menu as MenuIcon,
+  User,
+  Building,
+  LogOut,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ThemeToggle } from './ThemeToggle';
+import { useUser } from './UserProvider';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+export default function Layout({ children }: LayoutProps) {
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [userMenuAnchor, setUserMenuAnchor] = React.useState<null | HTMLElement>(null);
-
-  // Mock user data - in a real app, this would come from authentication context
-  const [user] = React.useState({
-    name: 'John Doe',
-    role: 'student', // 'student' or 'employer'
-    avatar: 'JD'
-  });
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setUserMenuAnchor(event.currentTarget);
-  };
-
-  const handleUserMenuClose = () => {
-    setUserMenuAnchor(null);
-  };
+  const { user, isLoggedIn, logout } = useUser();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { label: 'Jobs', href: '/jobs' },
@@ -44,195 +40,213 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { label: 'Resources', href: '/resources' },
   ];
 
-  const userMenuItems = user.role === 'student' 
-    ? [
-        { label: 'My Profile', href: '/profile', icon: User },
-        { label: 'My Applications', href: '/applications', icon: MessageCircle },
-        { label: 'Saved Jobs', href: '/saved-jobs', icon: Search },
-      ]
-    : [
-        { label: 'Company Profile', href: '/company-profile', icon: Building },
-        { label: 'Post a Job', href: '/post-job', icon: Search },
-        { label: 'Manage Jobs', href: '/manage-jobs', icon: MessageCircle },
-        { label: 'View Applications', href: '/applications', icon: User },
-      ];
+  const userMenuItems =
+    user?.role === 'student'
+      ? [
+          {
+            label: 'My Profile',
+            href: '/profile',
+            icon: User,
+          },
+          {
+            label: 'My Applications',
+            href: '/applications',
+            icon: MessageCircle,
+          },
+          { label: 'Saved Jobs', href: '/saved-jobs', icon: Search },
+        ]
+      : [
+          {
+            label: 'Company Profile',
+            href: '/company-profile',
+            icon: Building,
+          },
+          { label: 'Post a Job', href: '/post-job', icon: Search },
+          { label: 'Manage Jobs', href: '/manage-jobs', icon: MessageCircle },
+        ];
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar 
-        position="sticky" 
-        sx={{ 
-          backgroundColor: 'white', 
-          color: 'text.primary',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-        }}
-      >
-        <Container maxWidth="xl">
-          <Toolbar sx={{ justifyContent: 'space-between' }}>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                  Handshake
-                </Typography>
-              </Link>
-            </motion.div>
-
-            {/* Desktop Navigation */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2 }}>
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-                  <Button
-                    sx={{
-                      color: router.pathname === item.href ? 'primary.main' : 'text.secondary',
-                      fontWeight: router.pathname === item.href ? 600 : 500,
-                    }}
-                  >
-                    {item.label}
-                  </Button>
+    <div className='min-h-screen flex flex-col'>
+      {/* Header - Only show for logged-in users */}
+      {isLoggedIn && (
+        <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+          <div className='container mx-auto px-4'>
+            <div className='flex h-16 items-center justify-between'>
+              {/* Logo */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Link href='/' className='flex items-center space-x-2'>
+                  <span className='text-xl font-bold text-primary'>
+                    Palenso
+                  </span>
                 </Link>
-              ))}
-            </Box>
+              </motion.div>
 
-            {/* Search and Actions */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <IconButton sx={{ color: 'text.secondary' }}>
-                <Search size={20} />
-              </IconButton>
-              <IconButton sx={{ color: 'text.secondary' }}>
-                <Bell size={20} />
-              </IconButton>
-              
-              {/* User Menu */}
-              <IconButton
-                onClick={handleUserMenu}
-                sx={{ color: 'text.secondary' }}
-              >
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: '0.875rem' }}>
-                  {user.avatar}
-                </Avatar>
-              </IconButton>
-              
-              {/* Mobile Menu */}
-              <IconButton
-                sx={{ display: { xs: 'flex', md: 'none' }, color: 'text.secondary' }}
-                onClick={handleMenu}
-              >
-                <MenuIcon size={20} />
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
+              {/* Desktop Navigation */}
+              <nav className='hidden md:flex items-center space-x-6'>
+                {navItems.map(item => (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={
+                        router.pathname === item.href ? 'default' : 'ghost'
+                      }
+                      className='text-sm font-medium'
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
+              </nav>
 
-      {/* User Menu */}
-      <Menu
-        anchorEl={userMenuAnchor}
-        open={Boolean(userMenuAnchor)}
-        onClose={handleUserMenuClose}
-        PaperProps={{
-          sx: {
-            mt: 1,
-            minWidth: 200,
-          }
-        }}
-      >
-        <Box sx={{ px: 2, py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {user.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
-            {user.role}
-          </Typography>
-        </Box>
-        
-        {userMenuItems.map((item) => (
-          <MenuItem key={item.href} onClick={handleUserMenuClose}>
-            <Link href={item.href} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', width: '100%' }}>
-              <item.icon size={16} style={{ marginRight: 8 }} />
-              {item.label}
-            </Link>
-          </MenuItem>
-        ))}
-        
-        <MenuItem onClick={handleUserMenuClose}>
-          <Box sx={{ display: 'flex', alignItems: 'center', color: 'error.main' }}>
-            <LogOut size={16} style={{ marginRight: 8 }} />
-            Sign Out
-          </Box>
-        </MenuItem>
-      </Menu>
+              {/* Actions */}
+              <div className='flex items-center space-x-2'>
+                <Button variant='ghost' size='icon'>
+                  <Search className='h-4 w-4' />
+                </Button>
+                <Button variant='ghost' size='icon'>
+                  <Bell className='h-4 w-4' />
+                </Button>
+                <ThemeToggle />
 
-      {/* Mobile Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        sx={{ display: { xs: 'block', md: 'none' } }}
-      >
-        {navItems.map((item) => (
-          <MenuItem key={item.href} onClick={handleClose}>
-            <Link href={item.href} style={{ textDecoration: 'none', color: 'inherit' }}>
-              {item.label}
-            </Link>
-          </MenuItem>
-        ))}
-        <Divider />
-        {userMenuItems.map((item) => (
-          <MenuItem key={item.href} onClick={handleClose}>
-            <Link href={item.href} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-              <item.icon size={16} style={{ marginRight: 8 }} />
-              {item.label}
-            </Link>
-          </MenuItem>
-        ))}
-      </Menu>
+                {/* User Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      className='relative h-8 w-8 rounded-full'
+                    >
+                      <Avatar className='h-8 w-8'>
+                        <AvatarFallback>{user?.avatar || 'U'}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className='w-56' align='end' forceMount>
+                    <DropdownMenuLabel className='font-normal'>
+                      <div className='flex flex-col space-y-1'>
+                        <p className='text-sm font-medium leading-none'>
+                          {user?.name}
+                        </p>
+                        <p className='text-xs leading-none text-muted-foreground capitalize'>
+                          {user?.role}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {userMenuItems.map(item => (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link href={item.href} className='flex items-center'>
+                          <item.icon className='mr-2 h-4 w-4' />
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className='text-destructive'
+                      onClick={logout}
+                    >
+                      <LogOut className='mr-2 h-4 w-4' />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-      <Box component="main" sx={{ flex: 1 }}>
-        {children}
-      </Box>
+                {/* Mobile Menu Button */}
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='md:hidden'
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                  <MenuIcon className='h-4 w-4' />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className='md:hidden border-t bg-background'>
+              <div className='container mx-auto px-4 py-2'>
+                <nav className='flex flex-col space-y-2'>
+                  {navItems.map(item => (
+                    <Link key={item.href} href={item.href}>
+                      <Button
+                        variant={
+                          router.pathname === item.href ? 'default' : 'ghost'
+                        }
+                        className='w-full justify-start'
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Button>
+                    </Link>
+                  ))}
+                  <div className='border-t pt-2 mt-2'>
+                    {userMenuItems.map(item => (
+                      <Link key={item.href} href={item.href}>
+                        <Button
+                          variant='ghost'
+                          className='w-full justify-start'
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <item.icon className='mr-2 h-4 w-4' />
+                          {item.label}
+                        </Button>
+                      </Link>
+                    ))}
+                    <Button
+                      variant='ghost'
+                      className='w-full justify-start text-destructive'
+                      onClick={logout}
+                    >
+                      <LogOut className='mr-2 h-4 w-4' />
+                      Sign Out
+                    </Button>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          )}
+        </header>
+      )}
+
+      {/* Main Content */}
+      <main className='flex-1'>{children}</main>
 
       {/* Footer */}
-      <Box
-        component="footer"
-        sx={{
-          bgcolor: 'grey.50',
-          borderTop: '1px solid',
-          borderColor: 'grey.200',
-          py: 4,
-          mt: 'auto',
-        }}
-      >
-        <Container maxWidth="xl">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              © 2024 Handshake. All rights reserved.
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3 }}>
-              <Link href="/privacy" style={{ textDecoration: 'none' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>
-                  Privacy Policy
-                </Typography>
+      <footer className='border-t bg-muted/50'>
+        <div className='container mx-auto px-4 py-8'>
+          <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
+            <p className='text-sm text-muted-foreground'>
+              © 2024 Palenso. All rights reserved.
+            </p>
+            <div className='flex space-x-6'>
+              <Link
+                href='/privacy'
+                className='text-sm text-muted-foreground hover:text-foreground'
+              >
+                Privacy Policy
               </Link>
-              <Link href="/terms" style={{ textDecoration: 'none' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>
-                  Terms of Service
-                </Typography>
+              <Link
+                href='/terms'
+                className='text-sm text-muted-foreground hover:text-foreground'
+              >
+                Terms of Service
               </Link>
-              <Link href="/help" style={{ textDecoration: 'none' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ '&:hover': { color: 'primary.main' } }}>
-                  Help Center
-                </Typography>
+              <Link
+                href='/help'
+                className='text-sm text-muted-foreground hover:text-foreground'
+              >
+                Help Center
               </Link>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-    </Box>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
-};
-
-export default Layout; 
+}

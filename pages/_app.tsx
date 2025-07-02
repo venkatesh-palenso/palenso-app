@@ -1,42 +1,22 @@
-import "@/styles/globals.css";
-import * as React from 'react';
-import type { AppProps } from "next/app";
-
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
-
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-
-import { AppCacheProvider } from '@mui/material-nextjs/v15-pagesRouter';
-
-import theme, { roboto, inter } from '@/lib/theme';
 import Layout from '@/components/Layout';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { UserProvider } from '@/components/UserProvider';
 
-// Create emotion cache
-const cache = createCache({
-  key: 'css',
-  prepend: true,
-});
-
-export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <CacheProvider value={cache}>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        
-        <div className={`${roboto.variable} ${inter.variable}`}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </div>
-      </ThemeProvider>
-    </CacheProvider>
+    <ThemeProvider defaultTheme='system' storageKey='palenso-theme'>
+      <UserProvider>
+        <Head>
+          <meta name='viewport' content='width=device-width, initial-scale=1' />
+          <link rel='icon' href='/favicon.ico' />
+        </Head>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </UserProvider>
+    </ThemeProvider>
   );
 }
-
-
-

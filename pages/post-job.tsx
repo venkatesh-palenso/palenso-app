@@ -1,36 +1,11 @@
-import Head from "next/head";
-import { useState } from 'react';
-import { 
-  Box, 
-  Container, 
-  Typography, 
-  Card, 
-  CardContent, 
-  TextField, 
-  Button,
-  Grid,
-  Chip,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Stepper,
-  Step,
-  StepLabel,
-  Paper,
-  Alert,
-  Snackbar
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import { 
-  Building, 
-  MapPin, 
-  DollarSign, 
-  ArrowRight, 
-  Save,
-  Plus,
-  X
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, Save, Plus, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 interface JobPosting {
   title: string;
@@ -55,7 +30,7 @@ interface JobPosting {
   contactPhone: string;
 }
 
-export default function PostJob() {
+const PostJobPage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [jobData, setJobData] = useState<JobPosting>({
     title: '',
@@ -66,7 +41,7 @@ export default function PostJob() {
     salary: {
       min: '',
       max: '',
-      currency: 'USD'
+      currency: 'USD',
     },
     description: '',
     responsibilities: [],
@@ -77,7 +52,7 @@ export default function PostJob() {
     remotePolicy: '',
     applicationDeadline: '',
     contactEmail: '',
-    contactPhone: ''
+    contactPhone: '',
   });
 
   const [newResponsibility, setNewResponsibility] = useState('');
@@ -91,21 +66,21 @@ export default function PostJob() {
     'Job Details',
     'Requirements',
     'Benefits & Skills',
-    'Contact Information'
+    'Contact Information',
   ];
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep(prevStep => prevStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    setActiveStep(prevStep => prevStep - 1);
   };
 
   const handleInputChange = (field: string, value: string) => {
     setJobData(prev => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -114,8 +89,8 @@ export default function PostJob() {
       ...prev,
       salary: {
         ...prev.salary,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -123,7 +98,7 @@ export default function PostJob() {
     if (value.trim()) {
       setJobData(prev => ({
         ...prev,
-        [type]: [...prev[type as keyof JobPosting] as string[], value.trim()]
+        [type]: [...(prev[type as keyof JobPosting] as string[]), value.trim()],
       }));
       // Clear the input
       switch (type) {
@@ -146,22 +121,38 @@ export default function PostJob() {
   const removeItem = (type: string, index: number) => {
     setJobData(prev => ({
       ...prev,
-      [type]: (prev[type as keyof JobPosting] as string[]).filter((_, i) => i !== index)
+      [type]: (prev[type as keyof JobPosting] as string[]).filter(
+        (_, i) => i !== index
+      ),
     }));
   };
 
   const isStepValid = (step: number) => {
     switch (step) {
       case 0:
-        return jobData.title && jobData.location && jobData.employmentType && jobData.experienceLevel;
+        return (
+          jobData.title &&
+          jobData.location &&
+          jobData.employmentType &&
+          jobData.experienceLevel
+        );
       case 1:
-        return jobData.description && jobData.department && jobData.remotePolicy;
+        return (
+          jobData.description && jobData.department && jobData.remotePolicy
+        );
       case 2:
-        return jobData.responsibilities.length > 0 && jobData.qualifications.length > 0;
+        return (
+          jobData.responsibilities.length > 0 &&
+          jobData.qualifications.length > 0
+        );
       case 3:
         return jobData.benefits.length > 0 && jobData.skills.length > 0;
       case 4:
-        return jobData.contactEmail && jobData.contactPhone && jobData.applicationDeadline;
+        return (
+          jobData.contactEmail &&
+          jobData.contactPhone &&
+          jobData.applicationDeadline
+        );
       default:
         return false;
     }
@@ -177,524 +168,496 @@ export default function PostJob() {
     switch (step) {
       case 0:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Basic Job Information</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Job Title"
-                value={jobData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="e.g., Senior Software Engineer"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Company"
-                value={jobData.company}
-                onChange={(e) => handleInputChange('company', e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Department"
-                value={jobData.department}
-                onChange={(e) => handleInputChange('department', e.target.value)}
-                placeholder="e.g., Engineering, Marketing, Sales"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Location"
-                value={jobData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="e.g., San Francisco, CA or Remote"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Employment Type</InputLabel>
-                <Select
-                  value={jobData.employmentType}
-                  label="Employment Type"
-                  onChange={(e) => handleInputChange('employmentType', e.target.value)}
-                >
-                  <MenuItem value="full-time">Full-time</MenuItem>
-                  <MenuItem value="part-time">Part-time</MenuItem>
-                  <MenuItem value="contract">Contract</MenuItem>
-                  <MenuItem value="internship">Internship</MenuItem>
-                  <MenuItem value="temporary">Temporary</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Experience Level</InputLabel>
-                <Select
-                  value={jobData.experienceLevel}
-                  label="Experience Level"
-                  onChange={(e) => handleInputChange('experienceLevel', e.target.value)}
-                >
-                  <MenuItem value="entry">Entry Level</MenuItem>
-                  <MenuItem value="mid">Mid Level</MenuItem>
-                  <MenuItem value="senior">Senior Level</MenuItem>
-                  <MenuItem value="lead">Lead</MenuItem>
-                  <MenuItem value="executive">Executive</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Remote Policy</InputLabel>
-                <Select
-                  value={jobData.remotePolicy}
-                  label="Remote Policy"
-                  onChange={(e) => handleInputChange('remotePolicy', e.target.value)}
-                >
-                  <MenuItem value="on-site">On-site only</MenuItem>
-                  <MenuItem value="hybrid">Hybrid</MenuItem>
-                  <MenuItem value="remote">Remote</MenuItem>
-                  <MenuItem value="flexible">Flexible</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Minimum Salary"
-                value={jobData.salary.min}
-                onChange={(e) => handleSalaryChange('min', e.target.value)}
-                placeholder="50000"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                label="Maximum Salary"
-                value={jobData.salary.max}
-                onChange={(e) => handleSalaryChange('max', e.target.value)}
-                placeholder="80000"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth>
-                <InputLabel>Currency</InputLabel>
-                <Select
-                  value={jobData.salary.currency}
-                  label="Currency"
-                  onChange={(e) => handleSalaryChange('currency', e.target.value)}
-                >
-                  <MenuItem value="USD">USD ($)</MenuItem>
-                  <MenuItem value="EUR">EUR (€)</MenuItem>
-                  <MenuItem value="GBP">GBP (£)</MenuItem>
-                  <MenuItem value="CAD">CAD (C$)</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
+          <div className='space-y-6'>
+            <div>
+              <h3 className='text-lg font-semibold mb-4'>
+                Basic Job Information
+              </h3>
+            </div>
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='title'>Job Title</Label>
+                <Input
+                  id='title'
+                  placeholder='e.g., Senior Software Engineer'
+                  value={jobData.title}
+                  onChange={e => handleInputChange('title', e.target.value)}
+                />
+              </div>
+              <div className='grid md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='company'>Company</Label>
+                  <Input
+                    id='company'
+                    value={jobData.company}
+                    onChange={e => handleInputChange('company', e.target.value)}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='location'>Location</Label>
+                  <Input
+                    id='location'
+                    placeholder='e.g., San Francisco, CA'
+                    value={jobData.location}
+                    onChange={e =>
+                      handleInputChange('location', e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className='grid md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='employmentType'>Employment Type</Label>
+                  <select
+                    id='employmentType'
+                    value={jobData.employmentType}
+                    onChange={e =>
+                      handleInputChange('employmentType', e.target.value)
+                    }
+                    className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  >
+                    <option value=''>Select employment type</option>
+                    <option value='Full-time'>Full-time</option>
+                    <option value='Part-time'>Part-time</option>
+                    <option value='Contract'>Contract</option>
+                    <option value='Internship'>Internship</option>
+                  </select>
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='experienceLevel'>Experience Level</Label>
+                  <select
+                    id='experienceLevel'
+                    value={jobData.experienceLevel}
+                    onChange={e =>
+                      handleInputChange('experienceLevel', e.target.value)
+                    }
+                    className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  >
+                    <option value=''>Select experience level</option>
+                    <option value='Entry-level'>Entry-level</option>
+                    <option value='1-3 years'>1-3 years</option>
+                    <option value='3-5 years'>3-5 years</option>
+                    <option value='5+ years'>5+ years</option>
+                  </select>
+                </div>
+              </div>
+              <div className='grid md:grid-cols-3 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='salaryMin'>Minimum Salary</Label>
+                  <Input
+                    id='salaryMin'
+                    type='number'
+                    placeholder='50000'
+                    value={jobData.salary.min}
+                    onChange={e => handleSalaryChange('min', e.target.value)}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='salaryMax'>Maximum Salary</Label>
+                  <Input
+                    id='salaryMax'
+                    type='number'
+                    placeholder='80000'
+                    value={jobData.salary.max}
+                    onChange={e => handleSalaryChange('max', e.target.value)}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='currency'>Currency</Label>
+                  <select
+                    id='currency'
+                    value={jobData.salary.currency}
+                    onChange={e =>
+                      handleSalaryChange('currency', e.target.value)
+                    }
+                    className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  >
+                    <option value='USD'>USD</option>
+                    <option value='EUR'>EUR</option>
+                    <option value='GBP'>GBP</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         );
-
       case 1:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Job Description</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                label="Job Description"
-                value={jobData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Provide a detailed description of the role, including what the position entails and what the ideal candidate would be doing..."
-              />
-            </Grid>
-          </Grid>
+          <div className='space-y-6'>
+            <div>
+              <h3 className='text-lg font-semibold mb-4'>Job Details</h3>
+            </div>
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='description'>Job Description</Label>
+                <Textarea
+                  id='description'
+                  placeholder='Provide a detailed description of the role...'
+                  value={jobData.description}
+                  onChange={e =>
+                    handleInputChange('description', e.target.value)
+                  }
+                  rows={6}
+                />
+              </div>
+              <div className='grid md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='department'>Department</Label>
+                  <Input
+                    id='department'
+                    placeholder='e.g., Engineering'
+                    value={jobData.department}
+                    onChange={e =>
+                      handleInputChange('department', e.target.value)
+                    }
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='remotePolicy'>Remote Policy</Label>
+                  <select
+                    id='remotePolicy'
+                    value={jobData.remotePolicy}
+                    onChange={e =>
+                      handleInputChange('remotePolicy', e.target.value)
+                    }
+                    className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                  >
+                    <option value=''>Select remote policy</option>
+                    <option value='On-site'>On-site</option>
+                    <option value='Remote'>Remote</option>
+                    <option value='Hybrid'>Hybrid</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         );
-
       case 2:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Responsibilities & Qualifications</Typography>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Key Responsibilities</Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <TextField
-                  fullWidth
-                  placeholder="Add a responsibility"
-                  value={newResponsibility}
-                  onChange={(e) => setNewResponsibility(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      addItem('responsibilities', newResponsibility);
-                    }
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => addItem('responsibilities', newResponsibility)}
-                  disabled={!newResponsibility.trim()}
-                >
-                  <Plus size={20} />
-                </Button>
-              </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {jobData.responsibilities.map((item, index) => (
-                  <Chip
-                    key={index}
-                    label={item}
-                    onDelete={() => removeItem('responsibilities', index)}
-                    deleteIcon={<X size={16} />}
-                  />
-                ))}
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Required Qualifications</Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <TextField
-                  fullWidth
-                  placeholder="Add a qualification"
-                  value={newQualification}
-                  onChange={(e) => setNewQualification(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      addItem('qualifications', newQualification);
-                    }
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => addItem('qualifications', newQualification)}
-                  disabled={!newQualification.trim()}
-                >
-                  <Plus size={20} />
-                </Button>
-              </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {jobData.qualifications.map((item, index) => (
-                  <Chip
-                    key={index}
-                    label={item}
-                    onDelete={() => removeItem('qualifications', index)}
-                    deleteIcon={<X size={16} />}
-                    color="primary"
-                  />
-                ))}
-              </Box>
-            </Grid>
-          </Grid>
+          <div className='space-y-6'>
+            <div>
+              <h3 className='text-lg font-semibold mb-4'>Requirements</h3>
+            </div>
+            <div className='space-y-6'>
+              <div className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label>Responsibilities</Label>
+                  <div className='flex gap-2'>
+                    <Input
+                      placeholder='Add a responsibility...'
+                      value={newResponsibility}
+                      onChange={e => setNewResponsibility(e.target.value)}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          addItem('responsibilities', newResponsibility);
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={() =>
+                        addItem('responsibilities', newResponsibility)
+                      }
+                      disabled={!newResponsibility.trim()}
+                    >
+                      <Plus className='h-4 w-4' />
+                    </Button>
+                  </div>
+                  <div className='flex flex-wrap gap-2 mt-2'>
+                    {jobData.responsibilities.map((item, index) => (
+                      <Badge
+                        key={index}
+                        variant='secondary'
+                        className='flex items-center gap-1'
+                      >
+                        {item}
+                        <button
+                          onClick={() => removeItem('responsibilities', index)}
+                          className='ml-1 hover:text-destructive'
+                        >
+                          <X className='h-3 w-3' />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <Label>Qualifications</Label>
+                  <div className='flex gap-2'>
+                    <Input
+                      placeholder='Add a qualification...'
+                      value={newQualification}
+                      onChange={e => setNewQualification(e.target.value)}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          addItem('qualifications', newQualification);
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={() =>
+                        addItem('qualifications', newQualification)
+                      }
+                      disabled={!newQualification.trim()}
+                    >
+                      <Plus className='h-4 w-4' />
+                    </Button>
+                  </div>
+                  <div className='flex flex-wrap gap-2 mt-2'>
+                    {jobData.qualifications.map((item, index) => (
+                      <Badge
+                        key={index}
+                        variant='secondary'
+                        className='flex items-center gap-1'
+                      >
+                        {item}
+                        <button
+                          onClick={() => removeItem('qualifications', index)}
+                          className='ml-1 hover:text-destructive'
+                        >
+                          <X className='h-3 w-3' />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         );
-
       case 3:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Benefits & Skills</Typography>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Benefits & Perks</Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <TextField
-                  fullWidth
-                  placeholder="Add a benefit"
-                  value={newBenefit}
-                  onChange={(e) => setNewBenefit(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      addItem('benefits', newBenefit);
-                    }
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => addItem('benefits', newBenefit)}
-                  disabled={!newBenefit.trim()}
-                >
-                  <Plus size={20} />
-                </Button>
-              </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {jobData.benefits.map((item, index) => (
-                  <Chip
-                    key={index}
-                    label={item}
-                    onDelete={() => removeItem('benefits', index)}
-                    deleteIcon={<X size={16} />}
-                    color="success"
-                    variant="outlined"
-                  />
-                ))}
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle1" sx={{ mb: 2 }}>Required Skills</Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <TextField
-                  fullWidth
-                  placeholder="Add a skill"
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      addItem('skills', newSkill);
-                    }
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => addItem('skills', newSkill)}
-                  disabled={!newSkill.trim()}
-                >
-                  <Plus size={20} />
-                </Button>
-              </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {jobData.skills.map((item, index) => (
-                  <Chip
-                    key={index}
-                    label={item}
-                    onDelete={() => removeItem('skills', index)}
-                    deleteIcon={<X size={16} />}
-                    color="secondary"
-                  />
-                ))}
-              </Box>
-            </Grid>
-          </Grid>
+          <div className='space-y-6'>
+            <div>
+              <h3 className='text-lg font-semibold mb-4'>Benefits & Skills</h3>
+            </div>
+            <div className='space-y-6'>
+              <div className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label>Benefits</Label>
+                  <div className='flex gap-2'>
+                    <Input
+                      placeholder='Add a benefit...'
+                      value={newBenefit}
+                      onChange={e => setNewBenefit(e.target.value)}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          addItem('benefits', newBenefit);
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={() => addItem('benefits', newBenefit)}
+                      disabled={!newBenefit.trim()}
+                    >
+                      <Plus className='h-4 w-4' />
+                    </Button>
+                  </div>
+                  <div className='flex flex-wrap gap-2 mt-2'>
+                    {jobData.benefits.map((item, index) => (
+                      <Badge
+                        key={index}
+                        variant='secondary'
+                        className='flex items-center gap-1'
+                      >
+                        {item}
+                        <button
+                          onClick={() => removeItem('benefits', index)}
+                          className='ml-1 hover:text-destructive'
+                        >
+                          <X className='h-3 w-3' />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <Label>Required Skills</Label>
+                  <div className='flex gap-2'>
+                    <Input
+                      placeholder='Add a skill...'
+                      value={newSkill}
+                      onChange={e => setNewSkill(e.target.value)}
+                      onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                          addItem('skills', newSkill);
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={() => addItem('skills', newSkill)}
+                      disabled={!newSkill.trim()}
+                    >
+                      <Plus className='h-4 w-4' />
+                    </Button>
+                  </div>
+                  <div className='flex flex-wrap gap-2 mt-2'>
+                    {jobData.skills.map((item, index) => (
+                      <Badge
+                        key={index}
+                        variant='secondary'
+                        className='flex items-center gap-1'
+                      >
+                        {item}
+                        <button
+                          onClick={() => removeItem('skills', index)}
+                          className='ml-1 hover:text-destructive'
+                        >
+                          <X className='h-3 w-3' />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         );
-
       case 4:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Contact Information</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Contact Email"
-                type="email"
-                value={jobData.contactEmail}
-                onChange={(e) => handleInputChange('contactEmail', e.target.value)}
-                placeholder="hr@company.com"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Contact Phone"
-                value={jobData.contactPhone}
-                onChange={(e) => handleInputChange('contactPhone', e.target.value)}
-                placeholder="+1 (555) 123-4567"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Application Deadline"
-                type="date"
-                value={jobData.applicationDeadline}
-                onChange={(e) => handleInputChange('applicationDeadline', e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
+          <div className='space-y-6'>
+            <div>
+              <h3 className='text-lg font-semibold mb-4'>
+                Contact Information
+              </h3>
+            </div>
+            <div className='space-y-4'>
+              <div className='grid md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='contactEmail'>Contact Email</Label>
+                  <Input
+                    id='contactEmail'
+                    type='email'
+                    placeholder='hr@company.com'
+                    value={jobData.contactEmail}
+                    onChange={e =>
+                      handleInputChange('contactEmail', e.target.value)
+                    }
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='contactPhone'>Contact Phone</Label>
+                  <Input
+                    id='contactPhone'
+                    placeholder='+1 (555) 123-4567'
+                    value={jobData.contactPhone}
+                    onChange={e =>
+                      handleInputChange('contactPhone', e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className='space-y-2'>
+                <Label htmlFor='applicationDeadline'>
+                  Application Deadline
+                </Label>
+                <Input
+                  id='applicationDeadline'
+                  type='date'
+                  value={jobData.applicationDeadline}
+                  onChange={e =>
+                    handleInputChange('applicationDeadline', e.target.value)
+                  }
+                />
+              </div>
+            </div>
+          </div>
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <>
-      <Head>
-        <title>Post a Job - Handshake</title>
-        <meta name="description" content="Post a new job opening on Handshake" />
-      </Head>
-
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+    <div className='min-h-screen bg-muted/30'>
+      <div className='container mx-auto px-4 py-8'>
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
-              Post a Job Opening
-            </Typography>
-            <Typography variant="h6" color="text.secondary">
-              Create a detailed job posting to attract the best candidates
-            </Typography>
-          </Box>
-        </motion.div>
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-foreground mb-2'>
+            Post a Job
+          </h1>
+          <p className='text-muted-foreground'>
+            Create a new job posting to attract top talent
+          </p>
+        </div>
 
-        {/* Stepper */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Paper sx={{ p: 3, mb: 4 }}>
-            <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
+        <div className='max-w-4xl mx-auto'>
+          {/* Progress Steps */}
+          <div className='mb-8'>
+            <div className='flex items-center justify-between'>
+              {steps.map((step, index) => (
+                <div key={step} className='flex items-center'>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                      index <= activeStep
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+                  <span
+                    className={`ml-2 text-sm ${
+                      index <= activeStep
+                        ? 'text-foreground'
+                        : 'text-muted-foreground'
+                    }`}
+                  >
+                    {step}
+                  </span>
+                  {index < steps.length - 1 && (
+                    <div
+                      className={`w-12 h-0.5 mx-4 ${
+                        index < activeStep ? 'bg-primary' : 'bg-muted'
+                      }`}
+                    />
+                  )}
+                </div>
               ))}
-            </Stepper>
+            </div>
+          </div>
 
-            {/* Progress indicator */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                Step {activeStep + 1} of {steps.length}
-              </Typography>
-              <Box sx={{ flex: 1, bgcolor: 'grey.200', borderRadius: 1, height: 8 }}>
-                <Box
-                  sx={{
-                    bgcolor: 'primary.main',
-                    height: '100%',
-                    borderRadius: 1,
-                    width: `${((activeStep + 1) / steps.length) * 100}%`,
-                    transition: 'width 0.3s ease'
-                  }}
-                />
-              </Box>
-            </Box>
-          </Paper>
-        </motion.div>
-
-        {/* Form Content */}
-        <motion.div
-          key={activeStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+          {/* Step Content */}
           <Card>
-            <CardContent sx={{ p: 4 }}>
+            <CardContent className='p-6'>
               {renderStepContent(activeStep)}
             </CardContent>
           </Card>
-        </motion.div>
 
-        {/* Navigation Buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            variant="outlined"
-          >
-            Back
-          </Button>
-          <Box>
+          {/* Navigation */}
+          <div className='flex justify-between mt-6'>
+            <Button
+              variant='outline'
+              onClick={handleBack}
+              disabled={activeStep === 0}
+            >
+              Back
+            </Button>
             {activeStep === steps.length - 1 ? (
               <Button
-                variant="contained"
                 onClick={handleSubmit}
                 disabled={!isStepValid(activeStep)}
-                startIcon={<Save size={20} />}
-                size="large"
               >
+                <Save className='mr-2 h-4 w-4' />
                 Post Job
               </Button>
             ) : (
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                disabled={!isStepValid(activeStep)}
-                endIcon={<ArrowRight size={20} />}
-              >
+              <Button onClick={handleNext} disabled={!isStepValid(activeStep)}>
                 Next
+                <ArrowRight className='ml-2 h-4 w-4' />
               </Button>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
 
-        {/* Job Preview */}
-        {activeStep > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Card sx={{ mt: 4 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>Job Preview</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                  <Building size={20} color="#64748b" />
-                  <Typography variant="h5">{jobData.title || 'Job Title'}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                  <MapPin size={16} color="#64748b" />
-                  <Typography variant="body2" color="text.secondary">
-                    {jobData.location || 'Location'}
-                  </Typography>
-                  {jobData.employmentType && (
-                    <>
-                      <Typography variant="body2" color="text.secondary">•</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {jobData.employmentType}
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-                {jobData.salary.min && jobData.salary.max && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                    <DollarSign size={16} color="#64748b" />
-                    <Typography variant="body2" color="text.secondary">
-                      {jobData.salary.min} - {jobData.salary.max} {jobData.salary.currency}
-                    </Typography>
-                  </Box>
-                )}
-                {jobData.description && (
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {jobData.description.substring(0, 200)}...
-                  </Typography>
-                )}
-                {jobData.skills.length > 0 && (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {jobData.skills.slice(0, 5).map((skill, index) => (
-                      <Chip key={index} label={skill} size="small" />
-                    ))}
-                    {jobData.skills.length > 5 && (
-                      <Chip label={`+${jobData.skills.length - 5} more`} size="small" variant="outlined" />
-                    )}
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
+        {/* Success Notification */}
+        {showSuccess && (
+          <div className='fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg'>
+            Job posted successfully!
+          </div>
         )}
-      </Container>
-
-      {/* Success Snackbar */}
-      <Snackbar
-        open={showSuccess}
-        autoHideDuration={6000}
-        onClose={() => setShowSuccess(false)}
-      >
-        <Alert onClose={() => setShowSuccess(false)} severity="success" sx={{ width: '100%' }}>
-          Job posted successfully! It will be visible to candidates shortly.
-        </Alert>
-      </Snackbar>
-    </>
+      </div>
+    </div>
   );
-} 
+};
+
+export default PostJobPage;
