@@ -37,12 +37,7 @@ export default function Login() {
       const { user } = await login(formData.email, formData.password);
       setUser(user);
 
-      // Redirect based on user role
-      if (user.role === 'employer') {
-        router.push('/post-job');
-      } else {
-        router.push('/jobs');
-      }
+      router.push('/');
     } catch {
       setError('Invalid email or password');
     } finally {
