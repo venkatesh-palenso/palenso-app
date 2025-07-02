@@ -138,7 +138,7 @@ export default function Custom404() {
             className="text-center"
           >
             <p className="text-sm text-muted-foreground">
-              Can't find what you're looking for?{' '}
+              Can&apos;t find what you&apos;re looking for?{' '}
               <Link href="/help" className="text-primary hover:underline">
                 Contact our support team
               </Link>
