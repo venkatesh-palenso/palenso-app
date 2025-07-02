@@ -67,25 +67,25 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className='min-h-screen flex flex-col'>
-      {/* Header - Only show for logged-in users */}
-      {isLoggedIn && (
-        <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-          <div className='container mx-auto px-4'>
-            <div className='flex h-16 items-center justify-between'>
-              {/* Logo */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Link href='/' className='flex items-center space-x-2'>
-                  <span className='text-xl font-bold text-primary'>
-                    Palenso
-                  </span>
-                </Link>
-              </motion.div>
+      {/* Header - Show branding for all users, full nav for logged-in users */}
+      <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+        <div className='container mx-auto px-4'>
+          <div className='flex h-16 items-center justify-between'>
+            {/* Logo */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Link href='/' className='flex items-center space-x-2'>
+                <span className='text-xl font-bold text-primary'>
+                  Palenso
+                </span>
+              </Link>
+            </motion.div>
 
-              {/* Desktop Navigation */}
+            {/* Desktop Navigation - Only show for logged-in users */}
+            {isLoggedIn && (
               <nav className='hidden md:flex items-center space-x-6'>
                 {navItems.map(item => (
                   <Link key={item.href} href={item.href}>
@@ -100,119 +100,139 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 ))}
               </nav>
+            )}
 
-              {/* Actions */}
-              <div className='flex items-center space-x-2'>
-                <Button variant='ghost' size='icon'>
-                  <Search className='h-4 w-4' />
-                </Button>
-                <Button variant='ghost' size='icon'>
-                  <Bell className='h-4 w-4' />
-                </Button>
-                <ThemeToggle />
+            {/* Actions */}
+            <div className='flex items-center space-x-2'>
+              {isLoggedIn ? (
+                <>
+                  <Button variant='ghost' size='icon'>
+                    <Search className='h-4 w-4' />
+                  </Button>
+                  <Button variant='ghost' size='icon'>
+                    <Bell className='h-4 w-4' />
+                  </Button>
+                  <ThemeToggle />
 
-                {/* User Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      className='relative h-8 w-8 rounded-full'
-                    >
-                      <Avatar className='h-8 w-8'>
-                        <AvatarFallback>{user?.avatar || 'U'}</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className='w-56' align='end' forceMount>
-                    <DropdownMenuLabel className='font-normal'>
-                      <div className='flex flex-col space-y-1'>
-                        <p className='text-sm font-medium leading-none'>
-                          {user?.name}
-                        </p>
-                        <p className='text-xs leading-none text-muted-foreground capitalize'>
-                          {user?.role}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {userMenuItems.map(item => (
-                      <DropdownMenuItem key={item.href} asChild>
-                        <Link href={item.href} className='flex items-center'>
-                          <item.icon className='mr-2 h-4 w-4' />
-                          {item.label}
-                        </Link>
+                  {/* User Menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant='ghost'
+                        className='relative h-8 w-8 rounded-full'
+                      >
+                        <Avatar className='h-8 w-8'>
+                          <AvatarFallback>{user?.avatar || 'U'}</AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className='w-56' align='end' forceMount>
+                      <DropdownMenuLabel className='font-normal'>
+                        <div className='flex flex-col space-y-1'>
+                          <p className='text-sm font-medium leading-none'>
+                            {user?.name}
+                          </p>
+                          <p className='text-xs leading-none text-muted-foreground capitalize'>
+                            {user?.role}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {userMenuItems.map(item => (
+                        <DropdownMenuItem key={item.href} asChild>
+                          <Link href={item.href} className='flex items-center'>
+                            <item.icon className='mr-2 h-4 w-4' />
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className='text-destructive'
+                        onClick={logout}
+                      >
+                        <LogOut className='mr-2 h-4 w-4' />
+                        Sign Out
                       </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className='text-destructive'
-                      onClick={logout}
-                    >
-                      <LogOut className='mr-2 h-4 w-4' />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                {/* Mobile Menu Button */}
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='md:hidden'
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                  <MenuIcon className='h-4 w-4' />
-                </Button>
-              </div>
+                  {/* Mobile Menu Button */}
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='md:hidden'
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  >
+                    <MenuIcon className='h-4 w-4' />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <ThemeToggle />
+                  <div className='hidden md:flex items-center space-x-2'>
+                    <Link href='/login'>
+                      <Button variant='ghost' className='text-sm font-medium'>
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href='/signup'>
+                      <Button className='text-sm font-medium'>
+                        Get Started
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className='md:hidden border-t bg-background'>
-              <div className='container mx-auto px-4 py-2'>
-                <nav className='flex flex-col space-y-2'>
-                  {navItems.map(item => (
+        {/* Mobile Menu - Only show for logged-in users */}
+        {isLoggedIn && isMobileMenuOpen && (
+          <div className='md:hidden border-t bg-background'>
+            <div className='container mx-auto px-4 py-2'>
+              <nav className='flex flex-col space-y-2'>
+                {navItems.map(item => (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={
+                        router.pathname === item.href ? 'default' : 'ghost'
+                      }
+                      className='w-full justify-start'
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
+                <div className='border-t pt-2 mt-2'>
+                  {userMenuItems.map(item => (
                     <Link key={item.href} href={item.href}>
                       <Button
-                        variant={
-                          router.pathname === item.href ? 'default' : 'ghost'
-                        }
+                        variant='ghost'
                         className='w-full justify-start'
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
+                        <item.icon className='mr-2 h-4 w-4' />
                         {item.label}
                       </Button>
                     </Link>
                   ))}
-                  <div className='border-t pt-2 mt-2'>
-                    {userMenuItems.map(item => (
-                      <Link key={item.href} href={item.href}>
-                        <Button
-                          variant='ghost'
-                          className='w-full justify-start'
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          <item.icon className='mr-2 h-4 w-4' />
-                          {item.label}
-                        </Button>
-                      </Link>
-                    ))}
-                    <Button
-                      variant='ghost'
-                      className='w-full justify-start text-destructive'
-                      onClick={logout}
-                    >
-                      <LogOut className='mr-2 h-4 w-4' />
-                      Sign Out
-                    </Button>
-                  </div>
-                </nav>
-              </div>
+                  <Button
+                    variant='ghost'
+                    className='w-full justify-start text-destructive'
+                    onClick={logout}
+                  >
+                    <LogOut className='mr-2 h-4 w-4' />
+                    Sign Out
+                  </Button>
+                </div>
+              </nav>
             </div>
-          )}
-        </header>
-      )}
+          </div>
+        )}
+      </header>
 
       {/* Main Content */}
       <main className='flex-1'>{children}</main>

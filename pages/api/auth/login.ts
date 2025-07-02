@@ -23,19 +23,19 @@ interface LoginResponse {
 const mockUsers = [
   {
     id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    password: 'password123',
+    name: 'Rahul',
+    email: 'rahul@palenso.com',
+    password: 'Palenso@123',
     role: 'student' as const,
-    avatar: 'JD',
+    avatar: 'RP',
   },
   {
     id: '2',
-    name: 'Jane Smith',
-    email: 'jane@company.com',
-    password: 'password123',
+    name: 'Vamsi',
+    email: 'vamsi@palenso.com',
+    password: 'Palenso@123',
     role: 'employer' as const,
-    avatar: 'JS',
+    avatar: 'VK',
   },
 ];
 
