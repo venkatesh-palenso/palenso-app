@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { authService } from '@/services';
-import { CreateUserData } from '@/services/AuthService';
+import { CreateUserData } from '@/services/auth.service';
 
 interface UserInformationFormProps {
   onSuccess: (data: Record<string, unknown>) => void;

@@ -1,4 +1,5 @@
-import { BaseService, ApiResponse, RequestConfig } from './BaseService';
+import { AUTH_ENDPOINTS } from '@/constants/endpoints';
+import { BaseService, ApiResponse, RequestConfig } from './base.service';
 
 // Types for authentication
 export interface CreateUserData {
@@ -98,8 +99,7 @@ export interface mobileVerificationData {
 
 export class AuthService extends BaseService {
   constructor(
-    baseURL: string = process.env.NEXT_PUBLIC_API_URL ||
-      'http://localhost:8000/api'
+    baseURL: string 
   ) {
     super(baseURL);
   }
@@ -112,7 +112,7 @@ export class AuthService extends BaseService {
     config?: RequestConfig
   ): Promise<ApiResponse<AvailabilityResponse>> {
     return this.post<AvailabilityResponse>(
-      '/auth/check-availability',
+      AUTH_ENDPOINTS.CHECK_AVAILABILITY,
       { email },
       config
     );
@@ -126,7 +126,7 @@ export class AuthService extends BaseService {
     config?: RequestConfig
   ): Promise<ApiResponse<AvailabilityResponse>> {
     return this.post<AvailabilityResponse>(
-      '/auth/check-availability',
+      AUTH_ENDPOINTS.CHECK_AVAILABILITY,
       { mobile_number: phoneNumber },
       config
     );
@@ -140,7 +140,7 @@ export class AuthService extends BaseService {
     config?: RequestConfig
   ): Promise<ApiResponse<SendVerificationResponse>> {
     return this.post<SendVerificationResponse>(
-      '/auth/send-verification',
+      AUTH_ENDPOINTS.SEND_VERIFICATION,
       { email },
       config
     );
@@ -154,7 +154,7 @@ export class AuthService extends BaseService {
     config?: RequestConfig
   ): Promise<ApiResponse<SendVerificationResponse>> {
     return this.post<SendVerificationResponse>(
-      '/auth/send-verification',
+      AUTH_ENDPOINTS.SEND_VERIFICATION,
       data,
       config
     );
@@ -167,7 +167,7 @@ export class AuthService extends BaseService {
     data: VerifyEmailData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/verify-email', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.VERIFY_EMAIL, data, config);
   }
 
   /**
@@ -177,7 +177,7 @@ export class AuthService extends BaseService {
     data: VerifyMobileData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/verify-mobile', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.VERIFY_MOBILE, data, config);
   }
 
   /**
@@ -187,7 +187,7 @@ export class AuthService extends BaseService {
     data: CreateUserData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/signup', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_SIGNUP, data, config);
   }
 
   /**
@@ -197,7 +197,7 @@ export class AuthService extends BaseService {
     data: CompleteUserRegistrationData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.put<AuthResponse>('/auth/signup', data, config);
+    return this.put<AuthResponse>(AUTH_ENDPOINTS.USER_SIGNUP, data, config);
   }
 
   /**
@@ -207,7 +207,7 @@ export class AuthService extends BaseService {
     data: LoginData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/sign-in', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_LOGIN, data, config);
   }
 
   /**
@@ -231,7 +231,7 @@ export class AuthService extends BaseService {
     data: ForgotPasswordData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/forgot-password', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_FORGOT_PASSWORD, data, config);
   }
 
   /**
@@ -241,7 +241,7 @@ export class AuthService extends BaseService {
     data: ResetPasswordData,
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/reset-password', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_RESET_PASSWORD, data, config);
   }
 
   /**
@@ -251,7 +251,7 @@ export class AuthService extends BaseService {
     data: SendOTPData,
     config?: RequestConfig
   ): Promise<ApiResponse<OTPResponse>> {
-    return this.post<OTPResponse>('/auth/resend-email-otp', data, config);
+    return this.post<OTPResponse>(AUTH_ENDPOINTS.USER_RESEND_EMAIL_OTP, data, config);
   }
 
   /**
@@ -261,7 +261,7 @@ export class AuthService extends BaseService {
     data: SendOTPData,
     config?: RequestConfig
   ): Promise<ApiResponse<OTPResponse>> {
-    return this.post<OTPResponse>('/auth/resend-mobile-otp', data, config);
+    return this.post<OTPResponse>(AUTH_ENDPOINTS.USER_RESEND_MOBILE_OTP, data, config);
   }
 
   /**
@@ -272,7 +272,7 @@ export class AuthService extends BaseService {
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
     return this.post<AuthResponse>(
-      '/auth/refresh-token',
+      AUTH_ENDPOINTS.USER_REFRESH_TOKEN,
       { refreshToken },
       config
     );
@@ -282,14 +282,14 @@ export class AuthService extends BaseService {
    * Logout
    */
   async logout(config?: RequestConfig): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/logout', {}, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_LOGOUT, {}, config);
   }
 
   /**
    * Get current user profile
    */
   async getProfile(config?: RequestConfig): Promise<ApiResponse<AuthResponse>> {
-    return this.get<AuthResponse>('/auth/profile', config);
+    return this.get<AuthResponse>(AUTH_ENDPOINTS.USER_GET_PROFILE, config);
   }
 
   /**
@@ -299,7 +299,7 @@ export class AuthService extends BaseService {
     data: { currentPassword: string; newPassword: string },
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.post<AuthResponse>('/auth/change-password', data, config);
+    return this.post<AuthResponse>(AUTH_ENDPOINTS.USER_CHANGE_PASSWORD, data, config);
   }
 
   /**
@@ -308,7 +308,7 @@ export class AuthService extends BaseService {
   async deleteAccount(
     config?: RequestConfig
   ): Promise<ApiResponse<AuthResponse>> {
-    return this.delete<AuthResponse>('/auth/account', config);
+    return this.delete<AuthResponse>(AUTH_ENDPOINTS.USER_DELETE_ACCOUNT, config);
   }
 
   /**
@@ -365,34 +365,6 @@ export class AuthService extends BaseService {
     return this.post<AuthResponse>(
       '/auth/verify-reset-password-link',
       { token },
-      config
-    );
-  }
-
-  /**
-   * Check email exists
-   */
-  async checkEmailExists(
-    email: string,
-    config?: RequestConfig
-  ): Promise<ApiResponse<{ exists: boolean }>> {
-    return this.post<{ exists: boolean }>(
-      '/auth/check-email-exists',
-      { email },
-      config
-    );
-  }
-
-  /**
-   * Check phone exists
-   */
-  async checkPhoneExists(
-    phoneNumber: string,
-    config?: RequestConfig
-  ): Promise<ApiResponse<{ exists: boolean }>> {
-    return this.post<{ exists: boolean }>(
-      '/auth/check-phone-exists',
-      { phoneNumber },
       config
     );
   }

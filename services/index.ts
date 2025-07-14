@@ -1,7 +1,7 @@
-import { AuthService } from './AuthService';
-import { CompanyService } from './CompanyService';
-import { JobService } from './JobService';
-import { UserService } from './UserService';
+import { AuthService } from './auth.service';
+import { CompanyService } from './company.service';
+import { JobService } from './job.service';
+import { UserService } from './user.service';
 
 // Base Service
 export {
@@ -9,18 +9,18 @@ export {
   type RequestConfig,
   type ApiResponse,
   type ApiError,
-} from './BaseService';
+} from './base.service';
 
 // Auth Service
-export { AuthService } from './AuthService';
+export { AuthService } from './auth.service';
 // User Service
-export { UserService } from './UserService';
+export { UserService } from './user.service';
 // Job Service
-export { JobService } from './JobService';
+export { JobService } from './job.service';
 // Company Service
-export { CompanyService } from './CompanyService';
+export { CompanyService } from './company.service';
 
-const DEFAULT_API_URL = 'http://localhost:8000/api';
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 // Service instances
 export const authService = new AuthService(DEFAULT_API_URL);
@@ -42,14 +42,14 @@ export type {
   AuthResponse,
   OTPResponse,
   AvailabilityResponse,
-} from './AuthService';
+} from './auth.service';
 // User types
 export type {
   User,
   UpdateUserData,
   UserPreferences,
   UserStats,
-} from './UserService';
+} from './user.service';
 // Job types
 export type {
   Job,
@@ -58,7 +58,7 @@ export type {
   JobApplication,
   CreateApplicationData,
   JobSearchParams,
-} from './JobService';
+} from './job.service';
 // Company types
 export type {
   Company,
@@ -67,4 +67,4 @@ export type {
   CompanyEmployee,
   CompanyReview,
   CreateReviewData,
-} from './CompanyService';
+} from './company.service';

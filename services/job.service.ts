@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse, RequestConfig } from './BaseService';
+import { BaseService, ApiResponse, RequestConfig } from './base.service';
 
 // Types for job operations
 export interface Job {
@@ -109,8 +109,7 @@ export interface JobSearchParams {
 
 export class JobService extends BaseService {
   constructor(
-    baseURL: string = process.env.NEXT_PUBLIC_API_URL ||
-      'http://localhost:8000/api'
+    baseURL: string 
   ) {
     super(baseURL);
   }

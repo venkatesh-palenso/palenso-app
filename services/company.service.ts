@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse, RequestConfig } from './BaseService';
+import { BaseService, ApiResponse, RequestConfig } from './base.service';
 
 // Types for company operations
 export interface Company {
@@ -107,8 +107,7 @@ export interface CreateReviewData {
 
 export class CompanyService extends BaseService {
   constructor(
-    baseURL: string = process.env.NEXT_PUBLIC_API_URL ||
-      'http://localhost:8000/api'
+    baseURL: string 
   ) {
     super(baseURL);
   }
