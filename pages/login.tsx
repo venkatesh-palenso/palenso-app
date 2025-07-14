@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowRight,
+  Shield,
+  AlertCircle,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/ui/button';
@@ -14,8 +22,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useUser } from '@/components/UserProvider';
-import { login } from '@/lib/auth';
+import { User } from '@/lib/auth';
 import { signIn } from 'next-auth/react';
+import { authService } from '@/services';
 
 export default function Login() {
   const router = useRouter();
@@ -34,12 +43,43 @@ export default function Login() {
     setError('');
 
     try {
-      const { user } = await login(formData.email, formData.password);
-      setUser(user);
+      const response = await authService.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      router.push('/');
+      console.log(response.data);
+      // onSuccess(response.data.user);
+      if (response.data) {
+        localStorage.setItem(
+          'accessToken',
+          response.data.access_token as string
+        );
+        localStorage.setItem(
+          'refreshToken',
+          response.data.refresh_token as string
+        );
+      }
+
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        const user: User = {
+          id: response.data.user.id,
+          firstName: response.data.user.first_name,
+          lastName: response.data.user.last_name,
+          email: response.data.user.email,
+          phoneNumber: response.data.user.mobile_number,
+          role: response.data.user.role,
+        };
+        setUser(user);
+      }
+
+      // Show success message before redirecting
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     } catch {
-      setError('Invalid email or password');
+      setError('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -50,31 +90,37 @@ export default function Login() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn('google', { callbackUrl: '/' });
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4'>
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-        <Card className='shadow-xl'>
-          <CardHeader className='space-y-1'>
-            <CardTitle className='text-2xl font-bold text-center'>
+        <Card className='shadow-2xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm'>
+          <CardHeader className='space-y-1 pb-6'>
+            <CardTitle className='text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'>
               Welcome back
             </CardTitle>
-            <CardDescription className='text-center'>
+            <CardDescription className='text-center text-gray-600 dark:text-gray-400'>
               Sign in to your Palenso account
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className='space-y-6'>
             <Button
               type='button'
               variant='outline'
-              className='w-full mb-4 flex items-center justify-center gap-2'
-              onClick={() => signIn('google', { callbackUrl: '/' })}
+              className='w-full mb-6 flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600'
+              onClick={handleGoogleSignIn}
             >
               <svg className='h-5 w-5' viewBox='0 0 48 48'>
                 <g>
@@ -100,17 +146,38 @@ export default function Login() {
               Sign in with Google
             </Button>
 
-            <form onSubmit={handleSubmit} className='space-y-4'>
-              {error && (
-                <div className='p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md'>
-                  {error}
-                </div>
-              )}
+            <div className='relative'>
+              <div className='absolute inset-0 flex items-center'>
+                <span className='w-full border-t border-gray-300 dark:border-gray-600' />
+              </div>
+              <div className='relative flex justify-center text-xs uppercase'>
+                <span className='bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400'>
+                  Or continue with
+                </span>
+              </div>
+            </div>
 
+            <AnimatePresence mode='wait'>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className='p-4 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2'
+                >
+                  <AlertCircle className='h-4 w-4 flex-shrink-0' />
+                  {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <form onSubmit={handleSubmit} className='space-y-4'>
               <div className='space-y-2'>
-                <Label htmlFor='email'>Email</Label>
+                <Label htmlFor='email' className='text-sm font-medium'>
+                  Email Address
+                </Label>
                 <div className='relative'>
-                  <Mail className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                  <Mail className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
                   <Input
                     id='email'
                     name='email'
@@ -118,16 +185,18 @@ export default function Login() {
                     placeholder='Enter your email'
                     value={formData.email}
                     onChange={handleChange}
-                    className='pl-10'
+                    className='pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400'
                     required
                   />
                 </div>
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='password'>Password</Label>
+                <Label htmlFor='password' className='text-sm font-medium'>
+                  Password
+                </Label>
                 <div className='relative'>
-                  <Lock className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
+                  <Lock className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
                   <Input
                     id='password'
                     name='password'
@@ -135,7 +204,7 @@ export default function Login() {
                     placeholder='Enter your password'
                     value={formData.password}
                     onChange={handleChange}
-                    className='pl-10 pr-10'
+                    className='pl-10 pr-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400'
                     required
                   />
                   <Button
@@ -154,30 +223,63 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button type='submit' className='w-full' disabled={loading}>
-                {loading ? 'Signing in...' : 'Sign in'}
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center space-x-2'>
+                  <Shield className='h-4 w-4 text-green-500' />
+                  <span className='text-xs text-gray-500 dark:text-gray-400'>
+                    Secure login with encryption
+                  </span>
+                </div>
+                <Link
+                  href='/forgot-password'
+                  className='text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button
+                type='submit'
+                className='w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3'
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className='flex items-center gap-2'>
+                    <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
+                    Signing in...
+                  </div>
+                ) : (
+                  <div className='flex items-center gap-2'>
+                    Sign in
+                    <ArrowRight className='h-4 w-4' />
+                  </div>
+                )}
               </Button>
             </form>
 
-            <div className='mt-6 text-center text-sm'>
-              <span className='text-muted-foreground'>
+            <div className='mt-8 text-center text-sm'>
+              <span className='text-gray-600 dark:text-gray-400'>
                 Don&apos;t have an account?{' '}
               </span>
               <Link
                 href='/signup'
-                className='font-medium text-primary hover:underline'
+                className='font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
               >
                 Sign up
               </Link>
             </div>
 
-            <div className='mt-4 text-center'>
-              <Link
-                href='/forgot-password'
-                className='text-sm text-muted-foreground hover:text-primary'
-              >
-                Forgot your password?
-              </Link>
+            <div className='text-center'>
+              <p className='text-xs text-gray-500 dark:text-gray-400'>
+                By signing in, you agree to our{' '}
+                <Link href='/terms' className='hover:underline'>
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link href='/privacy' className='hover:underline'>
+                  Privacy Policy
+                </Link>
+              </p>
             </div>
           </CardContent>
         </Card>

@@ -78,9 +78,7 @@ export default function Layout({ children }: LayoutProps) {
               transition={{ duration: 0.5 }}
             >
               <Link href='/' className='flex items-center space-x-2'>
-                <span className='text-xl font-bold text-primary'>
-                  Palenso
-                </span>
+                <span className='text-xl font-bold text-primary'>Palenso</span>
               </Link>
             </motion.div>
 
@@ -122,15 +120,22 @@ export default function Layout({ children }: LayoutProps) {
                         className='relative h-8 w-8 rounded-full'
                       >
                         <Avatar className='h-8 w-8'>
-                          <AvatarFallback>{user?.avatar || 'U'}</AvatarFallback>
+                          <AvatarFallback>
+                            {user?.avatar ||
+                              `${user?.firstName?.charAt(0) || ''}${user?.lastName?.charAt(0) || ''}`}
+                          </AvatarFallback>
                         </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className='w-56' align='end' forceMount>
+                    <DropdownMenuContent
+                      className='w-56'
+                      align='end'
+                      forceMount
+                    >
                       <DropdownMenuLabel className='font-normal'>
                         <div className='flex flex-col space-y-1'>
                           <p className='text-sm font-medium leading-none'>
-                            {user?.name}
+                            {user?.firstName} {user?.lastName}
                           </p>
                           <p className='text-xs leading-none text-muted-foreground capitalize'>
                             {user?.role}

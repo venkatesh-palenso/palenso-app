@@ -1,6 +1,7 @@
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phoneNumber: string;
   role: 'student' | 'employer';
@@ -74,32 +75,6 @@ export const apiCall = async (
   return response;
 };
 
-// Login function
-export const login = async (
-  email: string,
-  password: string
-): Promise<{ user: User; tokens: AuthTokens }> => {
-  const response = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
-
-  const data = await response.json();
-
-  // Store tokens and user data
-  setToken(data.tokens.accessToken);
-  localStorage.setItem('refreshToken', data.tokens.refreshToken);
-  setUser(data.user);
-
-  return data;
-};
 
 // Logout function
 export const logout = (): void => {
