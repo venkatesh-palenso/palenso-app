@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { authService } from '@/services';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -30,22 +31,13 @@ export default function ForgotPassword() {
     setLoading(true);
     setError('');
 
-    try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
+    try {    
+
+      await authService.forgotPassword({
+        email,
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess(true);
-      } else {
-        setError(data.message);
-      }
+      setSuccess(true);
     } catch {
       setError('Failed to send reset email. Please try again.');
     } finally {
