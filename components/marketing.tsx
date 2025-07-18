@@ -14,7 +14,7 @@ import { features, stats } from "@/constants/marketing";
 
 const Marketing: React.FC = () => {
   return (
-    <div className="min-h-screen bg-page-shiny">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <section className="pt-20 pb-16 px-4">
         <div className="container mx-auto text-center">
           <motion.div
@@ -22,10 +22,10 @@ const Marketing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-banner-vibrant mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Connect. Grow. Succeed.
             </h1>
-            <p className="text-xl text-banner-glow mb-8 max-w-2xl mx-auto">
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
               Palenso is the #1 platform for students and recent graduates to
               find jobs and internships. Connect with employers, discover
               opportunities, and launch your career.
@@ -39,7 +39,7 @@ const Marketing: React.FC = () => {
                 </Button>
               </Link>
               <Link href="/login">
-                <Button variant="outline" size="lg" className="text-lg px-8">
+                <Button variant="secondary" size="lg" className="text-lg px-8 bg-white">
                   Sign In
                 </Button>
               </Link>
@@ -128,7 +128,7 @@ const Marketing: React.FC = () => {
                 </Button>
               </Link>
               <Link href="/jobs">
-                <Button variant="outline" size="lg" className="text-lg px-8">
+                <Button variant="secondary" size="lg" className="text-lg px-8 bg-white">
                   Browse Jobs
                 </Button>
               </Link>

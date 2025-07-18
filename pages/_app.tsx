@@ -10,6 +10,9 @@ import type { AppProps } from "next/app";
 // context
 import { ThemeProvider, UserProvider } from "@/context";
 
+// providers
+import SWRProvider from "@/components/providers/swr-provider";
+
 // type
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -29,7 +32,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       enableSystem
       disableTransitionOnChange
     >
-      <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+      <SWRProvider>
+        <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+      </SWRProvider>
     </ThemeProvider>
   );
 }

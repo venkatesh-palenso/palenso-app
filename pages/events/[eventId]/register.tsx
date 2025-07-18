@@ -132,7 +132,7 @@ const RegisterEventPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dashboard-shiny">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <section className="pt-20 pb-8 px-4">
         <div className="container mx-auto">

@@ -144,8 +144,8 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
               placeholder="First name"
               value={formData.firstName}
               onChange={handleChange}
-              className={`pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 ${
-                errors.firstName ? "border-red-500 dark:border-red-400" : ""
+              className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
+                errors.firstName ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
               }`}
               required
             />
@@ -168,8 +168,8 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
               placeholder="Last name"
               value={formData.lastName}
               onChange={handleChange}
-              className={`pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 ${
-                errors.lastName ? "border-red-500 dark:border-red-400" : ""
+              className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
+                errors.lastName ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
               }`}
               required
             />
@@ -193,8 +193,8 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
-            className={`pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 ${
-              errors.email ? "border-red-500 dark:border-red-400" : ""
+            className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
+              errors.email ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
             }`}
             required
             onBlur={handleEmailBlur}
@@ -217,8 +217,8 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             variant={formData.role === "student" ? "default" : "outline"}
             className={`h-20 flex flex-col items-center justify-center space-y-2 transition-all duration-200 ${
               formData.role === "student"
-                ? "bg-blue-500 hover:bg-blue-600"
-                : "hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                ? "bg-primary hover:bg-primary/90"
+                : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
             }`}
             onClick={() => handleRoleSelect("student")}
           >
@@ -230,8 +230,8 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             variant={formData.role === "employer" ? "default" : "outline"}
             className={`h-20 flex flex-col items-center justify-center space-y-2 transition-all duration-200 ${
               formData.role === "employer"
-                ? "bg-purple-500 hover:bg-purple-600"
-                : "hover:border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                ? "bg-primary hover:bg-primary/90"
+                : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
             }`}
             onClick={() => handleRoleSelect("employer")}
           >
@@ -244,7 +244,7 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3"
         disabled={!canSubmit}
       >
         {loading ? "Creating account..." : "Continue"}

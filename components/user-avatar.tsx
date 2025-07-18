@@ -24,7 +24,7 @@ const UserAvatar = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="h-9 w-9 cursor-pointer">
+        <Avatar className="h-9 w-9 cursor-pointer border-2 border-gray-200 hover:border-gray-300 transition-colors  ">
           {/* <AvatarImage src={user.avatarUrl} alt={user.name} /> */}
           <AvatarFallback className="capitalize">
             {user.first_name[0] + user.last_name[0]}
@@ -42,7 +42,7 @@ const UserAvatar = () => {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="border-gray-200" />
         {navMenu.map((item) => {
           return (
             <DropdownMenuItem key={item.label}>

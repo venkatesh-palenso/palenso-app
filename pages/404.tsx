@@ -13,6 +13,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import RootLayout from "@/layouts/root";
 
+// Animation Variants
+const containerVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const cardVariants = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+};
+
 export default function Custom404() {
   const quickLinks = [
     { label: "Jobs", href: "/jobs", icon: Search },
@@ -22,17 +36,16 @@ export default function Custom404() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-page-shiny px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 1 }}
         >
-          {/* Coming Soon Illustration */}
+          {/* Illustration */}
           <div className="relative mb-8">
             <div className="w-64 h-64 mx-auto relative">
-              {/* Main circle */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full animate-pulse"></div>
 
               {/* Construction elements */}
@@ -85,15 +98,13 @@ export default function Custom404() {
 
           {/* Error Message */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 1, delay: 0.3 }}
             className="mb-8"
           >
-            <h1 className="text-6xl md:text-8xl font-bold text-banner-vibrant mb-4">
-              404
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-semibold text-banner-glow mb-4">
+            <h1 className="text-6xl md:text-8xl font-bold  mb-4">404</h1>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">
               Page Under Construction
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -105,9 +116,9 @@ export default function Custom404() {
 
           {/* Action Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 1, delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <Link href="/">
@@ -129,35 +140,39 @@ export default function Custom404() {
 
           {/* Quick Links */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            variants={containerVariants}
+            initial="initial"
+            animate="animate"
+            transition={{ delay: 0.7 }}
             className="mb-8"
           >
             <h3 className="text-lg font-semibold text-foreground mb-6">
               Explore Our Platform
             </h3>
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
               {quickLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  <Card className="hover:shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer group">
-                    <CardContent className="p-4 text-center">
-                      <link.icon className="h-6 w-6 mx-auto mb-2 text-primary group-hover:scale-110 transition-transform" />
-                      <p className="text-sm font-medium text-foreground">
-                        {link.label}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <motion.div key={link.href} variants={cardVariants}>
+                  <Link href={link.href}>
+                    <Card className="hover:shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer group">
+                      <CardContent className="p-4 text-center">
+                        <link.icon className="h-6 w-6 mx-auto mb-2 text-primary group-hover:scale-110 transition-transform" />
+                        <p className="text-sm font-medium text-foreground">
+                          {link.label}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </motion.div>
 
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 1, delay: 0.9 }}
             className="text-center"
           >
             <p className="text-sm text-muted-foreground">

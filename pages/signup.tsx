@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,6 +14,7 @@ import EmailVerificationForm from "@/components/forms/signup/email-verification"
 import MobileVerificationForm from "@/components/forms/signup/mobile-verification";
 import SetPasswordForm from "@/components/forms/signup/set-password";
 import { User as UserInfo } from "@/interfaces/user";
+import RootLayout from "@/layouts/root";
 
 const SignUpFormWrapper = () => {
   const [step, setStep] = useState(0);
@@ -74,16 +75,16 @@ const SignUpFormWrapper = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-auth-shiny p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-lg"
       >
-        <Card className="card-shiny shadow-2xl border-0">
+        <Card className="shadow-lg border border-gray-200 bg-white">
           <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-3xl font-bold text-center text-banner-vibrant">
+            <CardTitle className="text-3xl font-bold text-center text-foreground">
               Create your account
             </CardTitle>
             <CardDescription className="text-center text-gray-600 dark:text-gray-400">
@@ -96,7 +97,7 @@ const SignUpFormWrapper = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="w-full flex items-center justify-center gap-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => handleSSOLogin("google")}
               >
                 <svg className="h-5 w-5" viewBox="0 0 48 48">
@@ -126,7 +127,7 @@ const SignUpFormWrapper = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="w-full flex items-center justify-center gap-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => handleSSOLogin("facebook")}
               >
                 <svg className="h-5 w-5" fill="#1877F2" viewBox="0 0 24 24">
@@ -138,7 +139,7 @@ const SignUpFormWrapper = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="w-full flex items-center justify-center gap-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => handleSSOLogin("linkedin")}
               >
                 <svg className="h-5 w-5" fill="#0A66C2" viewBox="0 0 24 24">
@@ -150,10 +151,10 @@ const SignUpFormWrapper = () => {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
+                <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
+                <span className="bg-white px-2 text-gray-500">
                   Or continue with email
                 </span>
               </div>
@@ -174,8 +175,8 @@ const SignUpFormWrapper = () => {
                           isCompleted
                             ? "bg-green-500 text-white"
                             : isActive
-                            ? "bg-blue-500 text-white shadow-lg"
-                            : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                            ? "bg-primary text-white shadow-md"
+                            : "bg-gray-200 text-gray-500"
                         }`}
                       >
                         {isCompleted ? (
@@ -189,7 +190,7 @@ const SignUpFormWrapper = () => {
                           className={`w-12 h-1 mx-2 transition-all duration-300 ${
                             isCompleted
                               ? "bg-green-500"
-                              : "bg-gray-200 dark:bg-gray-700"
+                              : "bg-gray-200"
                           }`}
                         />
                       )}
@@ -200,7 +201,7 @@ const SignUpFormWrapper = () => {
             </div>
 
             <div className="text-center mb-4">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-gray-700">
                 Step {step + 1} of {navigationSteps.length}:{" "}
                 {navigationSteps[step]?.title}
               </span>
@@ -208,8 +209,8 @@ const SignUpFormWrapper = () => {
 
             {/* Main Error Display */}
             {mainError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                <p className="text-sm text-red-600 dark:text-red-400">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-sm text-red-600">
                   {mainError}
                 </p>
               </div>
@@ -234,6 +235,10 @@ const SignUpFormWrapper = () => {
       </motion.div>
     </div>
   );
+};
+
+SignUpFormWrapper.getLayout = function getLayout(page: ReactElement) {
+  return <RootLayout>{page}</RootLayout>;
 };
 
 export default SignUpFormWrapper;

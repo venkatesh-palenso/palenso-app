@@ -20,7 +20,7 @@ export default function Navbar() {
   const { isLoggedIn } = useUser();
 
   return (
-    <header className="navbar-shiny flex h-20 w-full shrink-0 items-center justify-between gap-3 px-4 md:px-6">
+    <header className="navbar-shiny flex h-20 w-full shrink-0 items-center justify-between gap-3 px-4 md:px-6 border-b border-gray-200">
       {/* Left: Mobile menu toggle */}
       <div className="flex items-center gap-2">
         <Sheet>
@@ -53,7 +53,9 @@ export default function Navbar() {
           transition={{ duration: 0.5 }}
         >
           <Link href="/" className="flex items-center" prefetch={false}>
-            <span className="text-xl font-bold text-primary">Palenso</span>
+            <span className="text-2xl font-bold text-primary text-banner-vibrant">
+              Palenso
+            </span>
           </Link>
         </motion.div>
       </div>

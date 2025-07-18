@@ -181,7 +181,7 @@ const ApplyJobPage: React.FC = () => {
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-success/10 to-success/5 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -210,7 +210,7 @@ const ApplyJobPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dashboard-shiny">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <section className="pt-20 pb-8 px-4">
         <div className="max-w-7xl mx-auto">
