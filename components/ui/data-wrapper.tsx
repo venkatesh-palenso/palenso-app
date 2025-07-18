@@ -4,7 +4,7 @@ import Loading from "./loading";
 import Error from "./error";
 
 interface DataWrapperProps<T> {
-  data: SWRResponse<T, any>;
+  data: SWRResponse<T, unknown>;
   children: (data: T) => React.ReactNode;
   loadingText?: string;
   errorMessage?: string;
@@ -27,7 +27,7 @@ const DataWrapper = <T,>({
   if (error) {
     return (
       <Error
-        message={errorMessage || error.message}
+        message={errorMessage || (error as Error).message}
         onRetry={() => mutate()}
         className={className}
       />

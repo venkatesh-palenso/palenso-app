@@ -1,4 +1,4 @@
-import useSWR, { SWRConfiguration } from 'swr';
+import useSWR, { SWRConfiguration, mutate } from 'swr';
 import { Company } from '@/interfaces/company';
 import { MarketingData } from '@/interfaces/marketing';
 import { NavItem } from '@/interfaces/nav-item';
@@ -70,17 +70,17 @@ export const useNavigationByRole = (role: "student" | "employer") => {
 
 // Mutate functions
 export const mutateCompanies = () => {
-  return useSWR('/api/companies').mutate;
+  return mutate('/api/companies');
 };
 
 export const mutateCompany = (id: string) => {
-  return useSWR(`/api/companies/${id}`).mutate;
+  return mutate(`/api/companies/${id}`);
 };
 
 export const mutateMarketingData = () => {
-  return useSWR('/api/marketing/data').mutate;
+  return mutate('/api/marketing/data');
 };
 
 export const mutateNavigation = () => {
-  return useSWR('/api/navigation').mutate;
+  return mutate('/api/navigation');
 }; 

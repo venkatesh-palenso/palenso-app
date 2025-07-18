@@ -1,5 +1,4 @@
 import React, { ReactElement } from "react";
-import { NextPage } from "next";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { Building, ArrowLeft } from "lucide-react";
@@ -74,7 +73,7 @@ const CompanyProfilePage = () => {
                   </div>
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-950 dark:border-blue-800">
-                    <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">What's Next?</h3>
+                    <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">What&apos;s Next?</h3>
                     <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                       <li>• Your company profile is now visible to potential candidates</li>
                       <li>• You can start posting job opportunities</li>
