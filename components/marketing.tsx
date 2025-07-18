@@ -2,7 +2,7 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, CheckCircle, Users, Building, Calendar, Briefcase, Target, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle, Users, Building, Calendar, Briefcase, Target, Zap } from "lucide-react";
 import {
   Card,
   CardContent,
