@@ -152,7 +152,7 @@ const Marketing: React.FC = () => {
               <span className="text-primary">Career Success</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you're an employer looking for top talent or a student seeking opportunities, 
+              Whether you&apos;re an employer looking for top talent or a student seeking opportunities, 
               Palenso provides everything you need to succeed.
             </p>
           </motion.div>
