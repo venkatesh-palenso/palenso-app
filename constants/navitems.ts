@@ -51,7 +51,7 @@ const studentNavMenu: NavItem[] = [
 const employeeNavMenu: NavItem[] = [
   {
     label: "Company Profile",
-    href: "/company-profile",
+    href: "/profile",
     icon: Building,
   },
   { label: "Post a Job", href: "/post-job", icon: Search },
@@ -88,6 +88,6 @@ export const getNavMenu = (role: "student" | "employer") => {
   return role === "student"
     ? studentNavMenu
     : role === "employer"
-    ? employeeNavMenu
-    : [];
+      ? employeeNavMenu
+      : [];
 };

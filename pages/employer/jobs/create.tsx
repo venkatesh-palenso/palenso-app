@@ -40,10 +40,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Layouts } from "@/layouts";
 
-
-
-const CreateJobPage: React.FC = () => {
+const CreateJobPage = () => {
   const router = useRouter();
   const [isPreview, setIsPreview] = useState(false);
 
@@ -579,5 +578,7 @@ const CreateJobPage: React.FC = () => {
     </div>
   );
 };
+
+CreateJobPage.getLayout = Layouts.Employer;
 
 export default CreateJobPage;

@@ -1,61 +1,38 @@
-import { User } from '@/interfaces/user';
+import { User } from "@/interfaces/user";
 
-export interface CheckAvailabilityForm {
+export interface MediumAvailabilityForm {
   email?: string;
   mobile_number?: string;
 }
 
-export interface AvailabilityResponse {
+export interface MediumAvailabilityResponse {
   available: boolean;
   message: string;
   email?: string;
   mobile_number?: string;
 }
 
-export interface CreateUserForm {
-  first_name: string;
-  last_name: string;
-  email: string;
-  role: 'student' | 'employer';
-}
-
-export interface CreateUserResponse {
-  message: string;
-  user: User;
-}
-
-export interface RequestEmailCodeForm {
-  email: string;
+export interface RequestMediumVerificationForm {
   user_id: string;
+  email?: string;
+  mobile_number?: string;
 }
 
-export interface RequestMobileCodeForm {
-  mobile_number: string;
-  user_id: string;
-}
-
-export interface VerifyEmailForm {
-  email: string;
-  code: string;
-}
-
-export interface VerifyMobileForm {
-  mobile_number: string;
-  code: string;
-}
-
-export interface VerificationRequestResponse {
+export interface MessageResponse {
   message: string;
 }
 
-export interface CompleteUserRegistrationForm {
-  user_id: string;
-  password: string;
-  confirm_password: string;
+export interface VerifyMediumForm {
+  medium: "email" | "mobile";
+  email?: string;
+  mobile_number?: string;
+  code: string;
 }
 
 export interface LoginForm {
-  email: string;
+  medium: "email" | "mobile";
+  email?: string;
+  mobile_number?: string;
   password: string;
 }
 
@@ -65,12 +42,38 @@ export interface AuthResponse {
   refresh_token: string;
 }
 
-export interface ForgotPasswordData {
+export interface CreateUserForm {
+  first_name: string;
+  last_name: string;
   email: string;
+  role: "student" | "employer";
+  channel: "email" | "mobile";
+}
+
+export interface CreateUserResponse {
+  message: string;
+  user: User;
+}
+
+export interface CompleteUserRegistrationForm {
+  user_id: string;
+  password: string;
+  confirm_password: string;
+}
+
+export interface ForgotPasswordData {
+  email?: string;
+  mobile_number?: string;
 }
 
 export interface ResetPasswordData {
   token: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface ChangePasswordForm {
+  old_password: string;
   new_password: string;
   confirm_password: string;
 }

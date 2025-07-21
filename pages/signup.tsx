@@ -1,5 +1,16 @@
+// react
+import { useState } from "react";
+
+// next
+import Link from "next/link";
+
+// framer-motion
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactElement, useState } from "react";
+
+// lucide icons
+import { CheckCircle, User, Lock, Mail, Phone } from "lucide-react";
+
+// components
 import {
   Card,
   CardContent,
@@ -8,13 +19,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, User, Lock, Mail, Phone } from "lucide-react";
-import UserInformationForm from "@/components/forms/signup/user-information";
-import EmailVerificationForm from "@/components/forms/signup/email-verification";
-import MobileVerificationForm from "@/components/forms/signup/mobile-verification";
-import SetPasswordForm from "@/components/forms/signup/set-password";
+
+// forms
+import {
+  UserInformationForm,
+  EmailVerificationForm,
+  MobileVerificationForm,
+  SetPasswordForm,
+} from "@/components/signup";
+
+// interfaces
 import { User as UserInfo } from "@/interfaces/user";
-import RootLayout from "@/layouts/root";
 
 const SignUpFormWrapper = () => {
   const [step, setStep] = useState(0);
@@ -175,8 +190,8 @@ const SignUpFormWrapper = () => {
                           isCompleted
                             ? "bg-green-500 text-white"
                             : isActive
-                            ? "bg-primary text-white shadow-md"
-                            : "bg-gray-200 text-gray-500"
+                              ? "bg-primary text-white shadow-md"
+                              : "bg-gray-200 text-gray-500"
                         }`}
                       >
                         {isCompleted ? (
@@ -188,9 +203,7 @@ const SignUpFormWrapper = () => {
                       {index < navigationSteps.length - 1 && (
                         <div
                           className={`w-12 h-1 mx-2 transition-all duration-300 ${
-                            isCompleted
-                              ? "bg-green-500"
-                              : "bg-gray-200"
+                            isCompleted ? "bg-green-500" : "bg-gray-200"
                           }`}
                         />
                       )}
@@ -210,9 +223,7 @@ const SignUpFormWrapper = () => {
             {/* Main Error Display */}
             {mainError && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-600">
-                  {mainError}
-                </p>
+                <p className="text-sm text-red-600">{mainError}</p>
               </div>
             )}
 
@@ -230,6 +241,13 @@ const SignUpFormWrapper = () => {
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            <div className="text-center text-sm text-gray-500 mt-5">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary underline">
+                Login
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
@@ -237,8 +255,11 @@ const SignUpFormWrapper = () => {
   );
 };
 
-SignUpFormWrapper.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+import { Layouts } from "@/layouts";
+
+// ... existing code ...
+
+// Apply public layout
+SignUpFormWrapper.getLayout = Layouts.Public;
 
 export default SignUpFormWrapper;

@@ -59,6 +59,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   });
 
   const logout = () => {
+    const refreshToken = authService.getRefreshToken();
+    authService.logout({ refresh_token: refreshToken as string });
     authService.purgeAuth();
     mutateUser();
   };

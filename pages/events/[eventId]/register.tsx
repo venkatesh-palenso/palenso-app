@@ -1,12 +1,12 @@
 // react
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // next
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 // framer motion
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 // lucide icons
 import {
@@ -19,54 +19,55 @@ import {
   User,
   Building,
   GraduationCap,
-} from 'lucide-react';
+} from "lucide-react";
 
 // components
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Mock event data
 const mockEvent = {
-  id: '1',
-  title: 'Tech Career Fair 2024',
-  description: 'Join us for the biggest tech career fair of the year! Connect with top companies, attend workshops, and discover exciting opportunities in the tech industry.',
-  date: '2024-03-15',
-  time: '10:00 AM - 6:00 PM',
-  location: 'San Francisco Convention Center',
-  address: '123 Main Street, San Francisco, CA 94102',
-  type: 'Career Fair',
-  organizer: 'TechCorp',
-  organizerLogo: '/api/placeholder/100/100',
+  id: "1",
+  title: "Tech Career Fair 2024",
+  description:
+    "Join us for the biggest tech career fair of the year! Connect with top companies, attend workshops, and discover exciting opportunities in the tech industry.",
+  date: "2024-03-15",
+  time: "10:00 AM - 6:00 PM",
+  location: "San Francisco Convention Center",
+  address: "123 Main Street, San Francisco, CA 94102",
+  type: "Career Fair",
+  organizer: "TechCorp",
+  organizerLogo: "/api/placeholder/100/100",
   attendees: 500,
   maxAttendees: 1000,
   price: 0,
-  category: 'Technology',
-  tags: ['Career Fair', 'Networking', 'Workshops', 'Tech Jobs'],
+  category: "Technology",
+  tags: ["Career Fair", "Networking", "Workshops", "Tech Jobs"],
   agenda: [
-    '10:00 AM - Opening Keynote',
-    '11:00 AM - Company Presentations',
-    '12:00 PM - Networking Lunch',
-    '2:00 PM - Workshop Sessions',
-    '4:00 PM - Job Interviews',
-    '6:00 PM - Closing Remarks',
+    "10:00 AM - Opening Keynote",
+    "11:00 AM - Company Presentations",
+    "12:00 PM - Networking Lunch",
+    "2:00 PM - Workshop Sessions",
+    "4:00 PM - Job Interviews",
+    "6:00 PM - Closing Remarks",
   ],
   requirements: [
-    'Valid student ID or recent graduate certificate',
-    'Professional attire recommended',
-    'Bring copies of your resume',
-    'Business cards (optional)',
+    "Valid student ID or recent graduate certificate",
+    "Professional attire recommended",
+    "Bring copies of your resume",
+    "Business cards (optional)",
   ],
 };
 
@@ -76,18 +77,18 @@ const RegisterEventPage: React.FC = () => {
   const [mounted, setMounted] = useState(false);
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    university: '',
-    major: '',
-    graduationYear: '',
-    currentRole: '',
-    company: '',
-    dietaryRestrictions: '',
-    specialNeeds: '',
-    interests: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    university: "",
+    major: "",
+    graduationYear: "",
+    currentRole: "",
+    company: "",
+    dietaryRestrictions: "",
+    specialNeeds: "",
+    interests: "",
     agreeToTerms: false,
     agreeToMarketing: false,
   });
@@ -97,16 +98,16 @@ const RegisterEventPage: React.FC = () => {
   }, []);
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle event registration logic here
-    console.log('Registering for event:', { eventId, formData });
+    console.log("Registering for event:", { eventId, formData });
     // Redirect to confirmation page
     router.push(`/events/${eventId}/confirmation`);
   };
@@ -123,11 +124,11 @@ const RegisterEventPage: React.FC = () => {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -214,13 +215,18 @@ const RegisterEventPage: React.FC = () => {
                       </div>
                       <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                         <Users className="h-4 w-4 mr-2" />
-                        {mockEvent.attendees} / {mockEvent.maxAttendees} registered
+                        {mockEvent.attendees} / {mockEvent.maxAttendees}{" "}
+                        registered
                       </div>
                     </div>
 
                     <div className="flex flex-wrap gap-1">
                       {mockEvent.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {tag}
                         </Badge>
                       ))}
@@ -279,7 +285,9 @@ const RegisterEventPage: React.FC = () => {
                             <Input
                               id="firstName"
                               value={formData.firstName}
-                              onChange={(e) => handleInputChange('firstName', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("firstName", e.target.value)
+                              }
                               placeholder="John"
                               required
                             />
@@ -289,7 +297,9 @@ const RegisterEventPage: React.FC = () => {
                             <Input
                               id="lastName"
                               value={formData.lastName}
-                              onChange={(e) => handleInputChange('lastName', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("lastName", e.target.value)
+                              }
                               placeholder="Doe"
                               required
                             />
@@ -303,7 +313,9 @@ const RegisterEventPage: React.FC = () => {
                               id="email"
                               type="email"
                               value={formData.email}
-                              onChange={(e) => handleInputChange('email', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("email", e.target.value)
+                              }
                               placeholder="john.doe@example.com"
                               required
                             />
@@ -314,7 +326,9 @@ const RegisterEventPage: React.FC = () => {
                               id="phone"
                               type="tel"
                               value={formData.phone}
-                              onChange={(e) => handleInputChange('phone', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("phone", e.target.value)
+                              }
                               placeholder="+1 (555) 123-4567"
                             />
                           </div>
@@ -336,11 +350,15 @@ const RegisterEventPage: React.FC = () => {
                       <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="university">University/Institution</Label>
+                            <Label htmlFor="university">
+                              University/Institution
+                            </Label>
                             <Input
                               id="university"
                               value={formData.university}
-                              onChange={(e) => handleInputChange('university', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("university", e.target.value)
+                              }
                               placeholder="Stanford University"
                             />
                           </div>
@@ -349,7 +367,9 @@ const RegisterEventPage: React.FC = () => {
                             <Input
                               id="major"
                               value={formData.major}
-                              onChange={(e) => handleInputChange('major', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("major", e.target.value)
+                              }
                               placeholder="Computer Science"
                             />
                           </div>
@@ -357,31 +377,46 @@ const RegisterEventPage: React.FC = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="graduationYear">Graduation Year</Label>
+                            <Label htmlFor="graduationYear">
+                              Graduation Year
+                            </Label>
                             <Input
                               id="graduationYear"
                               value={formData.graduationYear}
-                              onChange={(e) => handleInputChange('graduationYear', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "graduationYear",
+                                  e.target.value,
+                                )
+                              }
                               placeholder="2024"
                             />
                           </div>
                           <div>
-                            <Label htmlFor="currentRole">Current Role (if any)</Label>
+                            <Label htmlFor="currentRole">
+                              Current Role (if any)
+                            </Label>
                             <Input
                               id="currentRole"
                               value={formData.currentRole}
-                              onChange={(e) => handleInputChange('currentRole', e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("currentRole", e.target.value)
+                              }
                               placeholder="Student, Intern, etc."
                             />
                           </div>
                         </div>
 
                         <div>
-                          <Label htmlFor="company">Current Company (if employed)</Label>
+                          <Label htmlFor="company">
+                            Current Company (if employed)
+                          </Label>
                           <Input
                             id="company"
                             value={formData.company}
-                            onChange={(e) => handleInputChange('company', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("company", e.target.value)
+                            }
                             placeholder="TechCorp"
                           />
                         </div>
@@ -405,28 +440,41 @@ const RegisterEventPage: React.FC = () => {
                           <Textarea
                             id="interests"
                             value={formData.interests}
-                            onChange={(e) => handleInputChange('interests', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("interests", e.target.value)
+                            }
                             placeholder="What areas of technology are you most interested in? (e.g., AI, Web Development, Data Science)"
                             rows={3}
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor="dietaryRestrictions">Dietary Restrictions</Label>
+                          <Label htmlFor="dietaryRestrictions">
+                            Dietary Restrictions
+                          </Label>
                           <Input
                             id="dietaryRestrictions"
                             value={formData.dietaryRestrictions}
-                            onChange={(e) => handleInputChange('dietaryRestrictions', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "dietaryRestrictions",
+                                e.target.value,
+                              )
+                            }
                             placeholder="Vegetarian, Vegan, Gluten-free, etc."
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor="specialNeeds">Special Accommodations</Label>
+                          <Label htmlFor="specialNeeds">
+                            Special Accommodations
+                          </Label>
                           <Textarea
                             id="specialNeeds"
                             value={formData.specialNeeds}
-                            onChange={(e) => handleInputChange('specialNeeds', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("specialNeeds", e.target.value)
+                            }
                             placeholder="Any special accommodations you may need..."
                             rows={2}
                           />
@@ -444,11 +492,17 @@ const RegisterEventPage: React.FC = () => {
                           <Checkbox
                             id="agreeToTerms"
                             checked={formData.agreeToTerms}
-                            onCheckedChange={(checked: boolean) => handleInputChange('agreeToTerms', checked as boolean)}
+                            onCheckedChange={(checked: boolean) =>
+                              handleInputChange(
+                                "agreeToTerms",
+                                checked as boolean,
+                              )
+                            }
                             required
                           />
                           <Label htmlFor="agreeToTerms" className="text-sm">
-                            I agree to the event terms and conditions and privacy policy *
+                            I agree to the event terms and conditions and
+                            privacy policy *
                           </Label>
                         </div>
 
@@ -456,10 +510,16 @@ const RegisterEventPage: React.FC = () => {
                           <Checkbox
                             id="agreeToMarketing"
                             checked={formData.agreeToMarketing}
-                            onCheckedChange={(checked: boolean) => handleInputChange('agreeToMarketing', checked as boolean)}
+                            onCheckedChange={(checked: boolean) =>
+                              handleInputChange(
+                                "agreeToMarketing",
+                                checked as boolean,
+                              )
+                            }
                           />
                           <Label htmlFor="agreeToMarketing" className="text-sm">
-                            I agree to receive updates about future events and opportunities
+                            I agree to receive updates about future events and
+                            opportunities
                           </Label>
                         </div>
                       </CardContent>
@@ -491,4 +551,4 @@ const RegisterEventPage: React.FC = () => {
   );
 };
 
-export default RegisterEventPage; 
+export default RegisterEventPage;

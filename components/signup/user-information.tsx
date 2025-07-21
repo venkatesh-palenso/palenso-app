@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { authService } from "@/services";
-import { CheckAvailabilityForm, CreateUserForm } from "@/interfaces/auth";
+import { MediumAvailabilityForm, CreateUserForm } from "@/interfaces/auth";
 import { User as UserInfo } from "@/interfaces/user";
 
 interface UserInformationFormProps {
@@ -70,7 +70,7 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
   const handleEmailBlur = async () => {
     try {
       const response = await authService.emailAvailabilty(
-        formData.email as CheckAvailabilityForm
+        formData.email as MediumAvailabilityForm,
       );
       setEmailAvailability((prev) => ({
         ...prev,
@@ -102,6 +102,7 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
         last_name: formData.lastName,
         email: formData.email,
         role: formData.role as "student" | "employer",
+        channel: "email",
       };
       const response = await authService.createUser(payload);
 
@@ -145,7 +146,9 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
               value={formData.firstName}
               onChange={handleChange}
               className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
-                errors.firstName ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
+                errors.firstName
+                  ? "border-red-300 focus:border-red-400 focus:ring-red-400"
+                  : ""
               }`}
               required
             />
@@ -169,7 +172,9 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
               value={formData.lastName}
               onChange={handleChange}
               className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
-                errors.lastName ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
+                errors.lastName
+                  ? "border-red-300 focus:border-red-400 focus:ring-red-400"
+                  : ""
               }`}
               required
             />
@@ -194,7 +199,9 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             value={formData.email}
             onChange={handleChange}
             className={`pl-10 border-gray-300 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 ${
-              errors.email ? "border-red-300 focus:border-red-400 focus:ring-red-400" : ""
+              errors.email
+                ? "border-red-300 focus:border-red-400 focus:ring-red-400"
+                : ""
             }`}
             required
             onBlur={handleEmailBlur}
@@ -217,7 +224,7 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             variant={formData.role === "student" ? "default" : "outline"}
             className={`h-20 flex flex-col items-center justify-center space-y-2 transition-all duration-200 ${
               formData.role === "student"
-                ? "bg-primary hover:bg-primary/90"
+                ? "bg-primary hover:bg-primary/90 text-white"
                 : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
             }`}
             onClick={() => handleRoleSelect("student")}
@@ -230,7 +237,7 @@ const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {
             variant={formData.role === "employer" ? "default" : "outline"}
             className={`h-20 flex flex-col items-center justify-center space-y-2 transition-all duration-200 ${
               formData.role === "employer"
-                ? "bg-primary hover:bg-primary/90"
+                ? "bg-primary hover:bg-primary/90 text-white"
                 : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
             }`}
             onClick={() => handleRoleSelect("employer")}

@@ -1,12 +1,28 @@
+// react
 import React from "react";
+
+// next
+import { useRouter } from "next/router";
+
+// framer-motion
 import { motion } from "framer-motion";
+
+// lucide icons
 import { Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+// services
 import { authService } from "@/services";
+
+// interfaces
 import { User } from "@/interfaces/user";
-import { useRouter } from "next/router";
+
+// context
+import { useUser } from "@/context";
 
 interface SetPasswordFormProps {
   userData: User;
@@ -15,6 +31,8 @@ interface SetPasswordFormProps {
 
 const SetPasswordForm = ({ userData, prevStep }: SetPasswordFormProps) => {
   const router = useRouter();
+  const { mutateUser } = useUser();
+
   const [formData, setFormData] = React.useState({
     password: "",
     confirmPassword: "",
@@ -101,7 +119,9 @@ const SetPasswordForm = ({ userData, prevStep }: SetPasswordFormProps) => {
         confirm_password: formData.confirmPassword,
       });
 
-      router.push("/");
+      await mutateUser();
+
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error setting password:", error);
     } finally {

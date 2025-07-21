@@ -1,16 +1,16 @@
 // react
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 
 // framer motion
 import { motion, AnimatePresence } from "framer-motion";
 
 // lucide icons
-import { 
-  ArrowRight, 
-  ArrowLeft, 
-  Save, 
-  Plus, 
-  X, 
+import {
+  ArrowRight,
+  ArrowLeft,
+  Save,
+  Plus,
+  X,
   CheckCircle,
   Briefcase,
   FileText,
@@ -19,7 +19,7 @@ import {
   GraduationCap,
   Heart,
   Code,
-  Target
+  Target,
 } from "lucide-react";
 
 // components
@@ -29,10 +29,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { AuthGuard } from "@/components/auth-guard";
-
-// layout
-import RootLayout from "@/layouts/root";
 
 interface JobPosting {
   title: string;
@@ -150,7 +146,7 @@ const PostJobPage = () => {
     setJobData((prev) => ({
       ...prev,
       [type]: (prev[type as keyof JobPosting] as string[]).filter(
-        (_, i) => i !== index
+        (_, i) => i !== index,
       ),
     }));
   };
@@ -190,7 +186,7 @@ const PostJobPage = () => {
     setIsSubmitting(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       console.log("Job posting data:", jobData);
       setShowSuccess(true);
     } catch (error) {
@@ -220,7 +216,8 @@ const PostJobPage = () => {
                 Basic Job Information
               </h3>
               <p className="text-muted-foreground">
-                Let&apos;s start with the essential details about your job posting
+                Let&apos;s start with the essential details about your job
+                posting
               </p>
             </div>
 
@@ -246,7 +243,9 @@ const PostJobPage = () => {
                   <Input
                     id="company"
                     value={jobData.company}
-                    onChange={(e) => handleInputChange("company", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("company", e.target.value)
+                    }
                     className="h-12 text-base"
                   />
                 </div>
@@ -258,7 +257,9 @@ const PostJobPage = () => {
                     id="location"
                     placeholder="e.g., San Francisco, CA"
                     value={jobData.location}
-                    onChange={(e) => handleInputChange("location", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("location", e.target.value)
+                    }
                     className="h-12 text-base"
                   />
                 </div>
@@ -266,13 +267,18 @@ const PostJobPage = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="employmentType" className="text-base font-medium">
+                  <Label
+                    htmlFor="employmentType"
+                    className="text-base font-medium"
+                  >
                     Employment Type *
                   </Label>
                   <select
                     id="employmentType"
                     value={jobData.employmentType}
-                    onChange={(e) => handleInputChange("employmentType", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("employmentType", e.target.value)
+                    }
                     className="flex h-12 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Select employment type</option>
@@ -283,13 +289,18 @@ const PostJobPage = () => {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="experienceLevel" className="text-base font-medium">
+                  <Label
+                    htmlFor="experienceLevel"
+                    className="text-base font-medium"
+                  >
                     Experience Level *
                   </Label>
                   <select
                     id="experienceLevel"
                     value={jobData.experienceLevel}
-                    onChange={(e) => handleInputChange("experienceLevel", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("experienceLevel", e.target.value)
+                    }
                     className="flex h-12 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Select experience level</option>
@@ -335,7 +346,9 @@ const PostJobPage = () => {
                   <select
                     id="currency"
                     value={jobData.salary.currency}
-                    onChange={(e) => handleSalaryChange("currency", e.target.value)}
+                    onChange={(e) =>
+                      handleSalaryChange("currency", e.target.value)
+                    }
                     className="flex h-12 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="USD">USD</option>
@@ -378,7 +391,9 @@ const PostJobPage = () => {
                   id="description"
                   placeholder="Describe the role, responsibilities, and what makes this position exciting..."
                   value={jobData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   className="min-h-32 text-base"
                 />
               </div>
@@ -392,18 +407,25 @@ const PostJobPage = () => {
                     id="department"
                     placeholder="e.g., Engineering, Marketing, Sales"
                     value={jobData.department}
-                    onChange={(e) => handleInputChange("department", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("department", e.target.value)
+                    }
                     className="h-12 text-base"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="remotePolicy" className="text-base font-medium">
+                  <Label
+                    htmlFor="remotePolicy"
+                    className="text-base font-medium"
+                  >
                     Remote Policy *
                   </Label>
                   <select
                     id="remotePolicy"
                     value={jobData.remotePolicy}
-                    onChange={(e) => handleInputChange("remotePolicy", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("remotePolicy", e.target.value)
+                    }
                     className="flex h-12 w-full rounded-lg border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Select remote policy</option>
@@ -439,7 +461,9 @@ const PostJobPage = () => {
 
             <div className="space-y-8">
               <div className="space-y-4">
-                <Label className="text-base font-medium">Key Responsibilities *</Label>
+                <Label className="text-base font-medium">
+                  Key Responsibilities *
+                </Label>
                 <div className="space-y-3">
                   {jobData.responsibilities.map((item, index) => (
                     <motion.div
@@ -473,7 +497,9 @@ const PostJobPage = () => {
                       className="flex-1"
                     />
                     <Button
-                      onClick={() => addItem("responsibilities", newResponsibility)}
+                      onClick={() =>
+                        addItem("responsibilities", newResponsibility)
+                      }
                       disabled={!newResponsibility.trim()}
                     >
                       <Plus className="w-4 h-4" />
@@ -483,7 +509,9 @@ const PostJobPage = () => {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-base font-medium">Qualifications *</Label>
+                <Label className="text-base font-medium">
+                  Qualifications *
+                </Label>
                 <div className="space-y-3">
                   {jobData.qualifications.map((item, index) => (
                     <motion.div
@@ -517,7 +545,9 @@ const PostJobPage = () => {
                       className="flex-1"
                     />
                     <Button
-                      onClick={() => addItem("qualifications", newQualification)}
+                      onClick={() =>
+                        addItem("qualifications", newQualification)
+                      }
                       disabled={!newQualification.trim()}
                     >
                       <Plus className="w-4 h-4" />
@@ -545,7 +575,8 @@ const PostJobPage = () => {
                 Benefits & Skills
               </h3>
               <p className="text-muted-foreground">
-                Highlight the benefits you offer and the skills you&apos;re looking for
+                Highlight the benefits you offer and the skills you&apos;re
+                looking for
               </p>
             </div>
 
@@ -595,7 +626,9 @@ const PostJobPage = () => {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-base font-medium">Required Skills *</Label>
+                <Label className="text-base font-medium">
+                  Required Skills *
+                </Label>
                 <div className="space-y-3">
                   {jobData.skills.map((item, index) => (
                     <motion.div
@@ -664,7 +697,10 @@ const PostJobPage = () => {
             <div className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="contactEmail" className="text-base font-medium">
+                  <Label
+                    htmlFor="contactEmail"
+                    className="text-base font-medium"
+                  >
                     Contact Email *
                   </Label>
                   <Input
@@ -672,12 +708,17 @@ const PostJobPage = () => {
                     type="email"
                     placeholder="hr@company.com"
                     value={jobData.contactEmail}
-                    onChange={(e) => handleInputChange("contactEmail", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("contactEmail", e.target.value)
+                    }
                     className="h-12 text-base"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone" className="text-base font-medium">
+                  <Label
+                    htmlFor="contactPhone"
+                    className="text-base font-medium"
+                  >
                     Contact Phone *
                   </Label>
                   <Input
@@ -685,21 +726,28 @@ const PostJobPage = () => {
                     type="tel"
                     placeholder="+1 (555) 123-4567"
                     value={jobData.contactPhone}
-                    onChange={(e) => handleInputChange("contactPhone", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("contactPhone", e.target.value)
+                    }
                     className="h-12 text-base"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="applicationDeadline" className="text-base font-medium">
+                <Label
+                  htmlFor="applicationDeadline"
+                  className="text-base font-medium"
+                >
                   Application Deadline *
                 </Label>
                 <Input
                   id="applicationDeadline"
                   type="date"
                   value={jobData.applicationDeadline}
-                  onChange={(e) => handleInputChange("applicationDeadline", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("applicationDeadline", e.target.value)
+                  }
                   className="h-12 text-base"
                 />
               </div>
@@ -727,7 +775,8 @@ const PostJobPage = () => {
             Job Posted Successfully!
           </h2>
           <p className="text-banner-glow mb-8">
-            Your job posting has been published and is now visible to potential candidates.
+            Your job posting has been published and is now visible to potential
+            candidates.
           </p>
           <div className="space-y-4">
             <Button className="w-full" size="lg">
@@ -796,8 +845,8 @@ const PostJobPage = () => {
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 transition-all rounded-full ${
-                    index < activeStep 
-                      ? "bg-gradient-to-r from-blue-500 to-cyan-500" 
+                    index < activeStep
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-500"
                       : "bg-gray-200"
                   }`}
                 />
@@ -868,15 +917,11 @@ const PostJobPage = () => {
   );
 };
 
-// Wrap with AuthGuard for employer role
-const ProtectedPostJobPage = () => (
-  <AuthGuard requiredRole="employer">
-    <PostJobPage />
-  </AuthGuard>
-);
+import { Layouts } from "@/layouts";
 
-ProtectedPostJobPage.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+// ... existing code ...
 
-export default ProtectedPostJobPage;
+// Apply employer layout
+PostJobPage.getLayout = Layouts.Employer;
+
+export default PostJobPage;

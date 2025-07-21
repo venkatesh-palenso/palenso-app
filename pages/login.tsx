@@ -1,5 +1,5 @@
 // react
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 
 // next
 import Link from "next/link";
@@ -36,11 +36,9 @@ import {
 // services
 import { authService } from "@/services";
 
-// layout
-import RootLayout from "@/layouts/root";
-
 // context
 import { useUser } from "@/context";
+import { Layouts } from "@/layouts";
 
 export default function Login() {
   const router = useRouter();
@@ -65,12 +63,13 @@ export default function Login() {
 
     try {
       await authService.login({
+        medium: "email",
         email: formData.email,
         password: formData.password,
       });
 
       await mutateUser();
-      router.push("/");
+      await router.push("/dashboard");
     } catch (err) {
       setFormData((prev) => ({
         ...prev,
@@ -96,7 +95,7 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/" });
+    signIn("google", { callbackUrl: "/dashboard" });
   };
 
   const { error, loading, showPassword } = formData;
@@ -292,6 +291,5 @@ export default function Login() {
     </div>
   );
 }
-Login.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+
+Login.getLayout = Layouts.Public;

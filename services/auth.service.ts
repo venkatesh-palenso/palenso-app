@@ -1,3 +1,6 @@
+// axios
+import axios from "axios";
+
 // base service
 import APIService from "./api.service";
 
@@ -7,21 +10,19 @@ import { AUTH_ENDPOINTS } from "@/constants/endpoints";
 // interfaces
 import {
   AuthResponse,
-  AvailabilityResponse,
-  CheckAvailabilityForm,
+  MediumAvailabilityResponse,
   CompleteUserRegistrationForm,
   CreateUserForm,
   CreateUserResponse,
   ForgotPasswordData,
   LoginForm,
-  RequestEmailCodeForm,
-  RequestMobileCodeForm,
+  RequestMediumVerificationForm,
   ResetPasswordData,
-  VerificationRequestResponse,
-  VerifyEmailForm,
-  VerifyMobileForm,
+  VerifyMediumForm,
+  ChangePasswordForm,
+  MessageResponse,
+  MediumAvailabilityForm,
 } from "@/interfaces/auth";
-import axios from "axios";
 
 class AuthService extends APIService {
   /**
@@ -34,9 +35,9 @@ class AuthService extends APIService {
    * @returns A promise that resolves to an `AvailabilityResponse` object.
    * @throws Throws an error if the request fails.
    */
-  emailAvailabilty(email: CheckAvailabilityForm) {
-    return this.post(AUTH_ENDPOINTS.CHECK_AVAILABILITY, { email })
-      .then((response: { data: AvailabilityResponse }) => {
+  emailAvailabilty(email: MediumAvailabilityForm) {
+    return this.post(AUTH_ENDPOINTS.CHECK_MEDIUM_AVAILABILITY, { email })
+      .then((response: { data: MediumAvailabilityResponse }) => {
         return response.data;
       })
       .catch((error) => {
@@ -54,9 +55,11 @@ class AuthService extends APIService {
    * @returns A promise that resolves to an `AvailabilityResponse` object.
    * @throws Throws an error if the request fails.
    */
-  mobileAvailabilty(mobile_number: CheckAvailabilityForm) {
-    return this.post(AUTH_ENDPOINTS.CHECK_AVAILABILITY, { mobile_number })
-      .then((response: { data: AvailabilityResponse }) => {
+  mobileAvailabilty(mobile_number: MediumAvailabilityForm) {
+    return this.post(AUTH_ENDPOINTS.CHECK_MEDIUM_AVAILABILITY, {
+      mobile_number,
+    })
+      .then((response: { data: MediumAvailabilityResponse }) => {
         return response.data;
       })
       .catch((error) => {
@@ -106,9 +109,9 @@ class AuthService extends APIService {
    * @param data - The form data containing user ID and email.
    * @returns A promise that resolves to a message indicating success.
    */
-  requestEmailCode(data: RequestEmailCodeForm) {
-    return this.post(AUTH_ENDPOINTS.REQUEST_CODE, data)
-      .then((response: { data: VerificationRequestResponse }) => {
+  requestEmailCode(data: RequestMediumVerificationForm) {
+    return this.post(AUTH_ENDPOINTS.REQUEST_MEDIUM_VERIFICATION, data)
+      .then((response: { data: MessageResponse }) => {
         return response.data.message;
       })
       .catch((error) => {
@@ -121,10 +124,10 @@ class AuthService extends APIService {
    * @param data - The form data containing user ID and mobile number.
    * @returns A promise that resolves to a message indicating success.
    */
-  requestMobileCode(data: RequestMobileCodeForm) {
-    return this.post(AUTH_ENDPOINTS.REQUEST_CODE, data)
-      .then((response: { data: VerificationRequestResponse }) => {
-        return response.data;
+  requestMobileCode(data: RequestMediumVerificationForm) {
+    return this.post(AUTH_ENDPOINTS.REQUEST_MEDIUM_VERIFICATION, data)
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
       })
       .catch((error) => {
         throw error;
@@ -138,10 +141,10 @@ class AuthService extends APIService {
    * @returns A promise that resolves to a message string from the verification response.
    * @throws Throws an error if the verification request fails.
    */
-  verifyEmailCode(data: VerifyEmailForm) {
-    return this.post(AUTH_ENDPOINTS.VERIFY_EMAIL, data)
-      .then((response: { data: VerificationRequestResponse }) => {
-        return response.data;
+  verifyEmailCode(data: VerifyMediumForm) {
+    return this.post(AUTH_ENDPOINTS.VERIFY_MEDIUM, data)
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
       })
       .catch((error) => {
         throw error;
@@ -155,10 +158,10 @@ class AuthService extends APIService {
    * @returns A promise that resolves with the verification message from the server.
    * @throws Will throw an error if the verification request fails.
    */
-  verifyMobileCode(data: VerifyMobileForm) {
-    return this.post(AUTH_ENDPOINTS.VERIFY_MOBILE, data)
-      .then((response: { data: VerificationRequestResponse }) => {
-        return response.data;
+  verifyMobileCode(data: VerifyMediumForm) {
+    return this.post(AUTH_ENDPOINTS.VERIFY_MEDIUM, data)
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
       })
       .catch((error) => {
         throw error;
@@ -189,8 +192,8 @@ class AuthService extends APIService {
    * @returns {Promise<unknown>} A promise that resolves with the response data on success.
    * @throws Will throw the error response data if the request fails.
    */
-  logout() {
-    return this.post(AUTH_ENDPOINTS.USER_LOGOUT, {})
+  logout(data: { refresh_token: string }) {
+    return this.post(AUTH_ENDPOINTS.USER_LOGOUT, data)
       .then((response: { data: unknown }) => response.data)
       .catch((error) => {
         throw error;
@@ -206,8 +209,8 @@ class AuthService extends APIService {
    */
   forgotPassword(data: ForgotPasswordData) {
     return this.post(AUTH_ENDPOINTS.USER_FORGOT_PASSWORD, data)
-      .then((response) => {
-        return response.data;
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
       })
       .catch((error) => {
         throw error;
@@ -223,8 +226,25 @@ class AuthService extends APIService {
    */
   resetPassword(data: ResetPasswordData) {
     return this.post(AUTH_ENDPOINTS.USER_RESET_PASSWORD, data)
-      .then((response) => {
-        return response.data;
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Changes the password for the current user.
+   *
+   * @param data - The form data containing the old password, new password, and confirmation password.
+   * @returns A promise that resolves with the response data if successful.
+   * @throws Throws the error response data if the request fails.
+   */
+  changePassword(data: ChangePasswordForm) {
+    return this.post(AUTH_ENDPOINTS.USER_CHANGE_PASSWORD, data)
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
       })
       .catch((error) => {
         throw error;

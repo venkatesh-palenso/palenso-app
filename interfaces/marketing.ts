@@ -14,4 +14,4 @@ export interface Feature {
 export interface MarketingData {
   stats: Stat[];
   features: Feature[];
-} 
+}

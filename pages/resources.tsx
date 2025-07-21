@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import RootLayout from "@/layouts/root";
+import { Layouts } from "@/layouts";
 
 export default function Resources() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,170 +148,178 @@ export default function Resources() {
         />
       </Head>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-4xl font-bold mb-2">Career Resources</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Access guides, templates, and tools to advance your career
-          </p>
-        </motion.div>
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl font-bold mb-2">Career Resources</h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Access guides, templates, and tools to advance your career
+            </p>
+          </motion.div>
 
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Card className="p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-              <div className="md:col-span-4">
-                <div className="relative">
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
-                  <Input
-                    placeholder="Search resources"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+          {/* Search and Filters */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <Card className="p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div className="md:col-span-4">
+                  <div className="relative">
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
+                    <Input
+                      placeholder="Search resources"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-3">
+                  <Select value={resourceType} onValueChange={setResourceType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Resource Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="guide">Guides</SelectItem>
+                      <SelectItem value="video">Videos</SelectItem>
+                      <SelectItem value="template">Templates</SelectItem>
+                      <SelectItem value="tool">Tools</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-3">
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      <SelectItem value="resume">Resume</SelectItem>
+                      <SelectItem value="interview">Interview</SelectItem>
+                      <SelectItem value="networking">Networking</SelectItem>
+                      <SelectItem value="career-planning">
+                        Career Planning
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Button className="w-full h-14">
+                    <Filter size={20} className="mr-2" />
+                    Filter
+                  </Button>
                 </div>
               </div>
-              <div className="md:col-span-3">
-                <Select value={resourceType} onValueChange={setResourceType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Resource Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="guide">Guides</SelectItem>
-                    <SelectItem value="video">Videos</SelectItem>
-                    <SelectItem value="template">Templates</SelectItem>
-                    <SelectItem value="tool">Tools</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="md:col-span-3">
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="resume">Resume</SelectItem>
-                    <SelectItem value="interview">Interview</SelectItem>
-                    <SelectItem value="networking">Networking</SelectItem>
-                    <SelectItem value="career-planning">
-                      Career Planning
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="md:col-span-2">
-                <Button className="w-full h-14">
-                  <Filter size={20} className="mr-2" />
-                  Filter
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
 
-        {/* Category Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-            <TabsList className="grid w-full grid-cols-5 bg-white">
-              {categories.map((category, index) => (
-                <TabsTrigger key={index} value={category.value}>
-                  {category.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </motion.div>
-
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">Showing {resources.length} resources</p>
-        </div>
-
-        {/* Resources Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {resources.map((resource, index) => (
-            <motion.div
-              key={resource.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+          {/* Category Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="mb-8"
             >
-              <Card className="h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <Badge variant="default" className="mb-2">
-                      {resource.type}
+              <TabsList className="grid w-full grid-cols-5 bg-white">
+                {categories.map((category, index) => (
+                  <TabsTrigger key={index} value={category.value}>
+                    {category.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </motion.div>
+
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {resources.length} resources
+            </p>
+          </div>
+
+          {/* Resources Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {resources.map((resource, index) => (
+              <motion.div
+                key={resource.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <Badge variant="default" className="mb-2">
+                        {resource.type}
+                      </Badge>
+                      <Badge variant="outline">{resource.format}</Badge>
+                    </div>
+
+                    <div className="flex items-center mb-4">
+                      <div className="mr-3">{getIcon(resource.type)}</div>
+                      <h3 className="text-xl font-semibold">
+                        {resource.title}
+                      </h3>
+                    </div>
+
+                    <Badge variant="secondary" className="mb-4">
+                      {resource.category}
                     </Badge>
-                    <Badge variant="outline">{resource.format}</Badge>
-                  </div>
 
-                  <div className="flex items-center mb-4">
-                    <div className="mr-3">{getIcon(resource.type)}</div>
-                    <h3 className="text-xl font-semibold">{resource.title}</h3>
-                  </div>
+                    <p className="text-gray-600 text-sm mb-6">
+                      {resource.description}
+                    </p>
 
-                  <Badge variant="secondary" className="mb-4">
-                    {resource.category}
-                  </Badge>
-
-                  <p className="text-gray-600 text-sm mb-6">
-                    {resource.description}
-                  </p>
-
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-600 text-sm">
-                      Downloads: {resource.downloads}
-                    </span>
-                    <span className="text-gray-600 text-sm">
-                      Size: {resource.size}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center mb-6">
-                    <div className="flex items-center gap-1">
-                      <span className="text-gray-600 text-sm mr-1">
-                        Rating:
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-gray-600 text-sm">
+                        Downloads: {resource.downloads}
                       </span>
-                      <div className="flex">{renderStars(resource.rating)}</div>
-                      <span className="text-gray-600 text-sm ml-1">
-                        {resource.rating}
+                      <span className="text-gray-600 text-sm">
+                        Size: {resource.size}
                       </span>
                     </div>
-                  </div>
 
-                  <Button className="w-full">
-                    <Download size={20} className="mr-2" />
-                    Download
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    <div className="flex justify-between items-center mb-6">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600 text-sm mr-1">
+                          Rating:
+                        </span>
+                        <div className="flex">
+                          {renderStars(resource.rating)}
+                        </div>
+                        <span className="text-gray-600 text-sm ml-1">
+                          {resource.rating}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button className="w-full">
+                      <Download size={20} className="mr-2" />
+                      Download
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </>
   );
 }
 
-Resources.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+Resources.getLayout = Layouts.Public;

@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useUser } from '@/context/user';
-import Spinner from './spinner';
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useUser } from "@/context/user";
+import Spinner from "../components/spinner";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requiredRole?: 'student' | 'employer';
+  requiredRole?: "admin" | "student" | "employer";
   fallback?: React.ReactNode;
 }
 
-export function AuthGuard({ 
-  children, 
-  requiredRole, 
-  fallback 
+export function AuthGuard({
+  children,
+  requiredRole,
+  fallback,
 }: AuthGuardProps) {
   const { user, isLoading, isLoggedIn } = useUser();
   const router = useRouter();
@@ -23,17 +23,19 @@ export function AuthGuard({
     if (!isLoading) {
       // If not logged in, redirect to login
       if (isLoggedIn === false) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       // If role is required and user doesn't have the required role
       if (requiredRole && user && user.role !== requiredRole) {
         // Redirect based on user's actual role
-        if (user.role === 'student') {
-          router.push('/student/dashboard');
-        } else if (user.role === 'employer') {
-          router.push('/employer/dashboard');
+        if (user.role === "student") {
+          router.push("/student/dashboard");
+        } else if (user.role === "employer") {
+          router.push("/employer/dashboard");
+        } else if (user.role === "admin") {
+          router.push("/admin/dashboard");
         }
         return;
       }
@@ -72,9 +74,9 @@ export function AuthGuard({
 }
 
 // Higher-order component for role-based protection
-export function withAuthGuard<P extends object>(
+export default function withAuthGuard<P extends object>(
   Component: React.ComponentType<P>,
-  requiredRole?: 'student' | 'employer'
+  requiredRole?: "admin" | "student" | "employer",
 ) {
   return function AuthenticatedComponent(props: P) {
     return (
@@ -83,4 +85,4 @@ export function withAuthGuard<P extends object>(
       </AuthGuard>
     );
   };
-} 
+}

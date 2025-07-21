@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, Users, Star, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import RootLayout from "@/layouts/root";
 
 export default function Companies() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -136,172 +135,179 @@ export default function Companies() {
           content="Explore companies and their job opportunities on Palenso"
         />
       </Head>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-8 ">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-4xl font-bold mb-2">Explore Companies</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Discover top employers and their opportunities
-          </p>
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 py-8 ">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl font-bold mb-2">Explore Companies</h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Discover top employers and their opportunities
+            </p>
+          </motion.div>
 
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Card className="p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-              <div className="md:col-span-4">
-                <div className="relative">
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
-                  <Input
-                    placeholder="Search companies"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+          {/* Search and Filters */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <Card className="p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div className="md:col-span-4">
+                  <div className="relative">
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
+                    <Input
+                      placeholder="Search companies"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-3">
+                  <Select value={industry} onValueChange={setIndustry}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Industries</SelectItem>
+                      <SelectItem value="technology">Technology</SelectItem>
+                      <SelectItem value="e-commerce">E-commerce</SelectItem>
+                      <SelectItem value="entertainment">
+                        Entertainment
+                      </SelectItem>
+                      <SelectItem value="finance">Finance</SelectItem>
+                      <SelectItem value="healthcare">Healthcare</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-3">
+                  <div className="relative">
+                    <MapPin
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
+                    <Input
+                      placeholder="Location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-2">
+                  <Button className="w-full h-14">
+                    <Filter size={20} className="mr-2" />
+                    Filter
+                  </Button>
                 </div>
               </div>
-              <div className="md:col-span-3">
-                <Select value={industry} onValueChange={setIndustry}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Industries</SelectItem>
-                    <SelectItem value="technology">Technology</SelectItem>
-                    <SelectItem value="e-commerce">E-commerce</SelectItem>
-                    <SelectItem value="entertainment">Entertainment</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="healthcare">Healthcare</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="md:col-span-3">
-                <div className="relative">
-                  <MapPin
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
-                  <Input
-                    placeholder="Location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <Button className="w-full h-14">
-                  <Filter size={20} className="mr-2" />
-                  Filter
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
 
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">Showing {companies.length} companies</p>
-        </div>
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {companies.length} companies
+            </p>
+          </div>
 
-        {/* Companies Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {companies.map((company, index) => (
-            <motion.div
-              key={company.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card className="h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="flex items-start mb-6">
-                    <Avatar className="w-16 h-16 mr-4 bg-blue-600 text-white text-xl">
-                      <AvatarFallback>{company.logo}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-1">
-                        {company.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-1">
-                        {company.industry}
-                      </p>
-                      <div className="flex items-center gap-1 mb-1">
-                        <div className="flex">
-                          {renderStars(company.rating)}
+          {/* Companies Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {companies.map((company, index) => (
+              <motion.div
+                key={company.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card className="h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-start mb-6">
+                      <Avatar className="w-16 h-16 mr-4 bg-blue-600 text-white text-xl">
+                        <AvatarFallback>{company.logo}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold mb-1">
+                          {company.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-1">
+                          {company.industry}
+                        </p>
+                        <div className="flex items-center gap-1 mb-1">
+                          <div className="flex">
+                            {renderStars(company.rating)}
+                          </div>
+                          <span className="text-gray-600 text-sm">
+                            ({company.reviews})
+                          </span>
                         </div>
-                        <span className="text-gray-600 text-sm">
-                          ({company.reviews})
-                        </span>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center mb-3">
-                    <MapPin size={16} className="text-gray-500 mr-2" />
-                    <span className="text-gray-600 text-sm">
-                      {company.location}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center mb-3">
-                    <Users size={16} className="text-gray-500 mr-2" />
-                    <span className="text-gray-600 text-sm">
-                      {company.employees} employees
-                    </span>
-                  </div>
-
-                  <p className="text-gray-600 text-sm mb-6">
-                    {company.description}
-                  </p>
-
-                  <div className="mb-6">
-                    <p className="text-sm font-semibold mb-2">Benefits:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {company.benefits
-                        .slice(0, 3)
-                        .map((benefit, benefitIndex) => (
-                          <Badge
-                            key={benefitIndex}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {benefit}
-                          </Badge>
-                        ))}
+                    <div className="flex items-center mb-3">
+                      <MapPin size={16} className="text-gray-500 mr-2" />
+                      <span className="text-gray-600 text-sm">
+                        {company.location}
+                      </span>
                     </div>
-                  </div>
 
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-blue-600 font-semibold text-sm">
-                      {company.openJobs} open jobs
-                    </span>
-                  </div>
+                    <div className="flex items-center mb-3">
+                      <Users size={16} className="text-gray-500 mr-2" />
+                      <span className="text-gray-600 text-sm">
+                        {company.employees} employees
+                      </span>
+                    </div>
 
-                  <Button className="w-full">View Jobs</Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    <p className="text-gray-600 text-sm mb-6">
+                      {company.description}
+                    </p>
+
+                    <div className="mb-6">
+                      <p className="text-sm font-semibold mb-2">Benefits:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {company.benefits
+                          .slice(0, 3)
+                          .map((benefit, benefitIndex) => (
+                            <Badge
+                              key={benefitIndex}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {benefit}
+                            </Badge>
+                          ))}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-blue-600 font-semibold text-sm">
+                        {company.openJobs} open jobs
+                      </span>
+                    </div>
+
+                    <Button className="w-full">View Jobs</Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </>
   );
 }
 
-Companies.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+import { Layouts } from "@/layouts";
+
+// ... existing code ...
+
+// Apply public layout
+Companies.getLayout = Layouts.Public;

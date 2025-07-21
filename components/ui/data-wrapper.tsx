@@ -41,4 +41,4 @@ const DataWrapper = <T,>({
   return <>{children(swrData)}</>;
 };
 
-export default DataWrapper; 
+export default DataWrapper;

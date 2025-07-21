@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authService } from "@/services";
-import { RequestEmailCodeForm } from "@/interfaces/auth";
+import { RequestMediumVerificationForm } from "@/interfaces/auth";
 import { User } from "@/interfaces/user";
 
 interface EmailVerificationFormProps {
@@ -62,6 +62,7 @@ const EmailVerificationForm = ({
     try {
       // Simulate OTP verification
       await authService.verifyEmailCode({
+        medium: "email",
         email: email as string,
         code: emailOtp,
       });
@@ -83,7 +84,7 @@ const EmailVerificationForm = ({
       await authService.requestEmailCode({
         email,
         user_id,
-      } as RequestEmailCodeForm);
+      } as RequestMediumVerificationForm);
 
       setCountdown(60);
       setEmailOtp("");

@@ -1,22 +1,30 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { 
-  Briefcase, 
-  Calendar, 
-  Users, 
-  TrendingUp, 
-  BookOpen, 
+import React from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Briefcase,
+  Calendar,
+  Users,
+  TrendingUp,
+  BookOpen,
   Award,
   MapPin,
   Clock,
   DollarSign,
-  Star
-} from 'lucide-react';
+  Star,
+} from "lucide-react";
+import { useUser } from "@/context";
 
 const StudentDashboard: React.FC = () => {
+  const { user } = useUser();
   const recentJobs = [
     {
       id: 1,
@@ -27,7 +35,7 @@ const StudentDashboard: React.FC = () => {
       salary: "$25-35/hr",
       posted: "2 days ago",
       skills: ["React", "TypeScript", "CSS"],
-      rating: 4.5
+      rating: 4.5,
     },
     {
       id: 2,
@@ -38,7 +46,7 @@ const StudentDashboard: React.FC = () => {
       salary: "$60-80k",
       posted: "1 week ago",
       skills: ["Python", "SQL", "Machine Learning"],
-      rating: 4.8
+      rating: 4.8,
     },
     {
       id: 3,
@@ -49,8 +57,8 @@ const StudentDashboard: React.FC = () => {
       salary: "$20-30/hr",
       posted: "3 days ago",
       skills: ["Figma", "Adobe XD", "User Research"],
-      rating: 4.2
-    }
+      rating: 4.2,
+    },
   ];
 
   const upcomingEvents = [
@@ -61,7 +69,7 @@ const StudentDashboard: React.FC = () => {
       time: "10:00 AM - 4:00 PM",
       location: "Convention Center",
       attendees: 150,
-      type: "Career Fair"
+      type: "Career Fair",
     },
     {
       id: 2,
@@ -70,7 +78,7 @@ const StudentDashboard: React.FC = () => {
       time: "2:00 PM - 5:00 PM",
       location: "Online",
       attendees: 75,
-      type: "Workshop"
+      type: "Workshop",
     },
     {
       id: 3,
@@ -79,8 +87,8 @@ const StudentDashboard: React.FC = () => {
       time: "6:00 PM - 9:00 PM",
       location: "Downtown Hub",
       attendees: 50,
-      type: "Networking"
-    }
+      type: "Networking",
+    },
   ];
 
   const skills = [
@@ -88,11 +96,11 @@ const StudentDashboard: React.FC = () => {
     { name: "React", level: 78, color: "accent" },
     { name: "Python", level: 72, color: "success" },
     { name: "UI/UX Design", level: 65, color: "warning" },
-    { name: "Data Analysis", level: 58, color: "error" }
+    { name: "Data Analysis", level: 58, color: "error" },
   ];
 
   return (
-    <div className="min-h-screen bg-ultra-shiny p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -101,7 +109,7 @@ const StudentDashboard: React.FC = () => {
         className="mb-8"
       >
         <h1 className="text-4xl font-bold text-banner-vibrant mb-2">
-          Welcome back, Sarah! 👋
+          Welcome back, {user?.first_name} {user?.last_name}! 👋
         </h1>
         <p className="text-banner-glow text-lg">
           Here&apos;s what&apos;s happening with your career journey today.
@@ -119,7 +127,9 @@ const StudentDashboard: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Applications</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Applications
+                </p>
                 <p className="text-2xl font-bold text-glow-primary">24</p>
               </div>
               <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center animate-bounce-glow">
@@ -133,10 +143,15 @@ const StudentDashboard: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Interviews</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Interviews
+                </p>
                 <p className="text-2xl font-bold text-glow-accent">8</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-accent rounded-2xl flex items-center justify-center animate-bounce-glow" style={{ animationDelay: '0.5s' }}>
+              <div
+                className="w-12 h-12 bg-gradient-accent rounded-2xl flex items-center justify-center animate-bounce-glow"
+                style={{ animationDelay: "0.5s" }}
+              >
                 <Users className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -147,10 +162,15 @@ const StudentDashboard: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Events</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Events
+                </p>
                 <p className="text-2xl font-bold text-glow-success">12</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center animate-bounce-glow" style={{ animationDelay: '1s' }}>
+              <div
+                className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center animate-bounce-glow"
+                style={{ animationDelay: "1s" }}
+              >
                 <Calendar className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -161,10 +181,15 @@ const StudentDashboard: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Skills</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Skills
+                </p>
                 <p className="text-2xl font-bold text-glow-warning">15</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-warning rounded-2xl flex items-center justify-center animate-bounce-glow" style={{ animationDelay: '1.5s' }}>
+              <div
+                className="w-12 h-12 bg-gradient-warning rounded-2xl flex items-center justify-center animate-bounce-glow"
+                style={{ animationDelay: "1.5s" }}
+              >
                 <Award className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -182,8 +207,12 @@ const StudentDashboard: React.FC = () => {
         >
           <Card className="card-ultra-shiny">
             <CardHeader>
-              <CardTitle className="text-glow-primary">Recent Job Opportunities</CardTitle>
-              <CardDescription>Jobs that match your profile and interests</CardDescription>
+              <CardTitle className="text-glow-primary">
+                Recent Job Opportunities
+              </CardTitle>
+              <CardDescription>
+                Jobs that match your profile and interests
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {recentJobs.map((job, index) => (
@@ -206,7 +235,7 @@ const StudentDashboard: React.FC = () => {
                       <span className="text-sm font-medium">{job.rating}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
@@ -228,12 +257,20 @@ const StudentDashboard: React.FC = () => {
                         {job.type}
                       </Badge>
                       {job.skills.slice(0, 2).map((skill) => (
-                        <Badge key={skill} variant="outline" className="text-xs">
+                        <Badge
+                          key={skill}
+                          variant="outline"
+                          className="text-xs"
+                        >
                           {skill}
                         </Badge>
                       ))}
                     </div>
-                    <Button size="sm" variant="outline" className="group-hover:bg-primary-500 group-hover:text-white transition-all">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="group-hover:bg-primary-500 group-hover:text-white transition-all"
+                    >
                       Apply
                     </Button>
                   </div>
@@ -253,8 +290,12 @@ const StudentDashboard: React.FC = () => {
           {/* Upcoming Events */}
           <Card className="card-ultra-shiny glow-accent">
             <CardHeader>
-              <CardTitle className="text-glow-accent">Upcoming Events</CardTitle>
-              <CardDescription>Don&apos;t miss these opportunities</CardDescription>
+              <CardTitle className="text-glow-accent">
+                Upcoming Events
+              </CardTitle>
+              <CardDescription>
+                Don&apos;t miss these opportunities
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {upcomingEvents.map((event, index) => (
@@ -271,7 +312,9 @@ const StudentDashboard: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-medium text-sm">{event.title}</h4>
-                      <p className="text-xs text-muted-foreground">{event.date}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {event.date}
+                      </p>
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground space-y-1">
@@ -281,7 +324,9 @@ const StudentDashboard: React.FC = () => {
                       <Badge variant="outline" className="text-xs">
                         {event.type}
                       </Badge>
-                      <span className="text-xs">{event.attendees} attending</span>
+                      <span className="text-xs">
+                        {event.attendees} attending
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -292,7 +337,9 @@ const StudentDashboard: React.FC = () => {
           {/* Skills Progress */}
           <Card className="card-ultra-shiny glow-success">
             <CardHeader>
-              <CardTitle className="text-glow-success">Skills Progress</CardTitle>
+              <CardTitle className="text-glow-success">
+                Skills Progress
+              </CardTitle>
               <CardDescription>Your current skill levels</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -305,10 +352,12 @@ const StudentDashboard: React.FC = () => {
                 >
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium">{skill.name}</span>
-                    <span className="text-sm text-muted-foreground">{skill.level}%</span>
+                    <span className="text-sm text-muted-foreground">
+                      {skill.level}%
+                    </span>
                   </div>
                   <div className="progress-ultra-shiny h-2">
-                    <div 
+                    <div
                       className="progress-fill"
                       style={{ width: `${skill.level}%` }}
                     />

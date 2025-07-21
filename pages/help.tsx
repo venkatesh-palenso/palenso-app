@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { HelpCircle, Search, Mail, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import RootLayout from "@/layouts/root";
+import { Layouts } from "@/layouts";
 
 export default function Help() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -218,6 +218,4 @@ export default function Help() {
   );
 }
 
-Help.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+Help.getLayout = Layouts.Public;

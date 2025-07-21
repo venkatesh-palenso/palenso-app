@@ -23,9 +23,9 @@ import {
   CheckCircle,
   Star,
   Calendar,
-  ExternalLink,  
+  ExternalLink,
   AlertCircle,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
 // components
@@ -43,10 +43,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { AuthGuard } from "@/components/auth-guard";
-
-
-
+import { Layouts } from "@/layouts";
 
 // Mock job data
 const mockJob = {
@@ -79,7 +76,16 @@ const mockJob = {
     "Experience with testing frameworks (Jest, React Testing Library)",
     "Excellent communication and collaboration skills",
   ],
-  skills: ["React", "TypeScript", "JavaScript", "CSS", "HTML", "Redux", "Jest", "Webpack"],
+  skills: [
+    "React",
+    "TypeScript",
+    "JavaScript",
+    "CSS",
+    "HTML",
+    "Redux",
+    "Jest",
+    "Webpack",
+  ],
   experience: "Senior",
   education: "Bachelor's degree",
   remote: "Hybrid",
@@ -95,8 +101,7 @@ const mockJob = {
   ],
 };
 
-const ApplyJobPage: React.FC = () => {
-
+const ApplyJobPage = () => {
   const router = useRouter();
   const { jobId } = router.query;
   const [mounted, setMounted] = useState(false);
@@ -123,8 +128,9 @@ const ApplyJobPage: React.FC = () => {
   useEffect(() => {
     setMounted(true);
     // Calculate form progress
-    const filledFields = Object.values(formData).filter(value => 
-      value && (typeof value === 'string' ? value.trim() !== '' : true)
+    const filledFields = Object.values(formData).filter(
+      (value) =>
+        value && (typeof value === "string" ? value.trim() !== "" : true),
     ).length;
     setFormProgress((filledFields / Object.keys(formData).length) * 100);
   }, [formData]);
@@ -151,7 +157,7 @@ const ApplyJobPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       console.log("Applying for job:", { jobId, formData });
       setShowSuccess(true);
     } catch (error) {
@@ -194,13 +200,24 @@ const ApplyJobPage: React.FC = () => {
             Application Submitted!
           </h2>
           <p className="text-muted-foreground mb-8">
-            Your application for {mockJob.title} has been successfully submitted. We&apos;ll review your application and get back to you soon.
+            Your application for {mockJob.title} has been successfully
+            submitted. We&apos;ll review your application and get back to you
+            soon.
           </p>
           <div className="space-y-4">
-            <Button className="w-full" size="lg" onClick={() => router.push('/student/applications')}>
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={() => router.push("/student/applications")}
+            >
               View My Applications
             </Button>
-            <Button variant="outline" className="w-full" size="lg" onClick={() => router.push('/jobs')}>
+            <Button
+              variant="outline"
+              className="w-full"
+              size="lg"
+              onClick={() => router.push("/jobs")}
+            >
               Browse More Jobs
             </Button>
           </div>
@@ -222,7 +239,11 @@ const ApplyJobPage: React.FC = () => {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-4">
                 <Link href={`/jobs/${jobId}`}>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Job
                   </Button>
@@ -309,7 +330,8 @@ const ApplyJobPage: React.FC = () => {
                       </div>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4 mr-2" />
-                        Posted {new Date(mockJob.postedDate).toLocaleDateString()}
+                        Posted{" "}
+                        {new Date(mockJob.postedDate).toLocaleDateString()}
                       </div>
                     </div>
 
@@ -346,8 +368,12 @@ const ApplyJobPage: React.FC = () => {
 
                     <div className="pt-4 border-t">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Application Progress</span>
-                        <span className="text-primary font-medium">{Math.round(formProgress)}%</span>
+                        <span className="text-muted-foreground">
+                          Application Progress
+                        </span>
+                        <span className="text-primary font-medium">
+                          {Math.round(formProgress)}%
+                        </span>
                       </div>
                       <Progress value={formProgress} className="mt-2" />
                     </div>
@@ -377,7 +403,10 @@ const ApplyJobPage: React.FC = () => {
                         </h3>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="email" className="text-base font-medium">
+                            <Label
+                              htmlFor="email"
+                              className="text-base font-medium"
+                            >
                               Email Address *
                             </Label>
                             <Input
@@ -385,12 +414,17 @@ const ApplyJobPage: React.FC = () => {
                               type="email"
                               placeholder="your.email@example.com"
                               value={formData.email}
-                              onChange={(e) => handleInputChange("email", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("email", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-base font-medium">
+                            <Label
+                              htmlFor="phone"
+                              className="text-base font-medium"
+                            >
                               Phone Number *
                             </Label>
                             <Input
@@ -398,7 +432,9 @@ const ApplyJobPage: React.FC = () => {
                               type="tel"
                               placeholder="+1 (555) 123-4567"
                               value={formData.phone}
-                              onChange={(e) => handleInputChange("phone", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("phone", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
@@ -412,13 +448,18 @@ const ApplyJobPage: React.FC = () => {
                           Resume
                         </h3>
                         <div className="space-y-2">
-                          <Label htmlFor="resume" className="text-base font-medium">
+                          <Label
+                            htmlFor="resume"
+                            className="text-base font-medium"
+                          >
                             Upload Resume *
                           </Label>
                           <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                             <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                             <p className="text-sm text-muted-foreground mb-2">
-                              {formData.resume ? formData.resume.name : "Click to upload or drag and drop"}
+                              {formData.resume
+                                ? formData.resume.name
+                                : "Click to upload or drag and drop"}
                             </p>
                             <p className="text-xs text-muted-foreground mb-4">
                               PDF, DOC, DOCX (max 5MB)
@@ -433,7 +474,9 @@ const ApplyJobPage: React.FC = () => {
                             <Button
                               type="button"
                               variant="outline"
-                              onClick={() => document.getElementById('resume')?.click()}
+                              onClick={() =>
+                                document.getElementById("resume")?.click()
+                              }
                             >
                               Choose File
                             </Button>
@@ -448,14 +491,19 @@ const ApplyJobPage: React.FC = () => {
                           Cover Letter
                         </h3>
                         <div className="space-y-2">
-                          <Label htmlFor="coverLetter" className="text-base font-medium">
+                          <Label
+                            htmlFor="coverLetter"
+                            className="text-base font-medium"
+                          >
                             Cover Letter *
                           </Label>
                           <Textarea
                             id="coverLetter"
                             placeholder="Tell us why you're interested in this position and why you'd be a great fit..."
                             value={formData.coverLetter}
-                            onChange={(e) => handleInputChange("coverLetter", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("coverLetter", e.target.value)
+                            }
                             className="min-h-32 text-base"
                           />
                         </div>
@@ -469,7 +517,10 @@ const ApplyJobPage: React.FC = () => {
                         </h3>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="portfolio" className="text-base font-medium">
+                            <Label
+                              htmlFor="portfolio"
+                              className="text-base font-medium"
+                            >
                               Portfolio URL
                             </Label>
                             <Input
@@ -477,12 +528,17 @@ const ApplyJobPage: React.FC = () => {
                               type="url"
                               placeholder="https://your-portfolio.com"
                               value={formData.portfolio}
-                              onChange={(e) => handleInputChange("portfolio", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("portfolio", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="linkedin" className="text-base font-medium">
+                            <Label
+                              htmlFor="linkedin"
+                              className="text-base font-medium"
+                            >
                               LinkedIn Profile
                             </Label>
                             <Input
@@ -490,14 +546,19 @@ const ApplyJobPage: React.FC = () => {
                               type="url"
                               placeholder="https://linkedin.com/in/yourprofile"
                               value={formData.linkedin}
-                              onChange={(e) => handleInputChange("linkedin", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("linkedin", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="github" className="text-base font-medium">
+                            <Label
+                              htmlFor="github"
+                              className="text-base font-medium"
+                            >
                               GitHub Profile
                             </Label>
                             <Input
@@ -505,12 +566,17 @@ const ApplyJobPage: React.FC = () => {
                               type="url"
                               placeholder="https://github.com/yourusername"
                               value={formData.github}
-                              onChange={(e) => handleInputChange("github", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("github", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="website" className="text-base font-medium">
+                            <Label
+                              htmlFor="website"
+                              className="text-base font-medium"
+                            >
                               Personal Website
                             </Label>
                             <Input
@@ -518,7 +584,9 @@ const ApplyJobPage: React.FC = () => {
                               type="url"
                               placeholder="https://your-website.com"
                               value={formData.website}
-                              onChange={(e) => handleInputChange("website", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("website", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
@@ -533,7 +601,10 @@ const ApplyJobPage: React.FC = () => {
                         </h3>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="expectedSalary" className="text-base font-medium">
+                            <Label
+                              htmlFor="expectedSalary"
+                              className="text-base font-medium"
+                            >
                               Expected Salary
                             </Label>
                             <Input
@@ -541,19 +612,29 @@ const ApplyJobPage: React.FC = () => {
                               type="number"
                               placeholder="150000"
                               value={formData.expectedSalary}
-                              onChange={(e) => handleInputChange("expectedSalary", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "expectedSalary",
+                                  e.target.value,
+                                )
+                              }
                               className="h-12 text-base"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="startDate" className="text-base font-medium">
+                            <Label
+                              htmlFor="startDate"
+                              className="text-base font-medium"
+                            >
                               Available Start Date
                             </Label>
                             <Input
                               id="startDate"
                               type="date"
                               value={formData.startDate}
-                              onChange={(e) => handleInputChange("startDate", e.target.value)}
+                              onChange={(e) =>
+                                handleInputChange("startDate", e.target.value)
+                              }
                               className="h-12 text-base"
                             />
                           </div>
@@ -567,14 +648,22 @@ const ApplyJobPage: React.FC = () => {
                           Additional Information
                         </h3>
                         <div className="space-y-2">
-                          <Label htmlFor="additionalInfo" className="text-base font-medium">
+                          <Label
+                            htmlFor="additionalInfo"
+                            className="text-base font-medium"
+                          >
                             Additional Information
                           </Label>
                           <Textarea
                             id="additionalInfo"
                             placeholder="Any additional information you'd like to share..."
                             value={formData.additionalInfo}
-                            onChange={(e) => handleInputChange("additionalInfo", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "additionalInfo",
+                                e.target.value,
+                              )
+                            }
                             className="min-h-24 text-base"
                           />
                         </div>
@@ -617,11 +706,6 @@ const ApplyJobPage: React.FC = () => {
   );
 };
 
-// Wrap with AuthGuard for student role
-const ProtectedApplyJobPage = () => (
-  <AuthGuard requiredRole="student">
-    <ApplyJobPage />
-  </AuthGuard>
-);
+ApplyJobPage.getLayout = Layouts.Student;
 
-export default ProtectedApplyJobPage;
+export default ApplyJobPage;

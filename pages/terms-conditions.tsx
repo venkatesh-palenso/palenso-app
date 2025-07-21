@@ -8,8 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import RootLayout from "@/layouts/root";
-import { ReactElement } from "react";
+import { Layouts } from "@/layouts";
 
 export default function Terms() {
   const termsSections = [
@@ -143,6 +142,4 @@ export default function Terms() {
   );
 }
 
-Terms.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+Terms.getLayout = Layouts.Public;

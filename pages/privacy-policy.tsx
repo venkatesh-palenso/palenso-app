@@ -8,8 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ReactElement } from "react";
-import RootLayout from "@/layouts/root";
+import { Layouts } from "@/layouts";
 
 export default function Privacy() {
   const privacySections = [
@@ -146,6 +145,4 @@ export default function Privacy() {
   );
 }
 
-Privacy.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+Privacy.getLayout = Layouts.Public;

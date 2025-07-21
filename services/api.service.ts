@@ -56,6 +56,10 @@ abstract class APIService {
     cookie.set("refreshToken", token, { expires: this.expiry.toDate() });
   }
 
+  getRefreshToken(): string | undefined {
+    return cookie.get("refreshToken");
+  }
+
   purgeAuth(): void {
     cookie.remove("token");
     cookie.remove("refreshToken");

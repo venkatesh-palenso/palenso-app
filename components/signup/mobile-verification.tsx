@@ -10,11 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneInput } from "@/components/phone-input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import type { Value as PhoneValue } from "react-phone-number-input";
 import { authService } from "@/services";
 import { User } from "@/interfaces/user";
-import { CheckAvailabilityForm } from "@/interfaces/auth";
+import { MediumAvailabilityForm } from "@/interfaces/auth";
 
 interface MobileVerificationFormProps {
   onSuccess: () => void;
@@ -83,7 +83,7 @@ const MobileVerificationForm = ({
 
   const handlePhoneBlur = async () => {
     const response = await authService.mobileAvailabilty(
-      phoneNumber as CheckAvailabilityForm
+      phoneNumber as MediumAvailabilityForm,
     );
     setPhoneAvailability((prev) => ({
       ...prev,
@@ -128,6 +128,7 @@ const MobileVerificationForm = ({
     try {
       // Simulate OTP verification
       await authService.verifyMobileCode({
+        medium: "mobile",
         mobile_number: phoneNumber,
         code: phoneOtp,
       });

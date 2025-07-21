@@ -122,7 +122,7 @@ export default function Custom404() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <Link href="/">
-              <Button size="lg" className="flex items-center gap-2">
+              <Button size="lg" className="flex items-center gap-2 text-white">
                 <Home className="h-4 w-4" />
                 Go Home
               </Button>

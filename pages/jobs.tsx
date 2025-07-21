@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import RootLayout from "@/layouts/root";
 
 interface Job {
   id: number;
@@ -560,8 +559,11 @@ const JobsPage = () => {
   );
 };
 
-JobsPage.getLayout = function getLayout(page: ReactElement) {
-  return <RootLayout>{page}</RootLayout>;
-};
+import { Layouts } from "@/layouts";
+
+// ... existing code ...
+
+// Apply public layout
+JobsPage.getLayout = Layouts.Public;
 
 export default JobsPage;

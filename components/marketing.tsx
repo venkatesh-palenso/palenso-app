@@ -2,7 +2,16 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Users, Building, Calendar, Briefcase, Target, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle,
+  Users,
+  Building,
+  Calendar,
+  Briefcase,
+  Target,
+  Zap,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,9 +25,9 @@ const Marketing: React.FC = () => {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
+    <div className="bg-white overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 px-4 overflow-hidden">
+      <section className="relative pt-8 pb-32 px-4 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50" />
         <motion.div
@@ -48,8 +57,9 @@ const Marketing: React.FC = () => {
                 <span className="text-primary">Opportunity</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Palenso is the premier landing spot for employers to recruit through posted jobs and events. 
-                Students discover opportunities, explore company information, and launch their careers.
+                Palenso is the premier landing spot for employers to recruit
+                through posted jobs and events. Students discover opportunities,
+                explore company information, and launch their careers.
               </p>
             </motion.div>
 
@@ -60,14 +70,20 @@ const Marketing: React.FC = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
             >
               <Link href="/signup">
-                <Button size="lg" className="text-lg px-8 py-4 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Button
+                  size="lg"
+                  className="text-lg text-white px-8 py-4 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
+                >
                   Get Started
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/login">
-                <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-2 border-gray-400 hover:bg-gray-50 transition-all duration-300">
-                  
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg px-8 py-4 border-2 border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                >
                   Sign In
                 </Button>
               </Link>
@@ -127,9 +143,7 @@ const Marketing: React.FC = () => {
                 <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600 font-medium">
-                  {stat.label}
-                </div>
+                <div className="text-gray-600 font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -152,8 +166,9 @@ const Marketing: React.FC = () => {
               <span className="text-primary">Career Success</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you&apos;re an employer looking for top talent or a student seeking opportunities, 
-              Palenso provides everything you need to succeed.
+              Whether you&apos;re an employer looking for top talent or a
+              student seeking opportunities, Palenso provides everything you
+              need to succeed.
             </p>
           </motion.div>
 
@@ -170,14 +185,17 @@ const Marketing: React.FC = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Building className="h-6 w-6 text-blue-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">For Employers</h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  For Employers
+                </h3>
               </div>
               <h4 className="text-xl font-semibold text-gray-900 mb-4">
                 Recruit Top Talent Through Jobs & Events
               </h4>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Post jobs, host events, and connect with qualified candidates. 
-                Our platform makes it easy to find the perfect match for your organization.
+                Post jobs, host events, and connect with qualified candidates.
+                Our platform makes it easy to find the perfect match for your
+                organization.
               </p>
               <ul className="space-y-3">
                 {[
@@ -201,7 +219,7 @@ const Marketing: React.FC = () => {
                 ))}
               </ul>
               <Link href="/signup">
-                <Button className="mt-6 bg-primary hover:bg-primary/90">
+                <Button className="mt-6 text-white bg-primary hover:bg-primary/90">
                   Start Recruiting
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -220,14 +238,17 @@ const Marketing: React.FC = () => {
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">For Students</h3>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  For Students
+                </h3>
               </div>
               <h4 className="text-xl font-semibold text-gray-900 mb-4">
                 Discover Opportunities & Company Information
               </h4>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Find your dream job, explore companies, and attend career events. 
-                Get insights into company culture and make informed career decisions.
+                Find your dream job, explore companies, and attend career
+                events. Get insights into company culture and make informed
+                career decisions.
               </p>
               <ul className="space-y-3">
                 {[
@@ -251,7 +272,7 @@ const Marketing: React.FC = () => {
                 ))}
               </ul>
               <Link href="/signup">
-                <Button className="mt-6 bg-primary hover:bg-primary/90">
+                <Button className="mt-6 text-white bg-primary hover:bg-primary/90">
                   Find Opportunities
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -284,38 +305,44 @@ const Marketing: React.FC = () => {
               {
                 icon: Zap,
                 title: "Smart Matching",
-                description: "AI-powered job and candidate matching for perfect fits",
-                color: "blue"
+                description:
+                  "AI-powered job and candidate matching for perfect fits",
+                color: "blue",
               },
               {
                 icon: Calendar,
                 title: "Event Management",
-                description: "Host and attend career fairs, workshops, and networking events",
-                color: "green"
+                description:
+                  "Host and attend career fairs, workshops, and networking events",
+                color: "green",
               },
               {
                 icon: Building,
                 title: "Company Insights",
-                description: "Detailed company profiles with culture and benefits information",
-                color: "purple"
+                description:
+                  "Detailed company profiles with culture and benefits information",
+                color: "purple",
               },
               {
                 icon: Target,
                 title: "Career Tracking",
-                description: "Track applications, interviews, and career progress",
-                color: "orange"
+                description:
+                  "Track applications, interviews, and career progress",
+                color: "orange",
               },
               {
                 icon: Users,
                 title: "Networking",
-                description: "Connect with professionals, alumni, and industry leaders",
-                color: "pink"
+                description:
+                  "Connect with professionals, alumni, and industry leaders",
+                color: "pink",
               },
               {
                 icon: Briefcase,
                 title: "Application Tools",
-                description: "Resume builder, cover letter templates, and interview prep",
-                color: "indigo"
+                description:
+                  "Resume builder, cover letter templates, and interview prep",
+                color: "indigo",
               },
             ].map((feature, index) => (
               <motion.div
@@ -328,10 +355,16 @@ const Marketing: React.FC = () => {
               >
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white group-hover:-translate-y-1">
                   <CardHeader>
-                    <div className={`w-12 h-12 bg-${feature.color}-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-${feature.color}-200 transition-colors duration-300`}>
-                      <feature.icon className={`h-6 w-6 text-${feature.color}-600`} />
+                    <div
+                      className={`w-12 h-12 bg-${feature.color}-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-${feature.color}-200 transition-colors duration-300`}
+                    >
+                      <feature.icon
+                        className={`h-6 w-6 text-${feature.color}-600`}
+                      />
                     </div>
-                    <CardTitle className="text-xl text-gray-900">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl text-gray-900">
+                      {feature.title}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="text-base text-gray-600">
@@ -358,18 +391,25 @@ const Marketing: React.FC = () => {
               Ready to Transform Your Career?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of students and employers who are already using Palenso 
-              to connect, grow, and succeed together.
+              Join thousands of students and employers who are already using
+              Palenso to connect, grow, and succeed together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button size="lg" className="text-lg px-8 py-4 bg-white text-primary hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Button
+                  size="lg"
+                  className="text-lg text-white px-8 py-4 bg-primary hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-300"
+                >
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/jobs">
-                <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-2 border-white hover:bg-white hover:text-primary transition-all duration-300">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg px-8 py-4 border-2 border-white hover:bg-white hover:text-primary transition-all duration-300"
+                >
                   Explore Jobs
                 </Button>
               </Link>
