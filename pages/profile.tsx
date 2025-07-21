@@ -1,5 +1,6 @@
 // next
 import Head from "next/head";
+import dynamic from "next/dynamic";
 
 // swr
 import useSWR from "swr";
@@ -11,17 +12,27 @@ import { useUser } from "@/context";
 import { Layouts } from "@/layouts";
 
 // components
-import { EmployerProfile, StudentProfile } from "@/components/profile";
 import Spinner from "@/components/spinner";
 
 // services
 import { userService } from "@/services";
 
+// Dynamically import profile components to avoid SSR issues
+const EmployerProfile = dynamic(() => import("@/components/profile").then(mod => ({ default: mod.EmployerProfile })), {
+  ssr: false,
+  loading: () => <Spinner />
+});
+
+const StudentProfile = dynamic(() => import("@/components/profile").then(mod => ({ default: mod.StudentProfile })), {
+  ssr: false,
+  loading: () => <Spinner />
+});
+
 const Profile = () => {
   const { user } = useUser();
 
   const { data: profile, isLoading } = useSWR(
-    `FETCH_${user?.role}_PROFILE`,
+    user?.role && user?.id ? `FETCH_${user.role}_PROFILE` : null,
     () => userService.getProfile(user?.id as string),
     {
       revalidateOnFocus: false,
@@ -44,7 +55,7 @@ const Profile = () => {
     Component = EmployerProfile;
   }
 
-  if (isLoading) {
+  if (isLoading || !user) {
     Component = Spinner;
   }
 

@@ -36,6 +36,7 @@ interface InputFormFieldProps extends BaseFormFieldProps {
   type: "text" | "email" | "url" | "number";
   placeholder?: string;
   icon?: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   min?: number;
   max?: number;
@@ -45,6 +46,7 @@ interface TextareaFormFieldProps extends BaseFormFieldProps {
   type: "textarea";
   placeholder?: string;
   rows?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
 }
 
@@ -52,21 +54,27 @@ interface SelectFormFieldProps extends BaseFormFieldProps {
   type: "select";
   placeholder?: string;
   options: { value: string; label: string }[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   watch: UseFormWatch<any>;
 }
 
 interface PhoneFormFieldProps extends BaseFormFieldProps {
   type: "phone";
   placeholder?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   watch: UseFormWatch<any>;
 }
 
 interface DateFieldProps extends BaseFormFieldProps {
   type: "date";
   placeholder?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: UseFormSetValue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   watch: UseFormWatch<any>;
 }
 
@@ -79,6 +87,7 @@ type FormFieldProps =
 
 const FormField: React.FC<FormFieldProps> = (props) => {
   const { label, name, error, required = false, className = "" } = props;
+  const [open, setOpen] = useState(false);
 
   const renderInput = () => {
     if (props.type === "textarea") {
@@ -96,7 +105,7 @@ const FormField: React.FC<FormFieldProps> = (props) => {
     if (props.type === "select") {
       return (
         <Select
-          value={props.watch(name)}
+          value={props.watch(name) as string}
           onValueChange={(value) => props.setValue(name, value)}
         >
           <SelectTrigger
@@ -118,7 +127,7 @@ const FormField: React.FC<FormFieldProps> = (props) => {
     if (props.type === "phone") {
       return (
         <PhoneInput
-          value={props.watch(name)}
+          value={props.watch(name) as string}
           onChange={(value) => props.setValue(name, value)}
           placeholder={props.placeholder}
           className={className}
@@ -127,8 +136,6 @@ const FormField: React.FC<FormFieldProps> = (props) => {
     }
 
     if (props.type === "date") {
-      const [open, setOpen] = useState(false);
-
       return (
         <div className="flex flex-col gap-3">
           <Popover open={open} onOpenChange={setOpen}>
@@ -139,7 +146,7 @@ const FormField: React.FC<FormFieldProps> = (props) => {
                 className={`flex justify-between border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""} ${className}`}
               >
                 {props.watch(name)
-                  ? new Date(props.watch(name)).toLocaleDateString()
+                  ? new Date(props.watch(name) as string).toLocaleDateString()
                   : "Select date"}
                 <ChevronDownIcon />
               </Button>
@@ -152,7 +159,7 @@ const FormField: React.FC<FormFieldProps> = (props) => {
                 mode="single"
                 captionLayout="dropdown"
                 selected={
-                  props.watch(name) ? new Date(props.watch(name)) : undefined
+                  props.watch(name) ? new Date(props.watch(name) as string) : undefined
                 }
                 onSelect={(date) => {
                   if (date) {

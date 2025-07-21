@@ -21,7 +21,7 @@ const EMPLOYER_PROFILE_SECTIONS = [
 ] as const;
 
 type UserProfile = {
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 const EmployerProfile = ({ userProfile }: { userProfile: UserProfile }) => {
@@ -37,9 +37,10 @@ const EmployerProfile = ({ userProfile }: { userProfile: UserProfile }) => {
       {EMPLOYER_PROFILE_SECTIONS.map((section) => {
         const Component = section.component;
         const profile =
-          section.value === "profile" ? userProfile : userProfile.company || {};
+          section.value === "profile" ? userProfile : (userProfile.company as Record<string, unknown>) || {};
         return (
           <TabsContent key={section.value} value={section.value}>
+            {/* @ts-expect-error - Component data prop type mismatch due to dynamic profile sections */}
             <Component data={profile} />
           </TabsContent>
         );
