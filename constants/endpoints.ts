@@ -26,6 +26,18 @@ export const COMPANY_ENDPOINTS = {
   COMPANY_DETAIL: (companyId: string) => `/api/companies/${companyId}`,
 };
 
+// event endpoints
+export const EVENT_ENDPOINTS = {
+  LIST_CREATE_EVENT: "/api/events",
+  EVENT_DETAIL: (eventId: string) => `/api/events/${eventId}`,
+};
+
+// job endpoints
+export const JOB_ENDPOINTS = {
+  LIST_CREATE_JOB: "/api/jobs",
+  JOB_DETAIL: (jobId: string) => `/api/jobs/${jobId}`,
+};
+
 // profile endpoints
 export const PROFILE_ITEMS_ENDPOINTS = {
   LIST_CREATE_EXPERIENCES: `/api/work-experiences`,

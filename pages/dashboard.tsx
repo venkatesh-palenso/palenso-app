@@ -1,5 +1,10 @@
+// layout
 import { Layouts } from "@/layouts";
+
+// context
 import { useUser } from "@/context/user";
+
+// components
 import {
   StudentDashboard,
   EmployerDashboard,

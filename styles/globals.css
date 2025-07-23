@@ -2,87 +2,55 @@
 @import "tw-animate-css";
 
 /*
-🎨 COLOR CUSTOMIZATION GUIDE
+🎨 HANDSHAKE-INSPIRED THEME
 ============================
 
-To change colors easily, simply update the hex codes below:
-
-PRIMARY COLORS:
-- --primary: #0057FF (Blue - main brand color)
-- --primary-foreground: #ffffff (White text on primary)
-
-SECONDARY COLORS:
-- --secondary: #f8fafc (Light gray background)
-- --secondary-foreground: #444444 (Dark gray text on secondary)
-
-BACKGROUND COLORS:
-- --background: #ffffff (Main background)
-- --foreground: #000000 (Main text color)
-
-CARD COLORS:
-- --card: #ffffff (Card background)
-- --card-foreground: #000000 (Card text)
-
-BORDER COLORS:
-- --border: #eaeaea (Light gray border)
-- --input: #eaeaea (Light gray input border)
-
-DESTRUCTIVE COLORS:
-- --destructive: #ef4444 (Red for errors/warnings)
-- --destructive-foreground: #f8fafc (White text on destructive)
-
-MUTED COLORS:
-- --muted: #f8fafc (Muted background)
-- --muted-foreground: #666666 (Muted text)
-
-ACCENT COLORS:
-- --accent: #f1f5f9 (Accent background)
-- --accent-foreground: #0f172a (Accent text)
-
-RING COLOR:
-- --ring: #2563EB (Focus ring color)
-
-Dark theme colors are automatically adjusted for contrast.
+Based on Handshake's modern career platform design:
+- Vibrant blue primary color (#0057FF)
+- Clean, modern typography
+- Smooth animations and transitions
+- Highlighted headings with gradients
+- Professional yet approachable design
 */
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
-  /* Light Theme Colors - Easy to change with hex codes */
+  /* Light Theme Colors - Handshake Inspired */
   --background: #ffffff;
-  --foreground: #000000;
+  --foreground: #1a1a1a;
   --card: #ffffff;
-  --card-foreground: #000000;
+  --card-foreground: #1a1a1a;
   --popover: #ffffff;
-  --popover-foreground: #000000;
+  --popover-foreground: #1a1a1a;
 
-  /* Primary Colors - Change these hex codes to customize */
+  /* Primary Colors - Handshake Blue */
   --primary: #0057ff;
   --primary-foreground: #ffffff;
 
   /* Secondary Colors */
   --secondary: #f8fafc;
-  --secondary-foreground: #444444;
+  --secondary-foreground: #475569;
 
   /* Muted Colors */
-  --muted: #f8fafc;
-  --muted-foreground: #666666;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
 
   /* Accent Colors */
-  --accent: #f8fafc;
-  --accent-foreground: #444444;
+  --accent: #e0f2fe;
+  --accent-foreground: #0369a1;
 
   /* Destructive Colors */
   --destructive: #ef4444;
   --destructive-foreground: #f8fafc;
 
   /* Border and Input Colors */
-  --border: #eaeaea;
-  --input: #eaeaea;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
   --ring: #0057ff;
 
   /* Chart Colors */
-  --chart-1: #dc2626;
+  --chart-1: #0057ff;
   --chart-2: #0891b2;
   --chart-3: #1e293b;
   --chart-4: #fbbf24;
@@ -90,47 +58,57 @@ Dark theme colors are automatically adjusted for contrast.
 
   /* Sidebar Colors */
   --sidebar: #ffffff;
-  --sidebar-foreground: #000000;
+  --sidebar-foreground: #1a1a1a;
   --sidebar-primary: #0057ff;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f8fafc;
-  --sidebar-accent-foreground: #444444;
-  --sidebar-border: #eaeaea;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #475569;
+  --sidebar-border: #e2e8f0;
   --sidebar-ring: #0057ff;
+
+  /* Handshake-specific colors */
+  --handshake-blue: #0057ff;
+  --handshake-blue-light: #3b82f6;
+  --handshake-blue-dark: #1e40af;
+  --handshake-gray: #64748b;
+  --handshake-gray-light: #f1f5f9;
+  --handshake-success: #10b981;
+  --handshake-warning: #f59e0b;
+  --handshake-error: #ef4444;
 }
 
 .dark {
-  /* Dark Theme Colors - Easy to change with hex codes */
-  --background: #030303;
-  --foreground: #ffffff;
-  --card: #030303;
-  --card-foreground: #ffffff;
-  --popover: #030303;
-  --popover-foreground: #ffffff;
+  /* Dark Theme Colors - Handshake Inspired */
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
 
   /* Primary Colors - Same as light theme for consistency */
   --primary: #0057ff;
   --primary-foreground: #ffffff;
 
   /* Secondary Colors */
-  --secondary: #2c2c2c;
-  --secondary-foreground: #dddddd;
+  --secondary: #334155;
+  --secondary-foreground: #cbd5e1;
 
   /* Muted Colors */
-  --muted: #2c2c2c;
-  --muted-foreground: #888888;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
 
   /* Accent Colors */
-  --accent: #2c2c2c;
-  --accent-foreground: #dddddd;
+  --accent: #1e3a8a;
+  --accent-foreground: #93c5fd;
 
   /* Destructive Colors */
   --destructive: #7f1d1d;
   --destructive-foreground: #f8fafc;
 
   /* Border and Input Colors */
-  --border: #333333;
-  --input: #333333;
+  --border: #475569;
+  --input: #475569;
   --ring: #0057ff;
 
   /* Chart Colors */
@@ -141,14 +119,552 @@ Dark theme colors are automatically adjusted for contrast.
   --chart-5: #ec4899;
 
   /* Sidebar Colors */
-  --sidebar: #030303;
-  --sidebar-foreground: #ffffff;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
   --sidebar-primary: #0057ff;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2c2c2c;
-  --sidebar-accent-foreground: #dddddd;
-  --sidebar-border: #333333;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #cbd5e1;
+  --sidebar-border: #475569;
   --sidebar-ring: #0057ff;
+}
+
+/* Handshake-inspired heading styles */
+.heading-handshake {
+  background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+
+.heading-handshake-large {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 50%, #0057ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  font-size: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.heading-handshake-subtitle {
+  color: #64748b;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* Handshake animations */
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 60px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 87, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 87, 255, 0.6);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Handshake button styles */
+.btn-handshake {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%);
+  color: white !important;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 87, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 120px;
+}
+
+.btn-handshake::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-handshake:hover::before {
+  left: 100%;
+}
+
+.btn-handshake:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 87, 255, 0.4);
+  background: linear-gradient(135deg, #1e40af 0%, #0057ff 100%);
+  color: white !important;
+}
+
+.btn-handshake:active {
+  transform: translateY(0);
+}
+
+/* Button variants with proper text visibility */
+.btn-primary {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 87, 255, 0.3);
+  min-height: 44px;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #0057ff 100%) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 87, 255, 0.4);
+}
+
+.btn-secondary {
+  background: white !important;
+  color: #0057ff !important;
+  border: 2px solid #0057ff !important;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: #0057ff !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 87, 255, 0.3);
+}
+
+/* Button size variants */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  min-height: 36px;
+  min-width: 100px;
+  border-radius: 6px;
+}
+
+.btn-lg {
+  padding: 16px 32px;
+  font-size: 1.125rem;
+  min-height: 52px;
+  min-width: 140px;
+  border-radius: 10px;
+}
+
+/* Button with icon */
+.btn-with-icon {
+  gap: 8px;
+}
+
+/* Tab styling improvements */
+.tab-handshake {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-handshake:hover {
+  background: rgba(0, 87, 255, 0.05);
+  color: #0057ff;
+}
+
+.tab-handshake[data-state="active"] {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 87, 255, 0.2);
+}
+
+.tab-handshake[data-state="active"]::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, #0057ff, #3b82f6);
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+/* Tabs container styling */
+.tabs-handshake {
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+/* Dashboard card styles - elegant and positive */
+.dashboard-card-handshake {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Remove hover effects and colored top border */
+.dashboard-card-handshake::before {
+  display: none;
+}
+
+.dashboard-card-handshake:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #e2e8f0;
+}
+
+/* Stats card - more elegant */
+.stats-card-handshake {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.stats-card-handshake:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+/* Form section - clean and elegant */
+.form-section-handshake {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
+}
+
+.form-section-handshake:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-section-handshake h3 {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Action buttons container */
+.action-buttons-handshake {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 24px;
+}
+
+/* Handshake card styles */
+.card-handshake {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.card-handshake::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0057ff, #3b82f6);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.card-handshake:hover::before {
+  transform: scaleX(1);
+}
+
+.card-handshake:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  border-color: #0057ff;
+}
+
+/* Handshake navigation styles */
+.nav-handshake {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link-handshake {
+  color: #475569;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.nav-link-handshake::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #0057ff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link-handshake:hover::after {
+  width: 100%;
+}
+
+.nav-link-handshake:hover {
+  color: #0057ff;
+  background: rgba(0, 87, 255, 0.05);
+}
+
+/* Hero section - more elegant */
+.hero-handshake {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-handshake::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 87, 255, 0.02) 0%, rgba(59, 130, 246, 0.02) 100%);
+  pointer-events: none;
+}
+
+/* Feature cards - elegant styling */
+.feature-card-handshake {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.feature-card-handshake:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Input styling - clean and modern */
+.input-handshake {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.input-handshake:focus {
+  outline: none;
+  border-color: #0057ff;
+  box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.1);
+}
+
+.input-handshake::placeholder {
+  color: #9ca3af;
+}
+
+/* Badge styling - elegant */
+.badge-handshake {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Handshake loading animation */
+.loading-handshake {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #0057ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Handshake success animation */
+.success-checkmark {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #0057ff;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #10b981;
+  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  position: relative;
+  margin: 0 auto;
+}
+
+.success-checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #10b981;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 30px #10b981;
+  }
 }
 
 /* Clean Theme Colors */
@@ -434,23 +950,23 @@ Dark theme colors are automatically adjusted for contrast.
 
 /* Selection Enhancement - Bright */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(0, 87, 255, 0.3);
   color: white;
 }
 
 /* Focus Enhancement - Bright */
 .focus\:ring-primary:focus {
-  --tw-ring-color: rgba(59, 130, 246, 0.5) !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  --tw-ring-color: rgba(0, 87, 255, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.1) !important;
 }
 
 /* Hover Enhancements - Bright */
 .hover\:bg-primary-500:hover {
   background: linear-gradient(
     135deg,
-    #3b82f6 0%,
-    #06b6d4 50%,
-    #3b82f6 100%
+    #0057ff 0%,
+    #3b82f6 50%,
+    #0057ff 100%
   ) !important;
 }
 
@@ -638,4 +1154,66 @@ Dark theme colors are automatically adjusted for contrast.
 
 .dark .text-banner-glow {
   color: #94a3b8;
+}
+
+/* Dark mode Handshake adjustments */
+.dark .card-handshake {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.dark .feature-card-handshake {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.dark .input-handshake {
+  background: #334155;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+.dark .nav-handshake {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom-color: #475569;
+}
+
+.dark .hero-handshake {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+}
+
+/* Dark mode adjustments for buttons */
+.dark .btn-handshake {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%);
+  color: white !important;
+}
+
+.dark .btn-primary {
+  background: linear-gradient(135deg, #0057ff 0%, #3b82f6 100%) !important;
+  color: white !important;
+}
+
+.dark .btn-secondary {
+  background: #1e293b !important;
+  color: #0057ff !important;
+  border-color: #0057ff !important;
+}
+
+.dark .btn-secondary:hover {
+  background: #0057ff !important;
+  color: white !important;
+}
+
+.dark .tab-handshake {
+  color: #94a3b8;
+}
+
+.dark .tab-handshake:hover {
+  background: rgba(0, 87, 255, 0.1);
+  color: #3b82f6;
+}
+
+.dark .tabs-handshake {
+  background: #1e293b;
+  border-color: #475569;
 }

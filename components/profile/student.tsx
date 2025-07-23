@@ -40,7 +40,9 @@ const STUDENT_PROFILE_SECTIONS = [
   { label: "Resume", value: "resume", icon: <Code />, component: ResumeForm },
 ];
 
-interface IStudentProfile {
+import type { StudentProfile } from "@/interfaces";
+
+interface IStudentProfile extends StudentProfile {
   [key: string]: unknown;
 }
 

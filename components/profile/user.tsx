@@ -10,6 +10,8 @@ import {
   Upload,
   ArrowRight,
   CheckCircle,
+  Save,
+  Edit3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
@@ -58,6 +60,7 @@ const userProfileSchema = z.object({
 
   gender: z
     .enum(["male", "female", "other", "prefer_not_to_say"])
+    .optional()
     .refine((val) => val !== undefined, {
       message: "Please select a gender",
     }),
@@ -112,12 +115,6 @@ const userProfileSchema = z.object({
     .startsWith("https://", "URL must start with https://")
     .optional()
     .or(z.literal("")),
-
-  // Profile Image
-  profile_picture_url: z.string().optional(),
-
-  is_email_verified: z.boolean().optional(),
-  is_mobile_verified: z.boolean().optional(),
 });
 
 type UserProfileFormData = z.infer<typeof userProfileSchema>;
@@ -131,7 +128,7 @@ interface UserProfile {
   is_email_verified: boolean;
   is_mobile_verified: boolean;
   profile: {
-    gender: "male" | "female" | "other" | "prefer_not_to_say";
+    gender?: "male" | "female" | "other" | "prefer_not_to_say";
     bio: string;
     city: string;
     state: string;
@@ -146,15 +143,20 @@ interface UserProfile {
 }
 
 const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(
+    userProfile.profile.profile_picture_url || null
+  );
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
+    formState: { errors, isDirty },
+    reset,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
-    reset,
   } = useForm<UserProfileFormData>({
     resolver: zodResolver(userProfileSchema),
     defaultValues: {
@@ -162,19 +164,18 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
       last_name: userProfile.last_name || "",
       email: userProfile.email || "",
       mobile_number: userProfile.mobile_number || "",
-      is_email_verified: userProfile.is_email_verified || false,
-      is_mobile_verified: userProfile.is_mobile_verified || false,
-      gender: userProfile.profile.gender || "prefer_not_to_say",
-      bio: userProfile.profile.bio || "",
+      date_of_birth: userProfile.profile.date_of_birth
+        ? format(new Date(userProfile.profile.date_of_birth), "yyyy-MM-dd")
+        : "",
+      gender: userProfile.profile.gender || undefined,
       city: userProfile.profile.city || "",
       state: userProfile.profile.state || "",
       country: userProfile.profile.country || "",
+      bio: userProfile.profile.bio || "",
       linkedin: userProfile.profile.linkedin || "",
       github: userProfile.profile.github || "",
       twitter: userProfile.profile.twitter || "",
       website: userProfile.profile.website || "",
-      profile_picture_url: userProfile.profile.profile_picture_url || "",
-      date_of_birth: userProfile.profile.date_of_birth || "",
     },
   });
 
@@ -182,317 +183,342 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
     const file = e.target.files?.[0];
     if (file) {
       setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const onSubmitForm = async (data: UserProfileFormData) => {
+    setIsLoading(true);
     try {
-      const payload = { ...data };
-
+      // Update user profile
+      await userService.updateProfile(userProfile.id, data);
+      
+      // Update avatar if changed
       if (avatarFile) {
-        try {
-          const formData = new FormData();
-          formData.append("file", avatarFile);
-          formData.append("asset_type", "profile_picture");
-          const response = await mediaService.uploadFile(formData);
-          payload["profile_picture_url"] = response.display_url;
-        } catch (error) {
-          console.log("failed to upload avatar:", error);
-        }
+        // Handle avatar upload logic here
+        // await mediaService.uploadAvatar(avatarFile);
       }
-      try {
-        payload["date_of_birth"] = format(
-          payload["date_of_birth"],
-          "yyyy-MM-dd",
-        );
-        await userService.updateProfile(userProfile.id, payload);
-        reset();
-      } catch (error) {
-        console.log("failed to update profile:", error);
-      }
+      
+      setIsEditing(false);
+      setAvatarFile(null);
+      reset(data);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error updating profile:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
-    { value: "prefer_not_to_say", label: "Prefer not to say" },
-  ];
+  // Check if form is dirty or avatar has changed
+  const hasChanges = isDirty || avatarFile !== null;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.6 }}
     >
-      <Card className="card-elevated">
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                Basic Information
-              </h3>
-              <hr className="border-gray-200" />
+      <div className="feature-card-handshake p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <User className="w-8 h-8 text-primary" />
+            <h2 className="heading-handshake text-2xl">Personal Information</h2>
+          </div>
+          <Button
+            onClick={() => {
+              if (isEditing) {
+                // Cancel editing - reset everything
+                setIsEditing(false);
+                reset();
+                setAvatarPreview(userProfile.profile.profile_picture_url || null);
+                setAvatarFile(null);
+              } else {
+                // Start editing
+                setIsEditing(true);
+              }
+            }}
+            className="btn-secondary"
+          >
+            {isEditing ? (
+              <>
+                <Edit3 className="w-4 h-4 mr-2" />
+                Cancel
+              </>
+            ) : (
+              <>
+                <Edit3 className="w-4 h-4 mr-2" />
+                Edit Profile
+              </>
+            )}
+          </Button>
+        </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="text"
-                  label="First Name"
-                  name="first_name"
-                  placeholder="Enter your first name"
-                  register={register}
-                  error={errors.first_name}
-                  required
-                />
-                <FormField
-                  type="text"
-                  label="Last Name"
-                  name="last_name"
-                  placeholder="Enter your last name"
-                  register={register}
-                  error={errors.last_name}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="email"
-                  label="Email Address"
-                  name="email"
-                  placeholder="your.email@example.com"
-                  register={register}
-                  error={errors.email}
-                  required
-                />
-                <FormField
-                  type="phone"
-                  label="Phone Number"
-                  name="mobile_number"
-                  placeholder="+1 (555) 123-4567"
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.mobile_number}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="date"
-                  label="Date of Birth"
-                  name="date_of_birth"
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.date_of_birth}
-                  required
-                />
-                <FormField
-                  type="select"
-                  label="Gender"
-                  name="gender"
-                  placeholder="Select gender"
-                  options={genderOptions}
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.gender}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Address Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" />
-                Address Information
-              </h3>
-
-              <hr className="border-gray-200" />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  type="text"
-                  label="City"
-                  name="city"
-                  placeholder="City"
-                  register={register}
-                  error={errors.city}
-                  required
-                />
-                <FormField
-                  type="text"
-                  label="State/Province"
-                  name="state"
-                  placeholder="State"
-                  register={register}
-                  error={errors.state}
-                  required
-                />
-                <FormField
-                  type="text"
-                  label="Country"
-                  name="country"
-                  placeholder="Country"
-                  register={register}
-                  error={errors.country}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Bio */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                About You
-              </h3>
-
-              <hr className="border-gray-200" />
-
-              <FormField
-                type="textarea"
-                label="Bio"
-                name="bio"
-                placeholder="Tell us about yourself, your interests, and what you're passionate about..."
-                register={register}
-                error={errors.bio}
-                rows={4}
-              />
-              <p className="text-xs text-muted-foreground">
-                {watch("bio")?.length || 0}/500 characters
-              </p>
-            </div>
-
-            {/* Social Links */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Globe className="w-5 h-5 text-primary" />
-                Social Links
-              </h3>
-
-              <hr className="border-gray-200" />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="url"
-                  label="LinkedIn URL"
-                  name="linkedin"
-                  placeholder="https://linkedin.com/in/..."
-                  register={register}
-                  error={errors.linkedin}
-                />
-                <FormField
-                  type="url"
-                  label="GitHub URL"
-                  name="github"
-                  placeholder="https://github.com/..."
-                  register={register}
-                  error={errors.github}
-                />
-                <FormField
-                  type="url"
-                  label="Twitter"
-                  name="twitter"
-                  placeholder="https://twitter.com/..."
-                  register={register}
-                  error={errors.twitter}
-                />
-                <FormField
-                  type="url"
-                  label="Personal Website"
-                  name="website"
-                  placeholder="https://yourwebsite.com"
-                  register={register}
-                  error={errors.website}
-                />
-              </div>
-            </div>
-
-            {/* Profile Image */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Upload className="w-5 h-5 text-primary" />
-                Profile Image
-              </h3>
-
-              <hr className="border-gray-200" />
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="avatar"
-                  className="text-sm font-medium text-foreground"
-                >
-                  Upload Profile Picture (Optional)
-                </Label>
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <input
-                      id="avatar"
-                      name="avatar"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="avatar"
-                      className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Upload className="w-4 h-4" />
-                      Choose Image
-                    </label>
+        <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
+          {/* Avatar Section */}
+          <div className="text-center">
+            <div className="relative inline-block group">
+              {isEditing ? (
+                <label className="cursor-pointer">
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
+                    {avatarPreview || userProfile.profile.profile_picture_url ? (
+                      <img
+                        src={avatarPreview || userProfile.profile.profile_picture_url || "/default-avatar.png"}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-2xl font-semibold text-primary">
+                          {userProfile.first_name.charAt(0).toUpperCase()}
+                          {userProfile.last_name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Upload className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  {avatarFile && (
-                    <div className="flex items-center gap-2 text-sm text-green-600">
-                      <CheckCircle className="w-4 h-4" />
-                      {avatarFile.name}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                </label>
+              ) : (
+                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
+                  {avatarPreview || userProfile.profile.profile_picture_url ? (
+                    <img
+                      src={avatarPreview || userProfile.profile.profile_picture_url || "/default-avatar.png"}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-2xl font-semibold text-primary">
+                        {userProfile.first_name.charAt(0).toUpperCase()}
+                        {userProfile.last_name.charAt(0).toUpperCase()}
+                      </span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Recommended: Square image, 512x512px or larger, PNG or JPG
-                </p>
-              </div>
+              )}
+              {avatarFile && (
+                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  New
+                </div>
+              )}
             </div>
+            {isEditing && (
+              <p className="text-sm text-gray-600 mt-2">
+                Click on your profile picture to change it
+              </p>
+            )}
+          </div>
 
-            {/* Form Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
+          {/* Basic Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              type="text"
+              label="First Name"
+              name="first_name"
+              register={register}
+              error={errors.first_name}
+              required
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="text"
+              label="Last Name"
+              name="last_name"
+              register={register}
+              error={errors.last_name}
+              required
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="email"
+              label="Email"
+              name="email"
+              register={register}
+              error={errors.email}
+              required
+              disabled={!isEditing}
+              rightIcon={userProfile.is_email_verified ? <CheckCircle className="text-green-500 w-5 h-5" /> : undefined}
+            />
+
+            <FormField
+              type="phone"
+              label="Phone Number"
+              name="mobile_number"
+              setValue={setValue}
+              watch={watch}
+              error={errors.mobile_number}
+              required
+              disabled={!isEditing}
+              rightIcon={userProfile.is_mobile_verified ? <CheckCircle className="text-green-500 w-5 h-5" /> : undefined}
+            />
+          </div>
+
+          {/* Personal Information */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FormField
+              type="date"
+              label="Date of Birth"
+              name="date_of_birth"
+              setValue={setValue}
+              watch={watch}
+              error={errors.date_of_birth}
+              required
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="select"
+              label="Gender"
+              name="gender"
+              setValue={setValue}
+              watch={watch}
+              error={errors.gender}
+              required
+              placeholder="Select Gender"
+              disabled={!isEditing}
+              options={[
+                { value: "male", label: "Male" },
+                { value: "female", label: "Female" },
+                { value: "other", label: "Other" },
+                { value: "prefer_not_to_say", label: "Prefer not to say" },
+              ]}
+            />
+          </div>
+
+          {/* Location */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FormField
+              type="text"
+              label="City"
+              name="city"
+              register={register}
+              error={errors.city}
+              required
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="text"
+              label="State"
+              name="state"
+              register={register}
+              error={errors.state}
+              required
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="text"
+              label="Country"
+              name="country"
+              register={register}
+              error={errors.country}
+              required
+              disabled={!isEditing}
+            />
+          </div>
+
+          {/* Bio */}
+          <FormField
+            type="textarea"
+            label="Bio"
+            name="bio"
+            register={register}
+            error={errors.bio}
+            placeholder="Tell us about yourself..."
+            rows={4}
+            disabled={!isEditing}
+          />
+
+          {/* Social Links */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              type="url"
+              label="LinkedIn"
+              name="linkedin"
+              register={register}
+              error={errors.linkedin}
+              placeholder="https://linkedin.com/in/yourprofile"
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="url"
+              label="GitHub"
+              name="github"
+              register={register}
+              error={errors.github}
+              placeholder="https://github.com/yourusername"
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="url"
+              label="Twitter"
+              name="twitter"
+              register={register}
+              error={errors.twitter}
+              placeholder="https://twitter.com/yourhandle"
+              disabled={!isEditing}
+            />
+
+            <FormField
+              type="url"
+              label="Website"
+              name="website"
+              register={register}
+              error={errors.website}
+              placeholder="https://yourwebsite.com"
+              disabled={!isEditing}
+            />
+          </div>
+
+          {/* Submit Button */}
+          {isEditing && (
+            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
               <Button
                 type="button"
-                variant="outline"
-                className="flex-1 sm:flex-none"
-                disabled={isSubmitting}
+                onClick={() => {
+                  setIsEditing(false);
+                  reset();
+                  setAvatarPreview(userProfile.profile.profile_picture_url || null);
+                  setAvatarFile(null);
+                }}
+                className="btn-secondary"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="flex-1 sm:flex-none text-white"
+                disabled={isLoading || !hasChanges}
+                className="btn-handshake"
               >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    Saving Profile...
-                  </div>
+                {isLoading ? (
+                  <div className="loading-handshake w-4 h-4" />
                 ) : (
-                  <div className="flex items-center gap-2">
-                    Save Profile
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
                 )}
               </Button>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+          )}
+        </form>
+      </div>
     </motion.div>
   );
 };

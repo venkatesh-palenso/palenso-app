@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Plus, Edit, Trash2, Star, Zap } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Star,
+  Save,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { profileService } from "@/services";
 
@@ -18,6 +25,7 @@ interface Skill {
   id?: string;
   name: string;
   proficiency_level: "beginner" | "intermediate" | "advanced" | "expert";
+  category?: string;
 }
 
 interface SkillFormProps {
@@ -31,18 +39,11 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     reset,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<Skill>();
-
-  const proficiencyLevels = [
-    { value: "beginner", label: "Beginner" },
-    { value: "intermediate", label: "Intermediate" },
-    { value: "advanced", label: "Advanced" },
-    { value: "expert", label: "Expert" },
-  ];
 
   const handleAddNew = () => {
     setEditingSkill(null);
@@ -66,7 +67,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
 
   const onSubmit = async (formData: Skill) => {
     try {
-      if (editingSkill?.id) {
+      if (editingSkill && editingSkill.id) {
         await profileService.updateSkill(editingSkill.id, formData);
       } else {
         await profileService.createSkill(formData);
@@ -78,7 +79,22 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
     }
   };
 
-  const getProficiencyLevelNumber = (level: string): number => {
+  const getProficiencyColor = (level: string) => {
+    switch (level) {
+      case "beginner":
+        return "bg-gray-100 text-gray-700";
+      case "intermediate":
+        return "bg-blue-100 text-blue-700";
+      case "advanced":
+        return "bg-purple-100 text-purple-700";
+      case "expert":
+        return "bg-green-100 text-green-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
+
+  const getProficiencyStars = (level: string) => {
     switch (level) {
       case "beginner":
         return 1;
@@ -89,192 +105,169 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
       case "expert":
         return 4;
       default:
-        return 0;
+        return 1;
     }
   };
 
-  const getProficiencyColor = (level: number) => {
-    switch (level) {
-      case 1:
-        return "text-red-500";
-      case 2:
-        return "text-orange-500";
-      case 3:
-        return "text-yellow-500";
-      case 4:
-        return "text-green-500";
-      default:
-        return "text-gray-500";
-    }
+  const renderStars = (count: number) => {
+    return Array.from({ length: 4 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < count ? "text-yellow-400 fill-current" : "text-gray-300"
+        }`}
+      />
+    ));
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.6 }}
     >
-      <Card className="card-elevated">
-        <CardContent>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Skills</h3>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    onClick={handleAddNew}
-                    className="flex items-center gap-2 text-white"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Skill
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingSkill ? "Edit Skill" : "Add Skill"}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        label="Skill Name"
-                        name="name"
-                        type="text"
-                        placeholder="e.g., React, Python, AWS"
-                        required
-                        register={register}
-                        error={errors.name}
-                      />
-                    </div>
+      <div className="form-section-handshake">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="heading-handshake text-xl">
+            <Star className="w-6 h-6 text-primary" />
+            Skills
+          </h3>
+          <Button onClick={handleAddNew} className="btn-handshake btn-sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Skill
+          </Button>
+        </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        label="Proficiency Level"
-                        name="proficiency_level"
-                        type="select"
-                        placeholder="Select proficiency"
-                        required
-                        setValue={setValue}
-                        watch={watch}
-                        options={proficiencyLevels.map((p) => ({
-                          value: p.value,
-                          label: p.label,
-                        }))}
-                        error={errors.proficiency_level}
-                      />
+        {/* Skills List */}
+        <div className="space-y-4">
+          {data.map((skill, index) => (
+            <motion.div
+              key={skill.id || index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <div className="dashboard-card-handshake p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h4 className="font-semibold text-lg text-gray-900">
+                        {skill.name}
+                      </h4>
+                      <Badge className={`${getProficiencyColor(skill.proficiency_level)}`}>
+                        {skill.proficiency_level.charAt(0).toUpperCase() + skill.proficiency_level.slice(1)}
+                      </Badge>
                     </div>
-
-                    <div className="flex justify-end gap-2 pt-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="submit"
-                        className="text-white cursor-pointer"
-                      >
-                        {editingSkill ? "Update" : "Save"}
-                      </Button>
+                    
+                    <div className="flex items-center gap-2 mb-2">
+                      {renderStars(getProficiencyStars(skill.proficiency_level))}
                     </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            {data.length === 0 ? (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-8">
-                  <Zap className="h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-500 text-center">
-                    No skills were added yet.
-                  </p>
-                  <p className="text-sm text-gray-400 text-center mt-2">
-                    Click Add Skill to get started.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-6">
-                <Card>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {data.map((skill, index) => (
-                        <div key={skill.id || index} className="relative group">
-                          <div className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex-1">
-                                <h4 className="font-medium text-gray-900">
-                                  {skill.name}
-                                </h4>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <div className="flex items-center gap-1">
-                                    {[...Array(4)].map((_, i) => (
-                                      <Star
-                                        key={i}
-                                        className={`h-3 w-3 ${
-                                          i <
-                                          getProficiencyLevelNumber(
-                                            skill.proficiency_level,
-                                          )
-                                            ? getProficiencyColor(
-                                                getProficiencyLevelNumber(
-                                                  skill.proficiency_level,
-                                                ),
-                                              )
-                                            : "text-gray-300"
-                                        }`}
-                                        fill={
-                                          i <
-                                          getProficiencyLevelNumber(
-                                            skill.proficiency_level,
-                                          )
-                                            ? "currentColor"
-                                            : "none"
-                                        }
-                                      />
-                                    ))}
-                                  </div>
-                                  <span className="text-xs text-gray-500 capitalize">
-                                    {skill.proficiency_level}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleEdit(skill)}
-                                >
-                                  <Edit className="h-3 w-3" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() =>
-                                    skill.id && handleDelete(skill.id)
-                                  }
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                    
+                    {skill.category && (
+                      <p className="text-sm text-gray-600">
+                        Category: {skill.category}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2 ml-4">
+                    <Button
+                      onClick={() => handleEdit(skill)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => skill.id && handleDelete(skill.id)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </motion.div>
+          ))}
+          
+          {data.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>No skills added yet.</p>
+              <Button onClick={handleAddNew} className="btn-handshake mt-4">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Skill
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Add/Edit Dialog */}
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="heading-handshake text-xl">
+                {editingSkill ? "Edit Skill" : "Add Skill"}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                type="text"
+                label="Skill Name"
+                name="name"
+                register={register}
+                error={errors.name}
+                required
+                placeholder="e.g., JavaScript, Project Management"
+              />
+
+              <FormField
+                type="select"
+                label="Proficiency Level"
+                name="proficiency_level"
+                setValue={setValue}
+                watch={watch}
+                error={errors.proficiency_level}
+                required
+                placeholder="Select Level"
+                options={[
+                  { value: "beginner", label: "Beginner" },
+                  { value: "intermediate", label: "Intermediate" },
+                  { value: "advanced", label: "Advanced" },
+                  { value: "expert", label: "Expert" },
+                ]}
+              />
+
+              <FormField
+                type="text"
+                label="Category (Optional)"
+                name="category"
+                register={register}
+                placeholder="e.g., Programming, Design, Management"
+              />
+
+              <div className="action-buttons-handshake">
+                <Button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="btn-secondary"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button type="submit" className="btn-handshake">
+                  <Save className="w-4 h-4 mr-2" />
+                  {editingSkill ? "Update Skill" : "Add Skill"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
     </motion.div>
   );
 };

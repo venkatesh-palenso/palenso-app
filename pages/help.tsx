@@ -1,16 +1,26 @@
-import Head from "next/head";
+// react
 import { useState } from "react";
+
+// next
+import Head from "next/head";
+
+// framer-motion
 import { motion } from "framer-motion";
-import { HelpCircle, Search, Mail, MessageCircle, Phone } from "lucide-react";
+
+// lucide icons
+import { HelpCircle, Search, Mail, MessageCircle, Phone, ArrowRight } from "lucide-react";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
+// layout
 import { Layouts } from "@/layouts";
 
 export default function Help() {
@@ -110,109 +120,131 @@ export default function Help() {
         />
       </Head>
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="text-center mb-12">
-            <div className="flex justify-center mb-6">
-              <HelpCircle size={64} className="text-blue-600" />
-            </div>
-            <h1 className="text-4xl font-bold mb-2">Help Center</h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Find answers to your questions and get the support you need
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Card className="p-8 mb-12">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold mb-2">Search for Help</h2>
-              <p className="text-gray-600">
-                Can&apos;t find what you&apos;re looking for? Search our help
-                articles
+      <div className="hero-handshake min-h-screen">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center mb-12">
+              <div className="flex justify-center mb-6">
+                <HelpCircle size={64} className="text-primary animate-bounce-glow" />
+              </div>
+              <h1 className="heading-handshake-large mb-4">Help Center</h1>
+              <p className="heading-handshake-subtitle">
+                Find answers to your questions and get the support you need
               </p>
             </div>
-            <div className="flex gap-4 max-w-2xl mx-auto">
-              <div className="relative flex-1">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-                <Input
-                  placeholder="Search for help articles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+          </motion.div>
+
+          {/* Search */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className="feature-card-handshake p-8 mb-12">
+              <div className="text-center mb-6">
+                <h2 className="heading-handshake text-2xl mb-2">Search for Help</h2>
+                <p className="text-gray-600">
+                  Can&apos;t find what you&apos;re looking for? Search our help
+                  articles
+                </p>
               </div>
-              <Button>Search</Button>
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* FAQ Categories */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          {faqCategories.map((category, categoryIndex) => (
-            <Card key={categoryIndex} className="mb-6">
-              <CardContent className="p-0">
-                <h3 className="text-xl font-semibold p-6 pb-2">
-                  {category.title}
-                </h3>
-                <Accordion type="single" collapsible className="w-full">
-                  {category.faqs.map((faq, faqIndex) => (
-                    <AccordionItem key={faqIndex} value={`item-${faqIndex}`}>
-                      <AccordionTrigger className="px-6 text-left">
-                        <span className="font-medium">{faq.question}</span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-6">
-                        <p className="text-gray-600">{faq.answer}</p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          ))}
-        </motion.div>
-
-        {/* Support Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <h2 className="text-3xl font-bold mb-8 text-center">
-            Still Need Help?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {supportOptions.map((option, index) => (
-              <Card key={index} className="p-8 text-center h-full">
-                <div className="flex justify-center mb-4">
-                  <option.icon size={48} className="text-blue-600" />
+              <div className="flex gap-4 max-w-2xl mx-auto">
+                <div className="relative flex-1">
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <Input
+                    placeholder="Search for help articles..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="input-handshake pl-10"
+                  />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{option.title}</h3>
-                <p className="text-gray-600 mb-6">{option.description}</p>
-                <Button variant="outline" className="w-full">
-                  {option.action}
+                <Button className="btn-handshake">
+                  Search
+                  <Search className="ml-2 h-4 w-4" />
                 </Button>
-              </Card>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* FAQ Categories */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            {faqCategories.map((category, categoryIndex) => (
+              <motion.div
+                key={categoryIndex}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <div className="feature-card-handshake mb-6">
+                  <div className="p-0">
+                    <h3 className="heading-handshake text-xl p-6 pb-2">
+                      {category.title}
+                    </h3>
+                    <Accordion type="single" collapsible className="w-full">
+                      {category.faqs.map((faq, faqIndex) => (
+                        <AccordionItem key={faqIndex} value={`item-${faqIndex}`}>
+                          <AccordionTrigger className="px-6 text-left hover:bg-gray-50 rounded-lg mx-2">
+                            <span className="font-medium text-gray-900">{faq.question}</span>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6">
+                            <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </div>
+                </div>
+              </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Support Options */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h2 className="heading-handshake text-3xl mb-8 text-center">
+              Still Need Help?
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {supportOptions.map((option, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="feature-card-handshake p-8 text-center h-full">
+                    <div className="flex justify-center mb-4">
+                      <option.icon size={48} className="text-primary" />
+                    </div>
+                    <h3 className="heading-handshake text-xl mb-2">{option.title}</h3>
+                    <p className="text-gray-600 mb-6">{option.description}</p>
+                    <Button className="btn-handshake w-full">
+                      {option.action}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </>
   );

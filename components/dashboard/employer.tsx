@@ -1,563 +1,381 @@
-"use client";
-
+import React from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Briefcase,
   Users,
   TrendingUp,
-  Star,
-  ArrowRight,
-  Award,
-  Sparkles,
-  Eye,
-  Share2,
   Calendar,
+  MapPin,
+  Building,
+  Eye,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Star,
+  Plus,
 } from "lucide-react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-const stats = [
-  {
-    title: "Active Jobs",
-    value: "8",
-    change: "+2 this week",
-    icon: <Briefcase className="w-5 h-5" />,
-    color: "from-primary-500 to-primary-600",
-  },
-  {
-    title: "Total Applications",
-    value: "156",
-    change: "+23 this week",
-    icon: <Users className="w-5 h-5" />,
-    color: "from-accent-500 to-accent-600",
-  },
-  {
-    title: "Interviews Scheduled",
-    value: "12",
-    change: "+5 this week",
-    icon: <Calendar className="w-5 h-5" />,
-    color: "from-success-500 to-success-600",
-  },
-  {
-    title: "Hires This Month",
-    value: "3",
-    change: "+1 this week",
-    icon: <Award className="w-5 h-5" />,
-    color: "from-warning-500 to-warning-600",
-  },
-];
+interface EmployerDashboardProps {
+  stats?: {
+    activeJobs: number;
+    totalApplications: number;
+    interviews: number;
+    hires: number;
+  };
+  recentApplications?: Array<{
+    id: string;
+    candidateName: string;
+    jobTitle: string;
+    appliedDate: string;
+    status: "pending" | "reviewed" | "interviewed" | "hired" | "rejected";
+    experience: string;
+    location: string;
+  }>;
+  activeJobs?: Array<{
+    id: string;
+    title: string;
+    applications: number;
+    views: number;
+    postedDate: string;
+    status: "active" | "paused" | "closed";
+  }>;
+}
 
-const recentApplications = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    position: "Senior Frontend Developer",
-    status: "Under Review",
-    date: "2 hours ago",
-    avatar: "SJ",
-    experience: "5 years",
-    match: "95%",
-    color: "from-primary-500 to-primary-600",
+const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
+  stats = {
+    activeJobs: 8,
+    totalApplications: 156,
+    interviews: 12,
+    hires: 3,
   },
-  {
-    id: 2,
-    name: "Michael Chen",
-    position: "Product Manager",
-    status: "Interview Scheduled",
-    date: "1 day ago",
-    avatar: "MC",
-    experience: "7 years",
-    match: "92%",
-    color: "from-accent-500 to-accent-600",
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    position: "Data Scientist",
-    status: "Shortlisted",
-    date: "2 days ago",
-    avatar: "ER",
-    experience: "4 years",
-    match: "88%",
-    color: "from-success-500 to-success-600",
-  },
-];
+  recentApplications = [],
+  activeJobs = [],
+}) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-700";
+      case "reviewed":
+        return "bg-blue-100 text-blue-700";
+      case "interviewed":
+        return "bg-purple-100 text-purple-700";
+      case "hired":
+        return "bg-green-100 text-green-700";
+      case "rejected":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
 
-const activeJobs = [
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    applications: 24,
-    views: 156,
-    status: "Active",
-    posted: "3 days ago",
-    salary: "$120k - $150k",
-    location: "San Francisco, CA",
-    color: "from-primary-500 to-primary-600",
-  },
-  {
-    id: 2,
-    title: "Product Manager",
-    applications: 18,
-    views: 89,
-    status: "Active",
-    posted: "1 week ago",
-    salary: "$100k - $130k",
-    location: "Remote",
-    color: "from-accent-500 to-accent-600",
-  },
-  {
-    id: 3,
-    title: "Data Scientist",
-    applications: 32,
-    views: 203,
-    status: "Active",
-    posted: "2 weeks ago",
-    salary: "$110k - $140k",
-    location: "New York, NY",
-    color: "from-success-500 to-success-600",
-  },
-];
+  const getJobStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-700";
+      case "paused":
+        return "bg-yellow-100 text-yellow-700";
+      case "closed":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
 
-const upcomingInterviews = [
-  {
-    id: 1,
-    candidate: "Sarah Johnson",
-    position: "Senior Frontend Developer",
-    date: "March 15, 2024",
-    time: "10:00 AM",
-    type: "Technical",
-    interviewer: "John Smith",
-    color: "from-primary-500 to-accent-500",
-  },
-  {
-    id: 2,
-    candidate: "Michael Chen",
-    position: "Product Manager",
-    date: "March 16, 2024",
-    time: "2:00 PM",
-    type: "Behavioral",
-    interviewer: "Lisa Wang",
-    color: "from-success-500 to-warning-500",
-  },
-  {
-    id: 3,
-    candidate: "Emily Rodriguez",
-    position: "Data Scientist",
-    date: "March 17, 2024",
-    time: "11:00 AM",
-    type: "Technical",
-    interviewer: "David Kim",
-    color: "from-accent-500 to-error-500",
-  },
-];
-
-const quickActions = [
-  {
-    title: "Post New Job",
-    description: "Create a new job listing",
-    icon: <Briefcase className="w-6 h-6" />,
-    href: "/post-job",
-    color: "from-primary-500 to-primary-600",
-  },
-  {
-    title: "View Applications",
-    description: "Review candidate applications",
-    icon: <Users className="w-6 h-6" />,
-    href: "/applications",
-    color: "from-accent-500 to-accent-600",
-  },
-  {
-    title: "Schedule Interviews",
-    description: "Set up candidate interviews",
-    icon: <Calendar className="w-6 h-6" />,
-    href: "/interviews",
-    color: "from-success-500 to-success-600",
-  },
-  {
-    title: "Analytics",
-    description: "View hiring insights",
-    icon: <TrendingUp className="w-6 h-6" />,
-    href: "/analytics",
-    color: "from-warning-500 to-warning-600",
-  },
-];
-
-export default function EmployerDashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-8"
+    >
+      {/* Welcome Section */}
+      <div className="hero-handshake p-8 rounded-2xl">
+        <div className="text-center">
+          <h1 className="heading-handshake-large text-3xl mb-4">
+            Welcome back, Employer! 👋
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Find the perfect candidates for your team. Track applications, 
+            manage interviews, and grow your organization.
+          </p>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
+          transition={{ duration: 0.4, delay: 0.1 }}
         >
+          <div className="stats-card-handshake">
+            <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-banner-vibrant">
-              Welcome back, TechCorp! 🚀
-            </h1>
-            <p className="text-xl text-banner-glow mt-2">
-              Here&apos;s your hiring dashboard overview
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <Button variant="outline" size="lg">
-              <Share2 className="w-4 h-4 mr-2" />
-              Share Company
-            </Button>
-            <Button variant="default" size="lg" className="btn-primary-shiny">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Post Job
-            </Button>
+                <p className="text-sm text-gray-600 mb-1">Active Jobs</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.activeJobs}</p>
+                <p className="text-xs text-green-600 mt-1">2 expiring soon</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Briefcase className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
           </div>
         </motion.div>
 
-        {/* Stats Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          transition={{ duration: 0.4, delay: 0.2 }}
         >
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-            >
-              <Card className="card-modern group">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${stat.color} text-white rounded-xl shadow-lg group-hover:glow-primary transition-all duration-300`}
-                    >
-                      {stat.icon}
-                    </div>
-                    <TrendingUp className="w-5 h-5 text-success-500" />
-                  </div>
-                  <div className="text-3xl font-bold text-foreground mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground mb-2">
-                    {stat.title}
-                  </div>
-                  <div className="text-xs text-success-600 font-medium">
-                    {stat.change}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+          <div className="stats-card-handshake">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Applications</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.totalApplications}</p>
+                <p className="text-xs text-blue-600 mt-1">+12 today</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
+          <div className="stats-card-handshake">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Interviews</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.interviews}</p>
+                <p className="text-xs text-orange-600 mt-1">3 scheduled</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-orange-600" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+            <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+        >
+          <div className="stats-card-handshake">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Hires</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.hires}</p>
+                <p className="text-xs text-green-600 mt-1">Great success!</p>
+                    </div>
+              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+                  </div>
+                  </div>
+                  </div>
+        </motion.div>
+      </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
             {/* Recent Applications */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <Card className="card-modern">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl font-bold">
+        <div className="lg:col-span-2">
+          <div className="dashboard-card-handshake p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="heading-handshake text-xl">
+                <Users className="w-6 h-6 text-primary mr-2" />
                       Recent Applications
-                    </CardTitle>
-                    <Button variant="ghost" size="sm">
-                      View All
-                      <ArrowRight className="w-4 h-4 ml-2" />
+              </h2>
+              <Button className="btn-handshake btn-sm">
+                View All Applications
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {recentApplications.map((application, index) => (
+
+            <div className="space-y-4">
+              {recentApplications.length > 0 ? (
+                recentApplications.map((application, index) => (
                     <motion.div
                       key={application.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-muted/50 to-white border border-border/50 hover:shadow-md transition-all duration-300 group"
-                    >
-                      <div
-                        className={`w-12 h-12 bg-gradient-to-r ${application.color} text-white rounded-xl flex items-center justify-center font-semibold text-lg shadow-lg group-hover:glow-primary transition-all duration-300`}
-                      >
-                        {application.avatar}
-                      </div>
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="border border-gray-200 rounded-lg p-4 hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-foreground group-hover:text-primary-500 transition-colors">
-                          {application.name}
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-lg text-gray-900">
+                            {application.candidateName}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {application.position}
-                        </p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {application.status}
+                          <Badge className={`${getStatusColor(application.status)}`}>
+                            {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {application.experience} exp
-                          </span>
-                          <span className="text-xs text-success-600 font-medium">
-                            {application.match} match
-                          </span>
                         </div>
+                        <p className="text-primary font-medium mb-1">
+                          {application.jobTitle}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            {application.location}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {application.experience}
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs text-muted-foreground mb-2">
-                          {application.date}
                         </div>
+                        <p className="text-xs text-gray-400">
+                          Applied {application.appliedDate}
+                        </p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
                         <Button
+                          variant="outline"
                           size="sm"
-                          variant="default"
-                          className="btn-primary-shiny"
+                          className="btn-secondary btn-sm"
                         >
-                          Review
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="btn-secondary btn-sm"
+                        >
+                          <Calendar className="w-4 h-4" />
                         </Button>
                       </div>
+                      </div>
                     </motion.div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <p>No recent applications found.</p>
+                  <Button className="btn-handshake mt-4">
+                    Post a Job
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
+        {/* Sidebar */}
+        <div className="space-y-6">
             {/* Active Jobs */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Card className="card-modern">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl font-bold">
-                      Active Job Listings
-                    </CardTitle>
-                    <Button variant="ghost" size="sm">
-                      View All
-                      <ArrowRight className="w-4 h-4 ml-2" />
+          <div className="dashboard-card-handshake p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="heading-handshake text-lg">
+                <Briefcase className="w-5 h-5 text-primary mr-2" />
+                Active Jobs
+              </h3>
+              <Button className="btn-handshake btn-sm">
+                <Plus className="w-4 h-4 mr-1" />
+                Post Job
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {activeJobs.map((job, index) => (
+
+            <div className="space-y-4">
+              {activeJobs.length > 0 ? (
+                activeJobs.map((job, index) => (
                     <motion.div
                       key={job.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-muted/50 to-white border border-border/50 hover:shadow-md transition-all duration-300 group"
-                    >
-                      <div
-                        className={`w-12 h-12 bg-gradient-to-r ${job.color} text-white rounded-xl flex items-center justify-center shadow-lg group-hover:glow-primary transition-all duration-300`}
-                      >
-                        <Briefcase className="w-6 h-6" />
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="border border-gray-200 rounded-lg p-3 hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Briefcase className="w-5 h-5 text-primary" />
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-foreground group-hover:text-primary-500 transition-colors">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-gray-900 text-sm mb-1">
                           {job.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {job.location}
-                        </p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Users className="w-3 h-3" />
-                            {job.applications} applications
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Eye className="w-3 h-3" />
-                            {job.views} views
-                          </div>
-                          <Badge variant="secondary" className="text-xs">
-                            {job.salary}
+                        </h4>
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge className={`${getJobStatusColor(job.status)} text-xs`}>
+                            {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
                           </Badge>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-muted-foreground mb-2">
-                          {job.posted}
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span>{job.applications} applications</span>
+                          <span>{job.views} views</span>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="btn-primary-shiny"
-                        >
-                          Manage
-                        </Button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-8">
-            {/* Company Profile */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <Card className="card-modern">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">
-                    Company Profile
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-xl flex items-center justify-center text-2xl font-bold shadow-lg">
-                        TC
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          TechCorp Solutions
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Technology • 500-1000 employees
+                        <p className="text-xs text-gray-400 mt-1">
+                          Posted {job.postedDate}
                         </p>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 text-warning-400 fill-current" />
-                          <span className="text-sm font-medium">4.8</span>
-                          <span className="text-sm text-muted-foreground">
-                            (156 reviews)
-                          </span>
-                        </div>
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Profile Completion</span>
-                        <span className="font-semibold text-primary-600">
-                          92%
-                        </span>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <Briefcase className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                  <p className="text-sm">No active jobs</p>
                       </div>
-                      <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full transition-all duration-500"
-                          style={{ width: "92%" }}
-                        />
+              )}
                       </div>
                     </div>
-                    <Button variant="outline" className="w-full">
-                      Edit Profile
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
 
             {/* Quick Actions */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Card className="card-modern">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">
+          <div className="dashboard-card-handshake p-6">
+            <h3 className="heading-handshake text-lg mb-4">
+              <TrendingUp className="w-5 h-5 text-primary mr-2" />
                     Quick Actions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {quickActions.map((action, index) => (
-                    <motion.div
-                      key={action.title}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                    >
-                      <Link href={action.href}>
-                        <div
-                          className={`flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r ${action.color} text-white hover:shadow-lg transition-all duration-300 group cursor-pointer`}
-                        >
-                          <div className="p-2 rounded-lg bg-white/20 group-hover:bg-white/30 transition-all duration-300">
-                            {action.icon}
-                          </div>
-                          <div>
-                            <div className="font-semibold">{action.title}</div>
-                            <div className="text-sm text-white/80">
-                              {action.description}
+            </h3>
+            <div className="space-y-3">
+              <Button className="btn-handshake w-full">
+                <Plus className="w-4 h-4 mr-2" />
+                Post New Job
+              </Button>
+              <Button className="btn-secondary w-full">
+                <Users className="w-4 h-4 mr-2" />
+                Review Applications
+              </Button>
+              <Button className="btn-secondary w-full">
+                <Calendar className="w-4 h-4 mr-2" />
+                Schedule Interviews
+              </Button>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
 
-            {/* Upcoming Interviews */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <Card className="card-modern">
-                <CardHeader>
+          {/* Analytics Summary */}
+          <div className="dashboard-card-handshake p-6">
+            <h3 className="heading-handshake text-lg mb-4">
+              <TrendingUp className="w-5 h-5 text-primary mr-2" />
+              Analytics Summary
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Application Rate</span>
+                <span className="text-sm font-medium text-green-600">+12%</span>
+                        </div>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-bold">
-                      Upcoming Interviews
-                    </CardTitle>
-                    <Button variant="ghost" size="sm">
-                      View All
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                <span className="text-sm text-gray-600">Time to Hire</span>
+                <span className="text-sm font-medium text-blue-600">15 days</span>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {upcomingInterviews.map((interview, index) => (
-                    <motion.div
-                      key={interview.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
-                      className="p-4 rounded-xl bg-gradient-to-r from-muted/50 to-white border border-border/50 hover:shadow-md transition-all duration-300 group"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`w-2 h-2 rounded-full bg-gradient-to-r ${interview.color} mt-2`}
-                        />
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-foreground group-hover:text-primary-500 transition-colors">
-                            {interview.candidate}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {interview.position}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-xs">
-                              {interview.type}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              {interview.date} at {interview.time}
-                            </span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Quality Score</span>
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <span className="text-sm font-medium">4.2/5</span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Interviewer: {interview.interviewer}
-                          </p>
                         </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
+
+export default EmployerDashboard;

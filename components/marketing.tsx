@@ -1,35 +1,41 @@
+// react
 import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+
+// next
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
+// framer-motion
+import { motion, useScroll, useTransform } from "framer-motion";
+
+// lucide icons
 import {
   ArrowRight,
-  CheckCircle,
   Users,
   Building,
   Calendar,
   Briefcase,
-  Target,
-  Zap,
+  Handshake,
+  GraduationCap,
+  Globe,
+  TrendingUp,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+// components
+import { Button } from "@/components/ui/button";
+
+// context
+import { useUser } from "@/context";
 
 const Marketing: React.FC = () => {
+  const { user, isLoggedIn } = useUser();
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   return (
     <div className="bg-white overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-8 pb-32 px-4 overflow-hidden">
+      <section className="hero-handshake relative pt-8 pb-32 px-4 overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50" />
         <motion.div
           style={{ y }}
           className="absolute top-20 right-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
@@ -51,232 +57,69 @@ const Marketing: React.FC = () => {
               transition={{ duration: 0.8 }}
               className="mb-8"
             >
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                Where Talent Meets
-                <br />
-                <span className="text-primary">Opportunity</span>
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Palenso is the premier landing spot for employers to recruit
-                through posted jobs and events. Students discover opportunities,
-                explore company information, and launch their careers.
+              <div className="flex items-center justify-center mb-6">
+                <Handshake className="w-16 h-16 text-primary mr-4 animate-bounce-glow" />
+                <h1 className="heading-handshake-large">
+                  Where Talent Meets
+                  <br />
+                  <span className="text-primary">Opportunity</span>
+                </h1>
+              </div>
+              <p className="heading-handshake-subtitle">
+                Palenso is the premier career platform connecting students with employers. 
+                Discover opportunities, explore companies, and launch your career journey.
               </p>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
             >
-              <Link href="/signup">
-                <Button
-                  size="lg"
-                  className="text-lg text-white px-8 py-4 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="text-lg px-8 py-4 border-2 border-gray-400 hover:bg-gray-50 transition-all duration-300"
-                >
-                  Sign In
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-wrap justify-center items-center gap-8 text-gray-500"
-            >
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm font-medium">500+ Companies</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm font-medium">50,000+ Students</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm font-medium">10,000+ Jobs Posted</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
-            {[
-              { value: "10,000+", label: "Active Jobs", icon: Briefcase },
-              { value: "500+", label: "Companies", icon: Building },
-              { value: "50,000+", label: "Students Hired", icon: Users },
-              { value: "85%", label: "Success Rate", icon: Target },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center group"
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors duration-300">
-                  <stat.icon className="h-8 w-8 text-primary" />
-                </div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Value Proposition Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-              The Complete Platform for
-              <br />
-              <span className="text-primary">Career Success</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Whether you&apos;re an employer looking for top talent or a
-              student seeking opportunities, Palenso provides everything you
-              need to succeed.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* For Employers */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Building className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  For Employers
-                </h3>
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">
-                Recruit Top Talent Through Jobs & Events
-              </h4>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Post jobs, host events, and connect with qualified candidates.
-                Our platform makes it easy to find the perfect match for your
-                organization.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "Post unlimited job opportunities",
-                  "Host virtual and in-person events",
-                  "Access detailed candidate profiles",
-                  "Track application analytics",
-                  "Connect with universities",
-                ].map((item, index) => (
-                  <motion.li
-                    key={item}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-3"
-                  >
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              <Link href="/signup">
-                <Button className="mt-6 text-white bg-primary hover:bg-primary/90">
-                  Start Recruiting
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* For Students */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Users className="h-6 w-6 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  For Students
-                </h3>
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">
-                Discover Opportunities & Company Information
-              </h4>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Find your dream job, explore companies, and attend career
-                events. Get insights into company culture and make informed
-                career decisions.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "Browse thousands of job opportunities",
-                  "Explore detailed company profiles",
-                  "Attend career events and workshops",
-                  "Get personalized job recommendations",
-                  "Track your application progress",
-                ].map((item, index) => (
-                  <motion.li
-                    key={item}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-3"
-                  >
-                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              <Link href="/signup">
-                <Button className="mt-6 text-white bg-primary hover:bg-primary/90">
-                  Find Opportunities
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="flex flex-col gap-4">
+                    <h2 className="heading-handshake text-2xl">
+                      Welcome back, {user?.first_name}!
+                    </h2>
+                    <div className="flex flex-row gap-4">
+                      <Link href="/profile">
+                        <Button className="btn-handshake text-lg px-8 py-4">
+                          View Profile
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
+                      </Link>
+                      <Link href="/dashboard">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="text-lg px-8 py-4 border-2 border-primary hover:bg-primary transition-all duration-300 cursor-pointer"
+                        >
+                          View Dashboard
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link href="/signup">
+                    <Button className="btn-handshake text-lg px-8 py-4">
+                      Get Started
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="text-lg px-8 py-4 border-2 border-primary hover:bg-primary transition-all duration-300 cursor-pointer"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
             </motion.div>
           </div>
         </div>
@@ -286,92 +129,118 @@ const Marketing: React.FC = () => {
       <section className="py-20 px-4 bg-gray-50">
         <div className="container mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-6 text-gray-900">
-              Powerful Features for Everyone
+            <h2 className="heading-handshake text-4xl mb-4">
+              Why Choose Palenso?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Everything you need to succeed in your career journey
+              The ultimate platform for career growth and talent acquisition
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: Zap,
-                title: "Smart Matching",
-                description:
-                  "AI-powered job and candidate matching for perfect fits",
-                color: "blue",
+                icon: <GraduationCap className="w-12 h-12 text-primary" />,
+                title: "Student Success",
+                description: "Find internships, jobs, and career opportunities tailored to your skills and interests.",
               },
               {
-                icon: Calendar,
-                title: "Event Management",
-                description:
-                  "Host and attend career fairs, workshops, and networking events",
-                color: "green",
+                icon: <Building className="w-12 h-12 text-primary" />,
+                title: "Employer Solutions",
+                description: "Connect with top talent through job postings, events, and direct recruitment.",
               },
               {
-                icon: Building,
-                title: "Company Insights",
-                description:
-                  "Detailed company profiles with culture and benefits information",
-                color: "purple",
+                icon: <Calendar className="w-12 h-12 text-primary" />,
+                title: "Career Events",
+                description: "Attend workshops, career fairs, and networking events to grow your professional network.",
               },
               {
-                icon: Target,
-                title: "Career Tracking",
-                description:
-                  "Track applications, interviews, and career progress",
-                color: "orange",
+                icon: <Globe className="w-12 h-12 text-primary" />,
+                title: "Global Reach",
+                description: "Access opportunities from companies worldwide and expand your career horizons.",
               },
               {
-                icon: Users,
-                title: "Networking",
-                description:
-                  "Connect with professionals, alumni, and industry leaders",
-                color: "pink",
+                icon: <TrendingUp className="w-12 h-12 text-primary" />,
+                title: "Career Growth",
+                description: "Track your progress, build your portfolio, and advance your career with confidence.",
               },
               {
-                icon: Briefcase,
-                title: "Application Tools",
-                description:
-                  "Resume builder, cover letter templates, and interview prep",
-                color: "indigo",
+                icon: <Handshake className="w-12 h-12 text-primary" />,
+                title: "Direct Connection",
+                description: "Connect directly with employers and build meaningful professional relationships.",
               },
             ].map((feature, index) => (
               <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group"
               >
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white group-hover:-translate-y-1">
-                  <CardHeader>
-                    <div
-                      className={`w-12 h-12 bg-${feature.color}-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-${feature.color}-200 transition-colors duration-300`}
-                    >
-                      <feature.icon
-                        className={`h-6 w-6 text-${feature.color}-600`}
-                      />
+                <div className="feature-card-handshake h-full">
+                  <div className="text-center">
+                    <div className="mb-4 flex justify-center">
+                      {feature.icon}
                     </div>
-                    <CardTitle className="text-xl text-gray-900">
+                    <h3 className="heading-handshake text-xl mb-3">
                       {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base text-gray-600">
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
                       {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-4 bg-primary">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Trusted by Thousands
+            </h2>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+              Join the growing community of students and employers
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { number: "10K+", label: "Active Students", icon: <Users className="w-8 h-8" /> },
+              { number: "500+", label: "Partner Companies", icon: <Building className="w-8 h-8" /> },
+              { number: "5K+", label: "Jobs Posted", icon: <Briefcase className="w-8 h-8" /> },
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="text-center text-white"
+              >
+                <div className="mb-4 flex justify-center">
+                  <div className="p-4 bg-white/20 rounded-full">
+                    {stat.icon}
+                  </div>
+                </div>
+                <div className="text-4xl font-bold mb-2">{stat.number}</div>
+                <div className="text-blue-100">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -379,38 +248,34 @@ const Marketing: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-black to-blue-600">
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="container mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold mb-6 text-white">
-              Ready to Transform Your Career?
+            <h2 className="text-4xl font-bold text-white mb-6">
+              Ready to Start Your Career Journey?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of students and employers who are already using
-              Palenso to connect, grow, and succeed together.
+              Join thousands of students and employers who are already using Palenso to connect and grow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button
-                  size="lg"
-                  className="text-lg text-white px-8 py-4 bg-primary hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Get Started Free
+                <Button className="btn-handshake text-lg px-8 py-4 bg-white text-primary hover:bg-gray-100">
+                  Get Started Today
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/jobs">
+              <Link href="/about-us">
                 <Button
                   variant="outline"
                   size="lg"
                   className="text-lg px-8 py-4 border-2 border-white hover:bg-white hover:text-primary transition-all duration-300"
                 >
-                  Explore Jobs
+                  Learn More
                 </Button>
               </Link>
             </div>

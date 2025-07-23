@@ -1,5 +1,13 @@
+// react
 import React, { useState } from "react";
+
+// next
+import Link from "next/link";
+
+// framer-motion
 import { motion, AnimatePresence } from "framer-motion";
+
+// lucide icons
 import {
   Mail,
   ArrowLeft,
@@ -7,7 +15,8 @@ import {
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
-import Link from "next/link";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +27,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+// services
 import { authService } from "@/services";
 
 export default function ForgotPassword() {

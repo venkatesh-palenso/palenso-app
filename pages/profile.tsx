@@ -17,16 +17,28 @@ import Spinner from "@/components/spinner";
 // services
 import { userService } from "@/services";
 
-// Dynamically import profile components to avoid SSR issues
-const EmployerProfile = dynamic(() => import("@/components/profile").then(mod => ({ default: mod.EmployerProfile })), {
-  ssr: false,
-  loading: () => <Spinner />
-});
+// interfaces
+import type { StudentProfile, EmployerProfile } from "@/interfaces";
 
-const StudentProfile = dynamic(() => import("@/components/profile").then(mod => ({ default: mod.StudentProfile })), {
-  ssr: false,
-  loading: () => <Spinner />
-});
+// Dynamically import profile components to avoid SSR issues
+const EmployerProfile = dynamic(
+  () =>
+    import("@/components/profile").then((mod) => ({
+      default: mod.EmployerProfile,
+    })),
+  {
+    ssr: false,
+    loading: () => <Spinner />,
+  },
+);
+
+const StudentProfile = dynamic(
+  () => import("@/components/profile/student"),
+  {
+    ssr: false,
+    loading: () => <Spinner />,
+  },
+);
 
 const Profile = () => {
   const { user } = useUser();
@@ -67,8 +79,8 @@ const Profile = () => {
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="py-3">
-          {Component && <Component userProfile={profile} />}
+        <div className="p-5">
+          {Component && profile && <Component userProfile={profile as StudentProfile & { [key: string]: unknown }} />}
         </div>
       </div>
     </>

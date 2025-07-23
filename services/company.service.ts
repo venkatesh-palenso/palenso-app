@@ -18,6 +18,33 @@ class CompanyService extends APIService {
         throw error;
       });
   }
+
+  /**
+   * Searches companies with filters.
+   * @param params - Search parameters (search, industry, location)
+   * @returns A promise that resolves to the filtered list of companies.
+   */
+  searchCompanies(params: {
+    search?: string;
+    industry?: string;
+    location?: string;
+  }): Promise<Company[]> {
+    const queryParams = new URLSearchParams();
+    if (params.search) queryParams.append("search", params.search);
+    if (params.industry && params.industry !== "all")
+      queryParams.append("industry", params.industry);
+    if (params.location) queryParams.append("location", params.location);
+
+    const url = queryParams.toString()
+      ? `${COMPANY_ENDPOINTS.LIST_CREATE_COMPANY}?${queryParams.toString()}`
+      : COMPANY_ENDPOINTS.LIST_CREATE_COMPANY;
+
+    return this.get(url)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
   /**
    * Creates a new company.
    * @param data - The data for the new company.
@@ -50,7 +77,7 @@ class CompanyService extends APIService {
    * @param data - The data to update the company with.
    * @returns A promise that resolves to the updated company.
    */
-  updateCompany(companyId: string, data: UpdateCompanyForm) {
+  updateCompany(companyId: string, data: UpdateCompanyForm): Promise<Company> {
     return this.put(COMPANY_ENDPOINTS.COMPANY_DETAIL(companyId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -63,7 +90,7 @@ class CompanyService extends APIService {
    * @param companyId - The ID of the company to delete.
    * @returns A promise that resolves to the deleted company.
    */
-  deleteCompany(companyId: string) {
+  deleteCompany(companyId: string): Promise<Company> {
     return this.delete(COMPANY_ENDPOINTS.COMPANY_DETAIL(companyId))
       .then((response) => response.data)
       .catch((error) => {

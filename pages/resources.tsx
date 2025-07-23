@@ -1,6 +1,13 @@
-import Head from "next/head";
+// react
 import { useState } from "react";
+
+// next
+import Head from "next/head";
+
+// framer-motion
 import { motion } from "framer-motion";
+
+// lucide icons
 import {
   Search,
   FileText,
@@ -10,6 +17,8 @@ import {
   Filter,
   Star,
 } from "lucide-react";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+// layouts
 import { Layouts } from "@/layouts";
 
 export default function Resources() {

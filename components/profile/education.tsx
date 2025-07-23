@@ -7,8 +7,11 @@ import {
   Calendar,
   MapPin,
   GraduationCap,
+  Save,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
@@ -17,9 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
 import { profileService } from "@/services";
 import { format } from "date-fns";
@@ -82,15 +83,13 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
         ? format(formData.end_date, "yyyy-MM-dd")
         : undefined;
 
-      if (editingEducation) {
-        const response = await profileService.updateEducation(
-          editingEducation.id!,
+      if (editingEducation && editingEducation.id) {
+        await profileService.updateEducation(
+          editingEducation.id,
           formData,
         );
-        console.log(response);
       } else {
-        const response = await profileService.createEducation(formData);
-        console.log(response);
+        await profileService.createEducation(formData);
       }
       setIsOpen(false);
       reset();
@@ -100,221 +99,215 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
+    return format(new Date(dateString), "MMM yyyy");
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.6 }}
     >
-      <Card className="card-elevated">
-        <CardContent>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Education</h3>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    onClick={handleAddNew}
-                    className="flex items-center gap-2 text-white"
-                  >
-                    <Plus className="h-4 w-4" />
+      <div className="form-section-handshake">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="heading-handshake text-xl">
+            <GraduationCap className="w-6 h-6 text-primary" />
+            Education
+          </h3>
+          <Button onClick={handleAddNew} className="btn-handshake btn-sm">
+            <Plus className="w-4 h-4 mr-2" />
                     Add Education
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        </div>
+
+        {/* Education List */}
+        <div className="space-y-4">
+          {data.map((education, index) => (
+            <motion.div
+              key={education.id || index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <div className="dashboard-card-handshake p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold text-lg text-gray-900">
+                        {education.degree}
+                      </h4>
+                      {education.is_current && (
+                        <Badge className="badge-handshake">Current</Badge>
+                      )}
+                    </div>
+                    <p className="text-primary font-medium mb-1">
+                      {education.institution}
+                    </p>
+                    <p className="text-gray-600 mb-2">{education.field_of_study}</p>
+                    
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(education.start_date)} - {education.is_current ? "Present" : education.end_date ? formatDate(education.end_date) : "Present"}
+                      </div>
+                    </div>
+                    
+                    {education.grade && (
+                      <p className="text-sm text-gray-600 mb-2">
+                        Grade: {education.grade}
+                      </p>
+                    )}
+                    
+                    {education.description && (
+                      <p className="text-sm text-gray-600">{education.description}</p>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2 ml-4">
+                    <Button
+                      onClick={() => handleEdit(education)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => education.id && handleDelete(education.id)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+          
+          {data.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <GraduationCap className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>No education history added yet.</p>
+              <Button onClick={handleAddNew} className="btn-handshake mt-4">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Education
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Add/Edit Dialog */}
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>
+              <DialogTitle className="heading-handshake text-xl">
                       {editingEducation ? "Edit Education" : "Add Education"}
                     </DialogTitle>
                   </DialogHeader>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        label="Degree"
-                        name="degree"
-                        type="text"
-                        placeholder="e.g., Bachelor of Science in Computer Science"
-                        required
-                        register={register}
-                        error={errors.degree}
-                      />
-                      <FormField
-                        label="Institution"
-                        name="institution"
-                        type="text"
-                        placeholder="e.g., Stanford University"
-                        required
-                        register={register}
-                        error={errors.institution}
-                      />
-                      <FormField
-                        label="Field of Study"
-                        name="field_of_study"
-                        type="text"
-                        placeholder="e.g., Stanford, CA"
-                        register={register}
-                        error={errors.field_of_study}
-                      />
-                      <FormField
-                        label="Grade"
-                        name="grade"
-                        type="text"
-                        placeholder="e.g., 3.8/4.0"
-                        register={register}
-                        error={errors.grade}
-                      />
-                    </div>
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  type="text"
+                  label="Degree"
+                  name="degree"
+                  register={register}
+                  error={errors.degree}
+                  required
+                  placeholder="e.g., Bachelor of Science"
+                />
 
-                    <div className="flex items-center gap-4">
-                      <FormField
-                        label="Start Date"
-                        name="start_date"
-                        type="date"
-                        required
-                        setValue={setValue}
-                        watch={watch}
-                        error={errors.start_date}
-                      />
-                      <FormField
-                        label="End Date"
-                        name="end_date"
-                        type="date"
-                        setValue={setValue}
-                        watch={watch}
-                        error={errors.end_date}
-                      />
-                      <div className="flex items-center gap-2 mt-6">
+                <FormField
+                  type="text"
+                  label="Institution"
+                  name="institution"
+                  register={register}
+                  error={errors.institution}
+                  required
+                  placeholder="e.g., University of California"
+                />
+              </div>
+
+              <FormField
+                type="text"
+                label="Field of Study"
+                name="field_of_study"
+                register={register}
+                error={errors.field_of_study}
+                required
+                placeholder="e.g., Computer Science"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  type="date"
+                  label="Start Date"
+                  name="start_date"
+                  setValue={setValue}
+                  watch={watch}
+                  error={errors.start_date}
+                  required
+                />
+
+                <FormField
+                  type="date"
+                  label="End Date"
+                  name="end_date"
+                  setValue={setValue}
+                  watch={watch}
+                  disabled={watch("is_current")}
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
                         <input
+                  id="is_current"
                           type="checkbox"
-                          id="current"
                           {...register("is_current")}
-                          className="rounded border-gray-300"
-                        />
-                        <label htmlFor="current" className="text-sm">
-                          Im currently studying here
-                        </label>
+                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                />
+                <Label htmlFor="is_current" className="text-sm font-medium text-gray-700">
+                  I am currently studying here
+                </Label>
                       </div>
-                    </div>
 
-                    <FormField
-                      label="Description"
-                      name="description"
-                      type="textarea"
-                      placeholder="Describe your academic achievements, relevant coursework, or projects..."
-                      rows={4}
-                      register={register}
-                      error={errors.description}
-                    />
+              <FormField
+                type="text"
+                label="Grade (Optional)"
+                name="grade"
+                register={register}
+                placeholder="e.g., 3.8 GPA, First Class"
+              />
 
-                    <div className="flex justify-end gap-2 pt-4">
+              <FormField
+                type="textarea"
+                label="Description (Optional)"
+                name="description"
+                register={register}
+                placeholder="Describe your academic achievements, projects, or relevant coursework..."
+                rows={3}
+              />
+
+              <div className="action-buttons-handshake">
                       <Button
                         type="button"
-                        variant="outline"
                         onClick={() => setIsOpen(false)}
+                  className="btn-secondary"
                       >
+                  <X className="w-4 h-4 mr-2" />
                         Cancel
                       </Button>
-                      <Button
-                        type="submit"
-                        className="text-white cursor-pointer"
-                      >
-                        {editingEducation ? "Update" : "Save"}
+                <Button type="submit" className="btn-handshake">
+                  <Save className="w-4 h-4 mr-2" />
+                  {editingEducation ? "Update Education" : "Add Education"}
                       </Button>
                     </div>
                   </form>
                 </DialogContent>
               </Dialog>
             </div>
-
-            {data.length === 0 ? (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-8">
-                  <GraduationCap className="h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-500 text-center">
-                    No education items were added yet.
-                  </p>
-                  <p className="text-sm text-gray-400 text-center mt-2">
-                    Click Add Education to get started.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {data.map((education, index) => (
-                  <Card key={education.id || index} className="relative">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">
-                            {education.degree}
-                          </CardTitle>
-                          <p className="text-gray-600 font-medium">
-                            {education.institution}
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
-                              {education.field_of_study}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {formatDate(education.start_date)} -{" "}
-                              {education.is_current
-                                ? "Present"
-                                : formatDate(education.end_date || "")}
-                            </div>
-                            {education.grade && (
-                              <div className="flex items-center gap-1">
-                                <Badge variant="secondary">
-                                  {education.grade}
-                                </Badge>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(education)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              education.id && handleDelete(education.id)
-                            }
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    {education.description && (
-                      <CardContent>
-                        <Separator className="mb-4" />
-                        <p className="text-gray-700 whitespace-pre-wrap">
-                          {education.description}
-                        </p>
-                      </CardContent>
-                    )}
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </motion.div>
   );
 };

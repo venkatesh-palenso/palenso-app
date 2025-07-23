@@ -1,24 +1,20 @@
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import {
-  ArrowRight,
   Building,
   CheckCircle,
-  Globe,
-  MapPin,
   Upload,
   FileImage,
+  Save,
+  X,
 } from "lucide-react";
 import { FormField } from "@/components/ui/form-field";
-import { Company } from "@/interfaces/company";
-
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Company } from "@/interfaces/company";
 import { companyService, mediaService } from "@/services";
-import { format } from "date-fns";
 
 const industryOptions = [
   "Technology",
@@ -38,6 +34,7 @@ const industryOptions = [
   label: industry,
   value: industry.toLowerCase().split(" ").join("_"),
 }));
+
 const companySizeOptions = [
   { label: "1-10 employees", value: "1-10" },
   { label: "11-50 employees", value: "11-50" },
@@ -56,6 +53,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
     companyLogo: null,
     companyBanner: null,
   });
+
   const {
     register,
     handleSubmit,
@@ -98,365 +96,313 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
 
   const onSubmitForm = async (data: Company) => {
     try {
-      const payload = { ...data };
-
+      // Handle logo upload
       if (media.companyLogo) {
-        try {
-          const formData = new FormData();
-          formData.append("file", media.companyLogo);
-          formData.append("asset_type", "company_logo");
-          const response = await mediaService.uploadFile(formData);
-          payload["logo_url"] = response.display_url;
-        } catch (error) {
-          console.log("failed to upload company logo", error);
-        }
+        const logoFormData = new FormData();
+        logoFormData.append("file", media.companyLogo);
+        logoFormData.append("asset_type", "company_logo");
+        const logoResponse = await mediaService.uploadFile(logoFormData);
+        data.logo_url = logoResponse.display_url;
       }
-      if (media.companyBanner) {
-        try {
-          const formData = new FormData();
-          formData.append("file", media.companyBanner);
-          formData.append("asset_type", "company_banner");
-          const response = await mediaService.uploadFile(formData);
-          payload["banner_image_url"] = response.display_url;
-        } catch (error) {
-          console.log("failed to upload company banner", error);
-        }
-      }
-      try {
-        payload["founded_year"] = format(payload["founded_year"], "yyyy-MM-dd");
-        if (mode === "create") {
-          await companyService.createCompany(payload);
-        }
 
-        if (mode === "edit") {
-          await companyService.updateCompany(company.id, payload);
-        }
-        reset();
-      } catch (error) {
-        console.log("failed to update company", error);
+      // Handle banner upload
+      if (media.companyBanner) {
+        const bannerFormData = new FormData();
+        bannerFormData.append("file", media.companyBanner);
+        bannerFormData.append("asset_type", "company_banner");
+        const bannerResponse = await mediaService.uploadFile(bannerFormData);
+        data.banner_image_url = bannerResponse.display_url;
       }
+
+      if (mode === "edit" && company.id) {
+        await companyService.updateCompany(company.id, data);
+      } else {
+        await companyService.createCompany(data);
+      }
+
+      reset();
+      setMedia({ companyLogo: null, companyBanner: null });
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting company profile:", error);
     }
   };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.6 }}
     >
-      <Card className="card-elevated">
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Building className="w-5 h-5 text-primary" />
-                Basic Information
-              </h3>
-              <hr className="border-gray-200" />
+      <div className="form-section-handshake">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="heading-handshake text-xl">
+            <Building className="w-6 h-6 text-primary" />
+            Company Profile
+          </h3>
+          {company.is_verified && (
+            <Badge className="badge-handshake">
+              <CheckCircle className="w-3 h-3 mr-1" />
+              Verified Company
+            </Badge>
+          )}
+        </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="text"
-                  label="Company Name"
-                  name="name"
-                  placeholder="Enter company name"
-                  register={register}
-                  error={errors.name}
-                  required
-                />
-                <FormField
-                  type="url"
-                  label="Company Website"
-                  name="website"
-                  placeholder="https://website.com"
-                  register={register}
-                  error={errors.website}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="email"
-                  label="Email Address"
-                  name="email"
-                  placeholder="your.email@example.com"
-                  register={register}
-                  error={errors.email}
-                  required
-                />
-
-                <FormField
-                  type="phone"
-                  label="Phone Number"
-                  name="phone"
-                  placeholder="+1 (555) 123-4567"
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.phone}
-                  required
-                />
-              </div>
-              <div className="space-y-4">
-                <FormField
-                  type="textarea"
-                  label="Description"
-                  name="description"
-                  placeholder="Describe your company, mission, values, and what makes you unique..."
-                  register={register}
-                  error={errors.description}
-                  rows={4}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">
-                  {watch("description")?.length || 0}/1000 characters
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  type="select"
-                  label="Industry"
-                  name="industry"
-                  placeholder="Select Industry"
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.industry}
-                  options={industryOptions}
-                  required
-                />
-                <FormField
-                  type="select"
-                  label="Company Size"
-                  name="company_size"
-                  placeholder="Select Size"
-                  options={companySizeOptions}
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.company_size}
-                  required
-                />
-                <FormField
-                  type="date"
-                  label="Founded Year"
-                  name="founded_year"
-                  placeholder="Select Founded Year"
-                  setValue={setValue}
-                  watch={watch}
-                  error={errors.founded_year}
-                  required
-                />
-              </div>
+        <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
+          {/* Basic Information */}
+          <div className="dashboard-card-handshake p-6">
+            <h4 className="heading-handshake text-lg mb-4">Basic Information</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                label="Company Name"
+                name="name"
+                type="text"
+                placeholder="Enter company name"
+                register={register}
+                required
+                error={errors.name}
+              />
+              
+              <FormField
+                label="Industry"
+                name="industry"
+                type="select"
+                placeholder="Select industry"
+                options={industryOptions}
+                setValue={setValue}
+                watch={watch}
+                required
+                error={errors.industry}
+              />
+              
+              <FormField
+                label="Company Size"
+                name="company_size"
+                type="select"
+                placeholder="Select company size"
+                options={companySizeOptions}
+                setValue={setValue}
+                watch={watch}
+                required
+                error={errors.company_size}
+              />
+              
+              <FormField
+                label="Founded Year"
+                name="founded_year"
+                type="text"
+                placeholder="e.g., 2020"
+                register={register}
+                error={errors.founded_year}
+              />
             </div>
-
-            {/* Address Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" />
-                Address Information
-              </h3>
-
-              <hr className="border-gray-200" />
-              <div className="space-y-4">
-                <FormField
-                  type="text"
-                  label="Street Address"
-                  name="address"
-                  placeholder="Street Address"
-                  register={register}
-                  error={errors.address}
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  type="text"
-                  label="City"
-                  name="city"
-                  placeholder="City"
-                  register={register}
-                  error={errors.city}
-                  required
-                />
-                <FormField
-                  type="text"
-                  label="State/Province"
-                  name="state"
-                  placeholder="State"
-                  register={register}
-                  error={errors.state}
-                  required
-                />
-                <FormField
-                  type="text"
-                  label="Country"
-                  name="country"
-                  placeholder="Country"
-                  register={register}
-                  error={errors.country}
-                  required
-                />
-              </div>
+            
+            <div className="mt-6">
+              <FormField
+                label="Company Description"
+                name="description"
+                type="textarea"
+                placeholder="Describe your company, mission, values, and what makes you unique..."
+                register={register}
+                rows={4}
+                required
+                error={errors.description}
+              />
             </div>
+          </div>
 
-            {/* Social Links */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Globe className="w-5 h-5 text-primary" />
-                Social Links
-              </h3>
-
-              <hr className="border-gray-200" />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  type="url"
-                  label="LinkedIn URL"
-                  name="linkedin"
-                  placeholder="https://linkedin.com/in/..."
-                  register={register}
-                  error={errors.linkedin}
-                />
-                <FormField
-                  type="url"
-                  label="Facebook URL"
-                  name="facebook"
-                  placeholder="https://facebook.com/..."
-                  register={register}
-                  error={errors.facebook}
-                />
-                <FormField
-                  type="url"
-                  label="Twitter"
-                  name="twitter"
-                  placeholder="https://twitter.com/..."
-                  register={register}
-                  error={errors.twitter}
-                />
-              </div>
+          {/* Contact Information */}
+          <div className="dashboard-card-handshake p-6">
+            <h4 className="heading-handshake text-lg mb-4">Contact Information</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                label="Website"
+                name="website"
+                type="url"
+                placeholder="https://www.company.com"
+                register={register}
+                error={errors.website}
+              />
+              
+              <FormField
+                label="Email"
+                name="email"
+                type="email"
+                placeholder="contact@company.com"
+                register={register}
+                error={errors.email}
+              />
+              
+              <FormField
+                label="Phone"
+                name="phone"
+                type="phone"
+                placeholder="+1 (555) 123-4567"
+                setValue={setValue}
+                watch={watch}
+                error={errors.phone}
+              />
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Upload className="w-5 h-5 text-blue-500" />
-                Media Upload
-              </h3>
-              <hr className="border-gray-200" />
+          {/* Location */}
+          <div className="dashboard-card-handshake p-6">
+            <h4 className="heading-handshake text-lg mb-4">Location</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormField
+                label="Country"
+                name="country"
+                type="text"
+                placeholder="United States"
+                register={register}
+                required
+                error={errors.country}
+              />
+              
+              <FormField
+                label="State/Province"
+                name="state"
+                type="text"
+                placeholder="California"
+                register={register}
+                required
+                error={errors.state}
+              />
+              
+              <FormField
+                label="City"
+                name="city"
+                type="text"
+                placeholder="San Francisco"
+                register={register}
+                required
+                error={errors.city}
+              />
+            </div>
+            
+            <div className="mt-6">
+              <FormField
+                label="Address"
+                name="address"
+                type="textarea"
+                placeholder="Enter full address"
+                register={register}
+                rows={2}
+                error={errors.address}
+              />
+            </div>
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Logo Upload */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="companyLogo"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Company Logo (Optional)
-                  </Label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <input
-                        id="companyLogo"
-                        name="companyLogo"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="companyLogo"
-                        className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <Upload className="w-4 h-4" />
-                        Choose Logo
-                      </label>
-                    </div>
-                    {media.companyLogo && (
-                      <div className="flex items-center gap-2 text-sm text-green-600">
-                        <CheckCircle className="w-4 h-4" />
-                        {media.companyLogo.name}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    Recommended: Square image, 512x512px or larger, PNG or JPG
-                  </p>
+          {/* Social Media */}
+          <div className="dashboard-card-handshake p-6">
+            <h4 className="heading-handshake text-lg mb-4">Social Media</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormField
+                label="LinkedIn"
+                name="linkedin"
+                type="url"
+                placeholder="https://linkedin.com/company/..."
+                register={register}
+                error={errors.linkedin}
+              />
+              
+              <FormField
+                label="Twitter"
+                name="twitter"
+                type="url"
+                placeholder="https://twitter.com/..."
+                register={register}
+                error={errors.twitter}
+              />
+              
+              <FormField
+                label="Facebook"
+                name="facebook"
+                type="url"
+                placeholder="https://facebook.com/..."
+                register={register}
+                error={errors.facebook}
+              />
+            </div>
+          </div>
+
+          {/* Media Upload */}
+          <div className="dashboard-card-handshake p-6">
+            <h4 className="heading-handshake text-lg mb-4">Company Media</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Logo Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="companyLogo" className="text-sm font-medium text-gray-700">
+                  Company Logo
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <input
+                    id="companyLogo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="companyLogo" className="cursor-pointer">
+                    <FileImage className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-sm text-gray-600 mb-1">
+                      Click to upload company logo
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG up to 5MB
+                    </p>
+                  </label>
                 </div>
+              </div>
 
-                {/* Banner Upload */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="companyBanner"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Banner Image (Optional)
-                  </Label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <input
-                        id="companyBanner"
-                        name="companyBanner"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="companyBanner"
-                        className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <FileImage className="w-4 h-4" />
-                        Choose Banner
-                      </label>
-                    </div>
-                    {media.companyBanner && (
-                      <div className="flex items-center gap-2 text-sm text-green-600">
-                        <CheckCircle className="w-4 h-4" />
-                        {media.companyBanner.name}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    Recommended: 1200x400px or larger, PNG or JPG
-                  </p>
+              {/* Banner Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="companyBanner" className="text-sm font-medium text-gray-700">
+                  Company Banner
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <input
+                    id="companyBanner"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="companyBanner" className="cursor-pointer">
+                    <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-sm text-gray-600 mb-1">
+                      Click to upload banner image
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG up to 10MB
+                    </p>
+                  </label>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Form Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1 sm:flex-none"
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 sm:flex-none text-white"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    Saving Company...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    Save Company
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+          {/* Action Buttons */}
+          <div className="action-buttons-handshake">
+            <Button
+              type="button"
+              onClick={() => reset()}
+              className="btn-secondary"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Reset
+            </Button>
+            <Button type="submit" className="btn-handshake" disabled={isSubmitting}>
+              <Save className="w-4 h-4 mr-2" />
+              {isSubmitting ? "Saving..." : mode === "edit" ? "Update Company" : "Create Company"}
+            </Button>
+          </div>
+        </form>
+      </div>
     </motion.div>
   );
 };

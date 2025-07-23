@@ -1,20 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Phone,
-  CheckCircle,
-  ArrowLeft,
-  ArrowRight,
-  SkipForward,
-} from "lucide-react";
+import { Phone, ArrowRight, SkipForward, CheckCircle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneInput } from "@/components/ui/phone-input";
-import type { Value as PhoneValue } from "react-phone-number-input";
+import { FormField } from "@/components/ui/form-field";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
 import { authService } from "@/services";
-import { User } from "@/interfaces/user";
-import { MediumAvailabilityForm } from "@/interfaces/auth";
+import { User } from "@/interfaces";
+import { MediumAvailabilityResponse } from "@/interfaces/auth";
 
 interface MobileVerificationFormProps {
   onSuccess: () => void;
@@ -25,29 +23,45 @@ const MobileVerificationForm = ({
   onSuccess,
   userData,
 }: MobileVerificationFormProps) => {
-  const [phoneNumber, setPhoneNumber] = React.useState("");
-  const [phoneAvailability, setPhoneAvailability] = React.useState<
-    Record<string, boolean | string | null>
-  >({
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneOtp, setPhoneOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [countdown, setCountdown] = useState(0);
+  const [phoneAvailability, setPhoneAvailability] = useState<MediumAvailabilityResponse>({
     available: false,
     message: "",
   });
-  const [phoneOtp, setPhoneOtp] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [otpSent, setOtpSent] = React.useState(false);
-  const [phoneVerified, setPhoneVerified] = React.useState(false);
-  const [countdown, setCountdown] = React.useState(0);
-  const [error, setError] = React.useState("");
 
-  React.useEffect(() => {
+  const phoneSchema = z.object({
+    phoneNumber: z.string().min(1, "Phone number is required"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(phoneSchema),
+    defaultValues: {
+      phoneNumber: "",
+    },
+  });
+
+  useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [countdown]);
 
-  const handlePhoneChange = (value: PhoneValue) => {
+  const handlePhoneChange = (value: string) => {
     setPhoneNumber(value || "");
+    setValue("phoneNumber", value || "");
     setError(""); // Clear error when user types
   };
 
@@ -82,9 +96,9 @@ const MobileVerificationForm = ({
   };
 
   const handlePhoneBlur = async () => {
-    const response = await authService.mobileAvailabilty(
-      phoneNumber as MediumAvailabilityForm,
-    );
+    const response = await authService.mobileAvailabilty({
+      mobile_number: phoneNumber,
+    });
     setPhoneAvailability((prev) => ({
       ...prev,
       available: response.available,
@@ -195,20 +209,18 @@ const MobileVerificationForm = ({
           </p>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="text-sm font-medium">
-            Phone Number
-          </Label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <PhoneInput
-              value={phoneNumber}
-              onChange={handlePhoneChange}
+                <div className="space-y-4">
+          <FormField
+              type="phone"
+              label="Phone Number"
+              name="phoneNumber"
               placeholder="Enter your phone number"
-              className="pl-10 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
+              setValue={setValue}
+              watch={watch}
+              error={errors.phoneNumber}
               onBlur={handlePhoneBlur}
+              className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
             />
-          </div>
           {error && <p className="text-xs text-red-500">{error}</p>}
           <p className="text-xs text-gray-500 dark:text-gray-400">
             We&apos;ll send a verification code to your phone number
@@ -317,7 +329,6 @@ const MobileVerificationForm = ({
           className="flex-1 border-gray-300 dark:border-gray-600"
           onClick={() => setOtpSent(false)}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
 

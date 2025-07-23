@@ -1,4 +1,7 @@
+// layout
 import { Layouts } from "@/layouts";
+
+// components
 import MarketingView from "@/components/marketing";
 
 const LandingPage = () => {

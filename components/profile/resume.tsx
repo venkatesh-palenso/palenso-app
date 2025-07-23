@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Plus, Edit, Trash2, FileText, Download, Upload } from "lucide-react";
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  FileText, 
+  Download, 
+  Upload, 
+  Save,
+  X,
+  CheckCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { mediaService, profileService } from "@/services";
@@ -78,17 +87,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
 
   const onSubmit = async (resumeData: Resume) => {
     try {
-      try {
-        if (selectedFile) {
-          const formData = new FormData();
-          formData.append("file", selectedFile);
-          formData.append("asset_type", "resume");
-          const response = await mediaService.uploadFile(formData);
-          resumeData["file_url"] = response.display_url;
-        }
-      } catch (error) {
-        console.log("error uploading file", error);
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("asset_type", "resume");
+        const response = await mediaService.uploadFile(formData);
+        resumeData["file_url"] = response.display_url;
       }
+      
       if (editingResume?.id) {
         await profileService.updateResume(editingResume.id, resumeData);
       } else {
@@ -106,195 +112,189 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="w-full max-w-4xl mx-auto"
+      transition={{ duration: 0.6 }}
     >
-      <Card className="card-elevated">
-        <CardContent>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Resume</h3>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    onClick={handleAddNew}
-                    className="flex items-center gap-2 text-white"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Resume
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingResume ? "Edit Resume" : "Add Resume"}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      label="Resume Title"
-                      name="title"
-                      type="text"
-                      placeholder="e.g., Software Engineer Resume, Updated 2024"
-                      required
-                      register={register}
-                      error={errors.title}
-                    />
+      <div className="form-section-handshake">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="heading-handshake text-xl">
+            <FileText className="w-6 h-6 text-primary" />
+            Resume & Documents
+          </h3>
+          <Button onClick={handleAddNew} className="btn-handshake btn-sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Resume
+          </Button>
+        </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Resume File</label>
-                      <div className="relative">
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={handleFileChange}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                          id="resume-file"
-                        />
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                          <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-600 mb-2">
-                            {selectedFile
-                              ? selectedFile.name
-                              : "Click to upload or drag and drop"}
-                          </p>
-                          <p className="text-xs text-gray-500 mb-4">
-                            PDF, DOC, DOCX up to 10MB
-                          </p>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="pointer-events-none"
-                          >
-                            Choose File
-                          </Button>
-                        </div>
-                      </div>
-                      {selectedFile && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <FileText className="h-4 w-4" />
-                          <span>{selectedFile.name}</span>
-                          <span>({formatFileSize(selectedFile.size)})</span>
-                        </div>
+        {/* Resume List */}
+        <div className="space-y-4">
+          {data.map((resume, index) => (
+            <motion.div
+              key={resume.id || index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <div className="dashboard-card-handshake p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold text-lg text-gray-900">
+                        {resume.title}
+                      </h4>
+                      {resume.is_primary && (
+                        <Badge className="badge-handshake">Primary</Badge>
                       )}
                     </div>
-
-                    <FormField
-                      label="Description"
-                      name="description"
-                      type="textarea"
-                      placeholder="Brief description of this resume version..."
-                      rows={3}
-                      register={register}
-                      error={errors.description}
-                    />
-
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="isPublic"
-                        {...register("is_primary")}
-                        className="rounded border-gray-300"
-                      />
-                      <label htmlFor="isPublic" className="text-sm">
-                        Make this resume public (visible to employers)
-                      </label>
-                    </div>
-
-                    <div className="flex justify-end gap-2 pt-4">
+                    
+                    {resume.description && (
+                      <p className="text-gray-600 mb-3">{resume.description}</p>
+                    )}
+                    
+                    {resume.file_url && (
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <FileText className="w-4 h-4" />
+                        <span>Resume file uploaded</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-2 ml-4">
+                    {resume.file_url && (
                       <Button
-                        type="button"
                         variant="outline"
-                        onClick={() => setIsOpen(false)}
+                        size="sm"
+                        className="btn-secondary btn-sm"
+                        onClick={() => window.open(resume.file_url, '_blank')}
                       >
-                        Cancel
+                        <Download className="w-4 h-4" />
                       </Button>
-                      <Button
-                        type="submit"
-                        className="text-white cursor-pointer"
-                      >
-                        {editingResume ? "Update" : "Save"}
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                    )}
+                    <Button
+                      onClick={() => handleEdit(resume)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => resume.id && handleDelete(resume.id)}
+                      variant="outline"
+                      size="sm"
+                      className="btn-secondary btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+          
+          {data.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>No resumes uploaded yet.</p>
+              <Button onClick={handleAddNew} className="btn-handshake mt-4">
+                <Plus className="w-4 h-4 mr-2" />
+                Upload Your First Resume
+              </Button>
             </div>
+          )}
+        </div>
 
-            {data.length === 0 ? (
-              <Card>
-                <CardContent className="flex flex-col items-center justify-center py-8">
-                  <FileText className="h-12 w-12 text-gray-400 mb-4" />
-                  <p className="text-gray-500 text-center">
-                    No resume files were added yet.
-                  </p>
-                  <p className="text-sm text-gray-400 text-center mt-2">
-                    Click Add Resume to upload your resume.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {data.map((resume, index) => (
-                  <Card key={resume.id || index} className="relative">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <CardTitle className="text-lg">
-                              {resume.title}
-                            </CardTitle>
-                            {resume.is_primary && (
-                              <Badge variant="secondary">Primary</Badge>
-                            )}
-                          </div>
-                          {resume.description && (
-                            <p className="text-gray-600 text-sm mb-2">
-                              {resume.description}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {resume.file_url && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="cursor-pointer"
-                              onClick={() => {
-                                window.open(resume.file_url, "_blank");
-                              }}
-                            >
-                              <Download className="h-4 w-4" />
-                            </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="cursor-pointer"
-                            onClick={() => handleEdit(resume)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="cursor-pointer"
-                            onClick={() => resume.id && handleDelete(resume.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+        {/* Add/Edit Dialog */}
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="heading-handshake text-xl">
+                {editingResume ? "Edit Resume" : "Add Resume"}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                type="text"
+                label="Resume Title"
+                name="title"
+                register={register}
+                error={errors.title}
+                required
+                placeholder="e.g., Software Engineer Resume"
+              />
+
+              <FormField
+                type="textarea"
+                label="Description (Optional)"
+                name="description"
+                register={register}
+                placeholder="Brief description of this resume..."
+                rows={3}
+              />
+
+              <div className="space-y-2">
+                <Label htmlFor="file" className="text-sm font-medium text-gray-700">
+                  Upload Resume File
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <input
+                    id="file"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="file" className="cursor-pointer">
+                    <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                    <p className="text-sm text-gray-600 mb-1">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PDF, DOC, or DOCX (max 10MB)
+                    </p>
+                    {selectedFile && (
+                      <div className="mt-3 p-2 bg-green-50 rounded border border-green-200">
+                        <div className="flex items-center gap-2 text-sm text-green-700">
+                          <CheckCircle className="w-4 h-4" />
+                          {selectedFile.name} ({formatFileSize(selectedFile.size)})
                         </div>
                       </div>
-                    </CardHeader>
-                  </Card>
-                ))}
+                    )}
+                  </label>
+                </div>
               </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  id="is_primary"
+                  type="checkbox"
+                  {...register("is_primary")}
+                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                />
+                <Label htmlFor="is_primary" className="text-sm font-medium text-gray-700">
+                  Set as primary resume
+                </Label>
+              </div>
+
+              <div className="action-buttons-handshake">
+                <Button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="btn-secondary"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button type="submit" className="btn-handshake">
+                  <Save className="w-4 h-4 mr-2" />
+                  {editingResume ? "Update Resume" : "Add Resume"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
     </motion.div>
   );
 };

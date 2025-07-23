@@ -31,11 +31,11 @@ export function AuthGuard({
       if (requiredRole && user && user.role !== requiredRole) {
         // Redirect based on user's actual role
         if (user.role === "student") {
-          router.push("/student/dashboard");
+          router.push("/dashboard");
         } else if (user.role === "employer") {
-          router.push("/employer/dashboard");
+          router.push("/dashboard");
         } else if (user.role === "admin") {
-          router.push("/admin/dashboard");
+          router.push("/dashboard");
         }
         return;
       }

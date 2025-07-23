@@ -1,110 +1,85 @@
+// react
+import { useState, useEffect } from "react";
+
+// next
 import Head from "next/head";
-import { useState } from "react";
+import Link from "next/link";
+
+// swr
+import useSWR from "swr";
+
+// react-hook-form
+import { useForm } from "react-hook-form";
+
+// framer-motion
 import { motion } from "framer-motion";
-import { Search, Calendar, MapPin, Users, Clock, Filter } from "lucide-react";
+
+// lucide icons
+import { Search, MapPin, Calendar, Filter, Plus, Users, Clock } from "lucide-react";
+
+// components
+import Spinner from "@/components/spinner";
+import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
+// services
+import { eventService } from "@/services";
+
+// layout
 import { Layouts } from "@/layouts";
 
-export default function Events() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [eventType, setEventType] = useState("all");
-  const [location, setLocation] = useState("");
+interface SearchFilters {
+  search: string;
+  type: "Career Fair" | "Workshop" | "Networking" | "Conference" | "Webinar" | "Hackathon" | "all";
+  location: string;
+}
 
-  const events = [
-    {
-      id: 1,
-      title: "Tech Career Fair 2024",
-      type: "Career Fair",
-      date: "March 15, 2024",
-      time: "10:00 AM - 4:00 PM",
-      location: "San Francisco Convention Center",
-      attendees: "500+",
-      companies: ["Google", "Microsoft", "Apple", "Meta"],
-      description:
-        "Join us for the largest tech career fair in the Bay Area. Meet with top tech companies and discover exciting opportunities.",
-      registration: "Open",
-      price: "Free",
+const EventsList = () => {
+  const { register, watch, setValue } = useForm<SearchFilters>({
+    defaultValues: {
+      search: "",
+      type: "all",
+      location: "",
     },
-    {
-      id: 2,
-      title: "Resume Writing Workshop",
-      type: "Workshop",
-      date: "March 20, 2024",
-      time: "2:00 PM - 4:00 PM",
-      location: "Virtual Event",
-      attendees: "100",
-      companies: [],
-      description:
-        "Learn how to create a compelling resume that stands out to employers. Get tips from career experts.",
-      registration: "Open",
-      price: "Free",
+  });
+
+  const [debouncedFilters, setDebouncedFilters] = useState<SearchFilters>({
+    search: "",
+    type: "all",
+    location: "",
+  });
+
+  const watchedFilters = watch();
+
+  // Debounce effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedFilters(watchedFilters);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [watchedFilters]);
+
+  const { data: events, isLoading } = useSWR(
+    ["FETCH_EVENTS", debouncedFilters],
+    () => {
+      const params = {
+        ...debouncedFilters,
+        type: debouncedFilters.type === "all" ? undefined : debouncedFilters.type
+      };
+      return eventService.searchEvents(params);
     },
-    {
-      id: 3,
-      title: "Networking Mixer",
-      type: "Networking",
-      date: "March 25, 2024",
-      time: "6:00 PM - 8:00 PM",
-      location: "Downtown Seattle",
-      attendees: "200",
-      companies: ["Amazon", "Microsoft", "Boeing"],
-      description:
-        "Connect with professionals in your industry and expand your professional network.",
-      registration: "Open",
-      price: "$25",
-    },
-    {
-      id: 4,
-      title: "Interview Preparation Seminar",
-      type: "Seminar",
-      date: "April 5, 2024",
-      time: "1:00 PM - 3:00 PM",
-      location: "Virtual Event",
-      attendees: "150",
-      companies: [],
-      description:
-        "Master the art of interviewing with expert tips and mock interview sessions.",
-      registration: "Open",
-      price: "Free",
-    },
-    {
-      id: 5,
-      title: "Startup Pitch Competition",
-      type: "Competition",
-      date: "April 12, 2024",
-      time: "9:00 AM - 6:00 PM",
-      location: "Stanford University",
-      attendees: "300",
-      companies: ["Y Combinator", "Sequoia", "Andreessen Horowitz"],
-      description:
-        "Showcase your startup idea to top investors and win funding opportunities.",
-      registration: "Open",
-      price: "$50",
-    },
-    {
-      id: 6,
-      title: "Diversity in Tech Summit",
-      type: "Conference",
-      date: "April 20, 2024",
-      time: "9:00 AM - 5:00 PM",
-      location: "Los Angeles Convention Center",
-      attendees: "800",
-      companies: ["Google", "Microsoft", "Apple", "Netflix"],
-      description:
-        "Celebrate diversity in technology and connect with inclusive employers.",
-      registration: "Open",
-      price: "Free",
-    },
+    { revalidateOnFocus: false },
+  );
+
+  const eventTypeOptions = [
+    { value: "all", label: "All Types" },
+    { value: "career-fair", label: "Career Fair" },
+    { value: "workshop", label: "Workshop" },
+    { value: "networking", label: "Networking" },
+    { value: "seminar", label: "Seminar" },
+    { value: "conference", label: "Conference" },
   ];
 
   return (
@@ -116,195 +91,184 @@ export default function Events() {
           content="Discover career events, workshops, and networking opportunities on Palenso"
         />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl font-bold mb-2">Career Events</h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Attend workshops, career fairs, and networking events
-            </p>
-          </motion.div>
-
-          {/* Search and Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <Card className="p-6 mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                <div className="md:col-span-4">
-                  <div className="relative">
-                    <Search
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={20}
-                    />
-                    <Input
-                      placeholder="Search events"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="md:col-span-3">
-                  <Select value={eventType} onValueChange={setEventType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Event Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="career-fair">Career Fair</SelectItem>
-                      <SelectItem value="workshop">Workshop</SelectItem>
-                      <SelectItem value="networking">Networking</SelectItem>
-                      <SelectItem value="seminar">Seminar</SelectItem>
-                      <SelectItem value="conference">Conference</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-3">
-                  <div className="relative">
-                    <MapPin
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={20}
-                    />
-                    <Input
-                      placeholder="Location"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="md:col-span-2">
-                  <Button className="w-full h-14">
-                    <Filter size={20} className="mr-2" />
-                    Filter
-                  </Button>
+            {/* Hero Section */}
+            <div className="hero-handshake p-8 rounded-2xl mb-8">
+              <div className="text-center">
+                <h1 className="heading-handshake-large text-4xl mb-4">
+                  Discover Events
+                </h1>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Find career fairs, workshops, networking events, and more. 
+                  Connect with professionals and grow your career.
+                </p>
+                <div className="mt-6">
+                  <Link href="/events/create">
+                    <Button className="btn-handshake">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Event
+                    </Button>
+                  </Link>
                 </div>
               </div>
-            </Card>
-          </motion.div>
+            </div>
 
-          {/* Results Count */}
-          <div className="mb-6">
-            <p className="text-gray-600">Showing {events.length} events</p>
-          </div>
+            {/* Search and Filters */}
+            <div className="dashboard-card-handshake p-6 mb-8">
+              <div className="flex items-center gap-2 mb-6">
+                <Filter className="w-5 h-5 text-primary" />
+                <h2 className="heading-handshake text-xl">Search & Filters</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  label="Search Events"
+                  name="search"
+                  type="text"
+                  placeholder="Event title or keywords"
+                  register={register}
+                  icon={<Search className="w-4 h-4" />}
+                />
+                
+                <FormField
+                  label="Event Type"
+                  name="type"
+                  type="select"
+                  placeholder="Select event type"
+                  options={eventTypeOptions}
+                  setValue={setValue}
+                  watch={watch}
+                />
+                
+                <FormField
+                  label="Location"
+                  name="location"
+                  type="text"
+                  placeholder="City, state, or online"
+                  register={register}
+                  icon={<MapPin className="w-4 h-4" />}
+                />
+              </div>
+            </div>
 
-          {/* Events Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event, index) => (
-              <motion.div
-                key={event.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card className="h-full cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <Badge variant="default" className="mb-2">
-                        {event.type}
-                      </Badge>
-                      <Badge
-                        variant={
-                          event.registration === "Open"
-                            ? "default"
-                            : "secondary"
-                        }
-                        className={
-                          event.registration === "Open"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }
-                      >
-                        {event.registration}
-                      </Badge>
-                    </div>
+            {/* Results Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="heading-handshake text-lg">
+                  <Calendar className="w-5 h-5 text-primary mr-2" />
+                  Upcoming Events
+                </h3>
+                {events && (
+                  <p className="text-sm text-gray-600">
+                    {events.length} event{events.length !== 1 ? 's' : ''} found
+                  </p>
+                )}
+              </div>
 
-                    <h3 className="text-xl font-semibold mb-4">
-                      {event.title}
-                    </h3>
-
-                    <div className="flex items-center mb-3">
-                      <Calendar size={16} className="text-gray-500 mr-2" />
-                      <span className="text-gray-600 text-sm">
-                        {event.date}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center mb-3">
-                      <Clock size={16} className="text-gray-500 mr-2" />
-                      <span className="text-gray-600 text-sm">
-                        {event.time}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center mb-3">
-                      <MapPin size={16} className="text-gray-500 mr-2" />
-                      <span className="text-gray-600 text-sm">
-                        {event.location}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center mb-3">
-                      <Users size={16} className="text-gray-500 mr-2" />
-                      <span className="text-gray-600 text-sm">
-                        {event.attendees} attendees
-                      </span>
-                    </div>
-
-                    <p className="text-gray-600 text-sm mb-6">
-                      {event.description}
-                    </p>
-
-                    {event.companies.length > 0 && (
-                      <div className="mb-6">
-                        <p className="text-sm font-semibold mb-2">
-                          Participating Companies:
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {event.companies
-                            .slice(0, 3)
-                            .map((company, companyIndex) => (
-                              <Badge
-                                key={companyIndex}
-                                variant="secondary"
-                                className="text-xs"
-                              >
-                                {company}
-                              </Badge>
-                            ))}
-                          {event.companies.length > 3 && (
-                            <Badge variant="secondary" className="text-xs">
-                              +{event.companies.length - 3} more
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Spinner />
+                </div>
+              ) : events && events.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {events.map((event, index) => (
+                    <motion.div
+                      key={event.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <div className="dashboard-card-handshake p-6 h-full flex flex-col">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-3">
+                            <h4 className="font-semibold text-lg text-gray-900 line-clamp-1">
+                              {event.title}
+                            </h4>
+                            <Badge className="badge-handshake flex-shrink-0">
+                              {event.event_type}
                             </Badge>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-gray-600 mb-3">
+                            <Calendar className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-sm">{new Date(event.start_date).toLocaleDateString()}</span>
+                          </div>
+                          
+                          {event.location && (
+                            <div className="flex items-center gap-2 text-gray-600 mb-3">
+                              <MapPin className="w-4 h-4 flex-shrink-0" />
+                              <span className="text-sm">{event.location}</span>
+                            </div>
+                          )}
+                          
+                          {event.max_participants && (
+                            <div className="flex items-center gap-2 text-gray-600 mb-3">
+                              <Users className="w-4 h-4 flex-shrink-0" />
+                              <span className="text-sm">{event.max_participants} spots</span>
+                            </div>
+                          )}
+                          
+                          {event.description && (
+                            <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                              {event.description}
+                            </p>
+                          )}
+                          
+                          {event.registration_deadline && (
+                            <div className="flex items-center gap-2 text-orange-600 text-sm mb-4">
+                              <Clock className="w-4 h-4 flex-shrink-0" />
+                              <span>Registration closes {new Date(event.registration_deadline).toLocaleDateString()}</span>
+                            </div>
                           )}
                         </div>
+                        
+                        <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
+                          <Link href={`/events/${event.id}`}>
+                            <Button className="btn-handshake btn-sm flex-1">
+                              View Event
+                            </Button>
+                          </Link>
+                          <Link href={`/events/${event.id}/register`}>
+                            <Button variant="outline" className="btn-secondary btn-sm">
+                              Register
+                            </Button>
+                          </Link>
+                        </div>
                       </div>
-                    )}
-
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-gray-600 text-sm">
-                        Price: {event.price}
-                      </span>
-                    </div>
-
-                    <Button className="w-full">Register Now</Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No events found
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Try adjusting your search criteria or check back later for new events.
+                  </p>
+                  <Link href="/events/create">
+                    <Button className="btn-handshake">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Your First Event
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
     </>
   );
-}
+};
 
-Events.getLayout = Layouts.Public;
+EventsList.getLayout = Layouts.Public;
+
+export default EventsList;
