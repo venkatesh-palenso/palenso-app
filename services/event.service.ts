@@ -5,6 +5,8 @@ import type {
   CreateEventForm,
   UpdateEventForm,
   EventSearchParams,
+  EventRegistration,
+  CreateEventRegistrationForm,
 } from "@/interfaces/event";
 
 class EventService extends APIService {
@@ -109,6 +111,49 @@ class EventService extends APIService {
    */
   deleteEvent(eventId: string): Promise<Event> {
     return this.delete(EVENT_ENDPOINTS.EVENT_DETAIL(eventId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Registers for an event.
+   * @param eventId - The ID of the event to register for.
+   * @param data - The registration data.
+   * @returns A promise that resolves to the event registration.
+   */
+  registerForEvent(
+    eventId: string,
+    data: CreateEventRegistrationForm,
+  ): Promise<EventRegistration> {
+    return this.post(EVENT_ENDPOINTS.REGISTER_FOR_EVENT(eventId), data)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Unregisters from an event.
+   * @param eventId - The ID of the event to unregister from.
+   * @returns A promise that resolves to the unregistered event.
+   */
+  unregisterFromEvent(eventId: string): Promise<EventRegistration> {
+    return this.post(EVENT_ENDPOINTS.UNREGISTER_FOR_EVENT(eventId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Gets event registrations for a specific event.
+   * @param eventId - The ID of the event.
+   * @returns A promise that resolves to an array of event registrations.
+   */
+  getEventRegistrations(eventId: string): Promise<EventRegistration[]> {
+    return this.get(EVENT_ENDPOINTS.EVENT_REGISTRATIONS(eventId))
       .then((response) => response.data)
       .catch((error) => {
         throw error;

@@ -165,6 +165,19 @@ export interface UserSearchParams {
   date_joined_from?: string;
   date_joined_to?: string;
   location?: string;
+  page?: number;
+}
+
+// Paginated response interface
+export interface PaginatedResponse<T> {
+  count: number;
+  total_pages: number;
+  next_cursor: string | null;
+  prev_cursor: string | null;
+  next_page_results: boolean;
+  prev_page_results: boolean;
+  results: T[];
+  extra_stats?: any;
 }
 
 // User analytics interface

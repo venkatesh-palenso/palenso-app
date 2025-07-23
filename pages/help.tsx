@@ -200,7 +200,7 @@ export default function Help() {
               className="max-w-4xl mx-auto"
             >
               {/* Search Section */}
-              <div className="feature-card-handshake p-8 mb-8">
+              <div className="feature-card-handshake p-8 mb-8 border border-gray-200 dark:border-gray-700">
                 <div className="text-center mb-6">
                   <h2 className="heading-handshake text-2xl mb-2">
                     Search for Help
@@ -216,13 +216,13 @@ export default function Help() {
                     placeholder="Search for help..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-gray-200 dark:border-gray-700 focus:border-primary"
                   />
                 </div>
               </div>
 
               {/* Support Options */}
-              <div className="feature-card-handshake p-8 mb-8 relative">
+              <div className="feature-card-handshake p-8 mb-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="heading-handshake text-2xl mb-6 text-center">
                   Contact Support
                 </h2>
@@ -235,18 +235,23 @@ export default function Help() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 * index }}
-                        className="text-center p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary/50 transition-colors"
+                        className="flex flex-col h-full p-6 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
                       >
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <IconComponent className="w-6 h-6 text-primary" />
+                        <div className="flex flex-col flex-grow">
+                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <IconComponent className="w-6 h-6 text-primary" />
+                          </div>
+                          <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-center">
+                            {option.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4 text-center flex-grow">
+                            {option.description}
+                          </p>
                         </div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                          {option.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          {option.description}
-                        </p>
-                        <Button variant="outline" className="w-full">
+                        <Button
+                          variant="outline"
+                          className="w-full mt-auto border-gray-200 dark:border-gray-700 hover:border-primary"
+                        >
                           {option.action}
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
@@ -254,16 +259,10 @@ export default function Help() {
                     );
                   })}
                 </div>
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                  <Button className="btn-handshake">
-                    Contact Support
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
               </div>
 
               {/* FAQ Section */}
-              <div className="feature-card-handshake p-8">
+              <div className="feature-card-handshake p-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="heading-handshake text-2xl mb-6 text-center">
                   Frequently Asked Questions
                 </h2>
@@ -278,9 +277,9 @@ export default function Help() {
                           <AccordionItem
                             key={`${categoryIndex}-${faqIndex}`}
                             value={`${categoryIndex}-${faqIndex}`}
-                            className="border border-gray-200 dark:border-gray-700 rounded-lg mb-2 last:mb-0"
+                            className="mb-2 last:mb-0 border border-gray-200 dark:border-gray-700 rounded-lg"
                           >
-                            <AccordionTrigger className="px-4 py-3 text-left">
+                            <AccordionTrigger className="px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors border-b border-gray-200 dark:border-gray-700">
                               {faq.question}
                             </AccordionTrigger>
                             <AccordionContent className="px-4 pb-3 text-muted-foreground">
@@ -292,7 +291,7 @@ export default function Help() {
                     ))}
                   </Accordion>
                 ) : (
-                  <div className="text-center py-8">
+                  <div className="text-center py-8 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <p className="text-muted-foreground">
                       No questions found matching your search. Try different
                       keywords or contact our support team.

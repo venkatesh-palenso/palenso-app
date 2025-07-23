@@ -1,23 +1,18 @@
-import "@/styles/globals.css";
-
-// react
-import type { ReactElement, ReactNode } from "react";
-
 // next
-import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 
-// context
-import { ThemeProvider, UserProvider } from "@/context";
+// providers
+import { ThemeProvider } from "next-themes";
+import { UserProvider } from "@/context/user";
 
-// type
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
+// styles
+import "@/styles/globals.css";
 
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
+interface AppPropsWithLayout extends AppProps {
+  Component: AppProps["Component"] & {
+    getLayout?: (page: React.ReactElement) => React.ReactNode;
+  };
+}
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);

@@ -31,6 +31,7 @@ import { authService } from "@/services";
 
 // context
 import { useUser } from "@/context";
+import { Layouts } from "@/layouts";
 
 export default function Login() {
   const router = useRouter();
@@ -61,7 +62,14 @@ export default function Login() {
       });
 
       await mutateUser();
-      await router.push("/dashboard");
+
+      // Check for return URL in query params
+      const returnUrl = router.query.returnUrl as string;
+      if (returnUrl) {
+        await router.push(decodeURIComponent(returnUrl));
+      } else {
+        await router.push("/dashboard");
+      }
     } catch (err) {
       setFormData((prev) => ({
         ...prev,
@@ -87,7 +95,11 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" });
+    const returnUrl = router.query.returnUrl as string;
+    const callbackUrl = returnUrl
+      ? decodeURIComponent(returnUrl)
+      : "/dashboard";
+    signIn("google", { callbackUrl });
   };
 
   const togglePasswordVisibility = () => {
@@ -285,3 +297,4 @@ export default function Login() {
     </div>
   );
 }
+Login.getLayout = Layouts.Public;

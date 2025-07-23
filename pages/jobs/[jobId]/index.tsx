@@ -16,6 +16,8 @@ import {
   Bookmark,
   Send,
   Sparkles,
+  Phone,
+  Check,
 } from "lucide-react";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
@@ -23,10 +25,15 @@ import { Badge } from "@/components/ui/badge";
 import { Layouts } from "@/layouts";
 import { jobService, companyService } from "@/services";
 
+// context
+import { useUser } from "@/context";
+
 const JobDetail = () => {
   const router = useRouter();
   const { jobId } = router.query;
+  const { isLoggedIn, user } = useUser();
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const { data: job, isLoading: jobLoading } = useSWR(
     jobId ? ["FETCH_JOB", jobId] : null,
@@ -74,25 +81,70 @@ const JobDetail = () => {
   }
 
   const handleApply = () => {
-    // TODO: Implement job application logic
-    console.log("Applying for job:", job.id);
+    if (!isLoggedIn) {
+      // Redirect to login page with return URL
+      router.push(
+        `/login?returnUrl=${encodeURIComponent(window.location.href)}`,
+      );
+      return;
+    }
+
+    if (user?.role !== "student") {
+      // Show error or redirect for non-students
+      console.log("Only students can apply for jobs");
+      return;
+    }
+
+    // Navigate to apply page
+    router.push(`/jobs/${jobId}/apply`);
   };
 
   const handleBookmark = () => {
+    if (!isLoggedIn) {
+      router.push(
+        `/login?returnUrl=${encodeURIComponent(window.location.href)}`,
+      );
+      return;
+    }
+
+    if (user?.role !== "student") {
+      console.log("Only students can save jobs");
+      return;
+    }
+
     setIsBookmarked(!isBookmarked);
-    // TODO: Implement bookmark logic
+    // TODO: Implement bookmark logic with API call
+    console.log("Bookmarking job:", job.id);
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: job.title,
-        text: `Check out this job opportunity: ${job.title} at ${company?.name}`,
-        url: window.location.href,
-      });
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: job.title,
+          text: `Check out this job opportunity: ${job.title} at ${company?.name}`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  const handleContactRecruiter = () => {
+    if (company?.phone) {
+      window.open(`tel:${company.phone}`, "_self");
+    } else if (company?.email) {
+      window.open(
+        `mailto:${company.email}?subject=Inquiry about ${job.title} position`,
+        "_self",
+      );
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      // TODO: Show toast notification
+      console.log("No contact information available");
     }
   };
 
@@ -192,11 +244,21 @@ const JobDetail = () => {
                         size="sm"
                         onClick={handleBookmark}
                         className={isBookmarked ? "text-primary" : ""}
+                        title="Save job"
                       >
                         <Bookmark className="w-4 h-4" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={handleShare}>
-                        <Share2 className="w-4 h-4" />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleShare}
+                        title={isCopied ? "Link copied!" : "Share job"}
+                      >
+                        {isCopied ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <Share2 className="w-4 h-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -260,11 +322,24 @@ const JobDetail = () => {
                       onClick={handleApply}
                     >
                       <Send className="w-4 h-4 mr-2" />
-                      Apply Now
+                      {isLoggedIn ? "Apply Now" : "Login to Apply"}
                     </Button>
-                    <Button variant="outline" className="btn-secondary w-full">
-                      <Mail className="w-4 h-4 mr-2" />
-                      Contact Recruiter
+                    <Button
+                      variant="outline"
+                      className="btn-secondary w-full"
+                      onClick={handleContactRecruiter}
+                    >
+                      {company?.phone ? (
+                        <>
+                          <Phone className="w-4 h-4 mr-2" />
+                          Call Recruiter
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4 mr-2" />
+                          Email Recruiter
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>

@@ -113,9 +113,12 @@ export default function Navbar() {
             <Link href="/login">
               <Button
                 variant="outline"
-                className="text-sm border-2 border-primary hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer"
+                size="lg"
+                className="text-lg px-8 py-4 border-2 border-primary hover:bg-primary transition-all duration-300 cursor-pointer group"
               >
-                <span className="hover:text-white">Sign In</span>
+                <span className="group-hover:scale-105 transition-transform duration-200">
+                  Sign In
+                </span>
               </Button>
             </Link>
           </div>

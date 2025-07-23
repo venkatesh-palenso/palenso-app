@@ -1,5 +1,11 @@
 // react
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 
 // swr
 import useSWR from "swr";
@@ -41,7 +47,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     mutate: mutateUser,
   } = useSWR("FETCH_CURRENT_USER", () => userService.getCurrentUser(), {
     revalidateOnFocus: false,
+    revalidateOnReconnect: false,
     shouldRetryOnError: false,
+    dedupingInterval: 60000, // Cache for 1 minute
+    errorRetryCount: 1,
+    errorRetryInterval: 2000,
     onError: (err) => {
       const status = err?.status;
 
@@ -58,17 +68,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
-  const logout = () => {
+  const logout = useCallback(() => {
     const refreshToken = authService.getRefreshToken();
     authService.logout({ refresh_token: refreshToken as string });
     authService.purgeAuth();
     mutateUser();
-  };
+  }, [mutateUser]);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      user: user ?? null,
+      logout,
+      isLoading,
+      mutateUser,
+      isLoggedIn,
+    }),
+    [user, logout, isLoading, mutateUser, isLoggedIn],
+  );
+
   return (
-    <UserContext.Provider
-      value={{ user: user ?? null, logout, isLoading, mutateUser, isLoggedIn }}
-    >
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
 }

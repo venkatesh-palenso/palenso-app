@@ -1,64 +1,3 @@
-// Base analytics interface
-export interface BaseAnalytics {
-  total_users: number;
-  active_users: number;
-  new_users_this_week: number;
-  new_users_this_month: number;
-  growth_rate: number;
-}
-
-// Admin analytics interface
-export interface AdminAnalytics extends BaseAnalytics {
-  total_employers: number;
-  total_students: number;
-  total_jobs: number;
-  total_events: number;
-  total_applications: number;
-  total_registrations: number;
-  top_companies: CompanyStats[];
-  top_jobs: JobStats[];
-  top_events: EventStats[];
-  user_growth: GrowthData[];
-  application_trends: TrendData[];
-  registration_trends: TrendData[];
-}
-
-// Employer analytics interface
-export interface EmployerAnalytics {
-  active_jobs: number;
-  total_applications: number;
-  applications_this_week: number;
-  interviews_scheduled: number;
-  interviews_this_week: number;
-  hires_this_month: number;
-  hires_this_week: number;
-  job_views: number;
-  application_rate: number;
-  conversion_rate: number;
-  top_performing_jobs: JobPerformance[];
-  recent_applications: ApplicationStats[];
-  upcoming_interviews: InterviewStats[];
-  hiring_trends: TrendData[];
-}
-
-// Student analytics interface
-export interface StudentAnalytics {
-  applications_submitted: number;
-  applications_this_month: number;
-  interviews_scheduled: number;
-  interviews_completed: number;
-  events_registered: number;
-  upcoming_events: number;
-  saved_jobs: number;
-  profile_views: number;
-  application_success_rate: number;
-  recent_applications: ApplicationStats[];
-  upcoming_interviews: InterviewStats[];
-  recommended_jobs: JobRecommendation[];
-  skill_gaps: SkillGap[];
-  career_progress: ProgressData[];
-}
-
 // Supporting interfaces
 export interface CompanyStats {
   company_id: string;
@@ -154,4 +93,29 @@ export interface ProgressData {
   target_value: number;
   progress_percentage: number;
   trend: "up" | "down" | "stable";
+}
+
+interface AnalyticsMetric {
+  total: number;
+  this_week: number;
+  this_month?: number;
+}
+
+export interface AdminAnalytics {
+  total_users: AnalyticsMetric;
+  events: AnalyticsMetric;
+  companies: AnalyticsMetric;
+  active_jobs: AnalyticsMetric;
+}
+export interface StudentAnalytics {
+  interviews_scheduled: AnalyticsMetric;
+  offers_received: AnalyticsMetric;
+  saved_jobs: AnalyticsMetric;
+  submitted_applications: AnalyticsMetric;
+}
+export interface EmployerAnalytics {
+  active_jobs: AnalyticsMetric;
+  applications: AnalyticsMetric;
+  hires: AnalyticsMetric;
+  interviews_scheduled: AnalyticsMetric;
 }

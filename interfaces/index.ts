@@ -21,6 +21,9 @@ export * from "./company";
 // Analytics interfaces
 export * from "./analytics";
 
+// Dashboard interfaces
+export * from "./dashboard";
+
 // Marketing interfaces
 export * from "./marketing";
 

@@ -58,6 +58,10 @@ const employeeNavMenu: NavItem[] = [
   { label: "Manage Jobs", href: "/manage-jobs", icon: MessageCircle },
 ];
 
+const adminNavMenu: NavItem[] = [
+  { label: "Users", href: "/users", icon: User },
+];
+
 /**
  * An array of navigation menu items used throughout the application.
  * Each item contains a label, a hyperlink reference, and an optional icon.
@@ -89,5 +93,7 @@ export const getNavMenu = (role: "student" | "employer") => {
     ? studentNavMenu
     : role === "employer"
       ? employeeNavMenu
-      : [];
+      : role === "admin"
+        ? adminNavMenu
+        : [];
 };

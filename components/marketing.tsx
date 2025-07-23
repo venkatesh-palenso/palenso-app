@@ -857,7 +857,7 @@ const Marketing: React.FC = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="text-lg px-8 py-4 border-2 border-primary hover:bg-primary hover:text-white transition-all duration-300 group"
+                  className="text-lg px-8 py-4 border-2 border-primary hover:bg-primary hover:text-primary transition-all duration-300 group"
                 >
                   <span className="group-hover:scale-105 transition-transform duration-200">
                     Learn More
@@ -886,36 +886,36 @@ const Marketing: React.FC = () => {
                 career journey.
               </p>
               <div className="flex gap-4">
-                <a
+                <Link
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
                 >
                   <Twitter className="w-5 h-5" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
                 >
                   <Linkedin className="w-5 h-5" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
                 >
                   <Facebook className="w-5 h-5" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
                 >
                   <Instagram className="w-5 h-5" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
                 >
                   <Youtube className="w-5 h-5" />
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -923,24 +923,30 @@ const Marketing: React.FC = () => {
               <h3 className="font-semibold mb-4">For Students</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/jobs"
+                    className="hover:text-white transition-colors"
+                  >
                     Find Jobs
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/events"
+                    className="hover:text-white transition-colors"
+                  >
                     Career Events
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Resume Builder
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Career Advice
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -949,24 +955,30 @@ const Marketing: React.FC = () => {
               <h3 className="font-semibold mb-4">For Employers</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/post-job"
+                    className="hover:text-white transition-colors"
+                  >
                     Post Jobs
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Find Talent
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/events"
+                    className="hover:text-white transition-colors"
+                  >
                     Career Fairs
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Employer Resources
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

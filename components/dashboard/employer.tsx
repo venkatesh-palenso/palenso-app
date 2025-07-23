@@ -1,5 +1,10 @@
+// react
 import React from "react";
+
+// framer motion
 import { motion } from "framer-motion";
+
+// lucide icons
 import {
   Briefcase,
   Users,
@@ -12,45 +17,35 @@ import {
   Plus,
   Sparkles,
 } from "lucide-react";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+// context
+import { useUser } from "@/context";
+
+// interfaces
+import {
+  EmployerDashboardInfo,
+  DashboardApplication,
+  DashboardJob,
+  DashboardInterview,
+  DashboardEvent,
+  EmployerAnalytics,
+} from "@/interfaces";
+
 interface EmployerDashboardProps {
-  stats?: {
-    activeJobs: number;
-    totalApplications: number;
-    interviews: number;
-    hires: number;
-  };
-  recentApplications?: Array<{
-    id: string;
-    candidateName: string;
-    jobTitle: string;
-    appliedDate: string;
-    status: "pending" | "reviewed" | "interviewed" | "hired" | "rejected";
-    experience: string;
-    location: string;
-  }>;
-  activeJobs?: Array<{
-    id: string;
-    title: string;
-    applications: number;
-    views: number;
-    postedDate: string;
-    status: "active" | "paused" | "closed";
-  }>;
+  analytics: EmployerAnalytics;
+  dashboardInfo: EmployerDashboardInfo;
 }
 
 const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
-  stats = {
-    activeJobs: 8,
-    totalApplications: 156,
-    interviews: 12,
-    hires: 3,
-  },
-  recentApplications = [],
-  activeJobs = [],
+  analytics,
+  dashboardInfo,
 }) => {
+  const { user } = useUser();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
@@ -123,7 +118,7 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
               </div>
               <div>
                 <h1 className="heading-handshake-large text-4xl mb-4">
-                  Welcome back, Employer! 👋
+                  Welcome back, {user?.first_name}! 👋
                 </h1>
                 <p className="heading-handshake-subtitle text-xl max-w-2xl mx-auto">
                   Find the perfect candidates for your team. Track applications,
@@ -151,10 +146,10 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                       Active Jobs
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.activeJobs}
+                      {analytics.active_jobs.total}
                     </p>
                     <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                      +2 this week
+                      +{analytics.active_jobs.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
@@ -176,10 +171,10 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                       Applications
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.totalApplications}
+                      {analytics.applications.total}
                     </p>
                     <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                      +15 this week
+                      +{analytics.applications.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
@@ -201,10 +196,10 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                       Interviews
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.interviews}
+                      {analytics.interviews_scheduled.total}
                     </p>
                     <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                      +3 this week
+                      +{analytics.interviews_scheduled.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -224,10 +219,10 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Hires</p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.hires}
+                      {analytics.hires.total}
                     </p>
                     <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                      +1 this month
+                      +{analytics.hires.this_month} this month
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
@@ -261,56 +256,61 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                  {recentApplications.length > 0 ? (
-                    recentApplications.map((application, index) => (
-                      <motion.div
-                        key={application.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
-                        className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                              {application.candidateName}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {application.jobTitle}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                <span>{application.location}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                <span>{application.appliedDate}</span>
+                  {dashboardInfo.recent_applications.length > 0 ? (
+                    dashboardInfo.recent_applications.map(
+                      (application: DashboardApplication, index: number) => (
+                        <motion.div
+                          key={application.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.6 + index * 0.1,
+                          }}
+                          className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                {application.candidateName}
+                              </h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {application.jobTitle}
+                              </p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-3 h-3" />
+                                  <span>{application.location}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{application.appliedDate}</span>
+                                </div>
                               </div>
                             </div>
+                            <div className="flex flex-col gap-2">
+                              <Badge
+                                className={`text-xs ${getStatusColor(application.status)}`}
+                              >
+                                {application.status}
+                              </Badge>
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <Badge
-                              className={`text-xs ${getStatusColor(application.status)}`}
+                          <div className="flex gap-2 mt-3">
+                            <Button className="btn-handshake btn-sm">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View Profile
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
                             >
-                              {application.status}
-                            </Badge>
+                              Schedule Interview
+                            </Button>
                           </div>
-                        </div>
-                        <div className="flex gap-2 mt-3">
-                          <Button className="btn-handshake btn-sm">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View Profile
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="btn-secondary btn-sm"
-                          >
-                            Schedule Interview
-                          </Button>
-                        </div>
-                      </motion.div>
-                    ))
+                        </motion.div>
+                      ),
+                    )
                   ) : (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -339,60 +339,219 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                  {activeJobs.length > 0 ? (
-                    activeJobs.map((job, index) => (
-                      <motion.div
-                        key={job.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
-                        className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                              {job.title}
-                            </h3>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
-                              <div className="flex items-center gap-1">
-                                <Users className="w-3 h-3" />
-                                <span>{job.applications} applications</span>
+                  {dashboardInfo.active_jobs.length > 0 ? (
+                    dashboardInfo.active_jobs.map(
+                      (job: DashboardJob, index: number) => (
+                        <motion.div
+                          key={job.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.8 + index * 0.1,
+                          }}
+                          className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                {job.title}
+                              </h3>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+                                <div className="flex items-center gap-1">
+                                  <Users className="w-3 h-3" />
+                                  <span>
+                                    {job.application_count} applications
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{job.views} views</span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Eye className="w-3 h-3" />
-                                <span>{job.views} views</span>
-                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                Deadline {job.application_deadline}
+                              </p>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                              Posted {job.postedDate}
-                            </p>
+                            <div className="flex flex-col gap-2">
+                              <Badge
+                                className={`text-xs capitalize ${getJobStatusColor(job.status || "active")}`}
+                              >
+                                {job.job_type.split("_").join(" ")}
+                              </Badge>
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <Badge
-                              className={`text-xs ${getJobStatusColor(job.status)}`}
+                          <div className="flex gap-2 mt-3">
+                            <Button className="btn-handshake btn-sm">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View Job
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
                             >
-                              {job.status}
-                            </Badge>
+                              Edit
+                            </Button>
                           </div>
-                        </div>
-                        <div className="flex gap-2 mt-3">
-                          <Button className="btn-handshake btn-sm">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View Job
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="btn-secondary btn-sm"
-                          >
-                            Edit
-                          </Button>
-                        </div>
-                      </motion.div>
-                    ))
+                        </motion.div>
+                      ),
+                    )
                   ) : (
                     <div className="text-center py-8">
                       <Briefcase className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                       <p className="text-muted-foreground">No active jobs</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Upcoming Events */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
+              <div className="feature-card-handshake p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="heading-handshake text-xl">Upcoming Events</h2>
+                  <Button variant="outline" className="btn-secondary btn-sm">
+                    View All
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {dashboardInfo.upcoming_events.length > 0 ? (
+                    dashboardInfo.upcoming_events.map(
+                      (event: DashboardEvent, index: number) => (
+                        <motion.div
+                          key={event.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.8 + index * 0.1,
+                          }}
+                          className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                {event.title}
+                              </h3>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{event.date}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{event.time}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <Badge className="badge-handshake text-xs">
+                              {event.type}
+                            </Badge>
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Button className="btn-handshake btn-sm">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View Event
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
+                            >
+                              Register
+                            </Button>
+                          </div>
+                        </motion.div>
+                      ),
+                    )
+                  ) : (
+                    <div className="text-center py-8">
+                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-muted-foreground">
+                        No upcoming events
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Upcoming Interviews */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
+              <div className="feature-card-handshake p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="heading-handshake text-xl">
+                    Upcoming Interviews
+                  </h2>
+                  <Button variant="outline" className="btn-secondary btn-sm">
+                    View All
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {dashboardInfo.upcoming_interviews.length > 0 ? (
+                    dashboardInfo.upcoming_interviews.map(
+                      (interview: DashboardInterview, index: number) => (
+                        <motion.div
+                          key={interview.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.8 + index * 0.1,
+                          }}
+                          className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                {interview.title}
+                              </h3>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{interview.date}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{interview.time}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <Badge className="badge-handshake text-xs">
+                              {interview.type}
+                            </Badge>
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Button className="btn-handshake btn-sm">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View Interview
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
+                            >
+                              Join
+                            </Button>
+                          </div>
+                        </motion.div>
+                      ),
+                    )
+                  ) : (
+                    <div className="text-center py-8">
+                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-muted-foreground">
+                        No upcoming interviews
+                      </p>
                     </div>
                   )}
                 </div>

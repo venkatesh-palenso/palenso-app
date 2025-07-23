@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 
 // next
 import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 // swr
 import useSWR from "swr";
@@ -14,7 +16,16 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 
 // lucide icons
-import { Search, MapPin, Briefcase, Filter, Building } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Briefcase,
+  Filter,
+  Building,
+  Bookmark,
+  Share2,
+  Check,
+} from "lucide-react";
 
 // components
 import Spinner from "@/components/spinner";
@@ -28,28 +39,29 @@ import { jobService } from "@/services";
 // layout
 import { Layouts } from "@/layouts";
 
-interface SearchFilters {
-  search: string;
-  type: string;
-  location: string;
-  experience: string;
-}
+// interfaces
+import { JobSearchParams } from "@/interfaces";
+
+// context
+import { useUser } from "@/context";
 
 const JobsList = () => {
-  const { register, watch, setValue } = useForm<SearchFilters>({
+  const router = useRouter();
+  const { user, isLoggedIn } = useUser();
+  const { register, watch, setValue } = useForm<JobSearchParams>({
     defaultValues: {
       search: "",
-      type: "all",
+      job_type: undefined,
       location: "",
-      experience: "",
+      experience_level: undefined,
     },
   });
 
-  const [debouncedFilters, setDebouncedFilters] = useState<SearchFilters>({
+  const [debouncedFilters, setDebouncedFilters] = useState<JobSearchParams>({
     search: "",
-    type: "all",
+    job_type: undefined,
     location: "",
-    experience: "",
+    experience_level: undefined,
   });
 
   const watchedFilters = watch();
@@ -70,20 +82,62 @@ const JobsList = () => {
   );
 
   const experienceLevelOptions = [
-    { value: "all", label: "All Experience Levels" },
-    { value: "entry-level", label: "Entry Level" },
-    { value: "1-3", label: "1-3 Years" },
-    { value: "3-5", label: "3-5 Years" },
-    { value: "5+", label: "5+ Years" },
+    { value: "entry", label: "Entry Level" },
+    { value: "mid", label: "Mid Level" },
+    { value: "senior", label: "Senior Level" },
+    { value: "executive", label: "Executive Level" },
   ];
 
   const jobTypeOptions = [
-    { value: "all", label: "All Job Types" },
-    { value: "full-time", label: "Full-time" },
-    { value: "part-time", label: "Part-time" },
+    { value: "full_time", label: "Full-time" },
+    { value: "part_time", label: "Part-time" },
     { value: "contract", label: "Contract" },
     { value: "internship", label: "Internship" },
+    { value: "freelance", label: "Freelance" },
   ];
+
+  const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
+
+  const handleSaveJob = (jobId: string) => () => {
+    if (!isLoggedIn) {
+      router.push(
+        `/login?returnUrl=${encodeURIComponent(window.location.href)}`,
+      );
+      return;
+    }
+
+    if (user?.role !== "student") {
+      console.log("Only students can save jobs");
+      return;
+    }
+
+    try {
+      console.log("Saving job:", jobId);
+      // TODO: Implement save job API call
+    } catch (error) {
+      console.log("error while saving job", error);
+    }
+  };
+
+  const handleShareJob = (jobId: string) => async () => {
+    try {
+      const jobUrl = `${window.location.origin}/jobs/${jobId}`;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: "Check out this job opportunity",
+          text: "I found an interesting job opportunity on Palenso",
+          url: jobUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(jobUrl);
+        setCopiedJobId(jobId);
+        setTimeout(() => setCopiedJobId(null), 2000);
+      }
+    } catch (error) {
+      console.error("Error sharing job:", error);
+    }
+  };
 
   return (
     <>
@@ -169,7 +223,7 @@ const JobsList = () => {
 
                   <FormField
                     label="Job Type"
-                    name="type"
+                    name="job_type"
                     type="select"
                     placeholder="Select job type"
                     options={jobTypeOptions}
@@ -188,7 +242,7 @@ const JobsList = () => {
 
                   <FormField
                     label="Experience Level"
-                    name="experience"
+                    name="experience_level"
                     type="select"
                     placeholder="Select experience"
                     options={experienceLevelOptions}
@@ -294,15 +348,37 @@ const JobsList = () => {
                         </div>
 
                         <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-                          <Button className="btn-handshake btn-sm flex-1">
-                            Apply Now
-                          </Button>
+                          <Link href={`/jobs/${job.id}`}>
+                            <Button className="btn-handshake btn-sm flex-1">
+                              View Job
+                            </Button>
+                          </Link>
                           <Button
                             variant="outline"
                             className="btn-secondary btn-sm"
+                            onClick={handleShareJob(job.id)}
+                            title={
+                              copiedJobId === job.id
+                                ? "Link copied!"
+                                : "Share job"
+                            }
                           >
-                            Save
+                            {copiedJobId === job.id ? (
+                              <Check className="w-4 h-4" />
+                            ) : (
+                              <Share2 className="w-4 h-4" />
+                            )}
                           </Button>
+                          {isLoggedIn && user?.role === "student" && (
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
+                              onClick={handleSaveJob(job.id)}
+                              title="Save job"
+                            >
+                              <Bookmark className="w-4 h-4" />
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </motion.div>

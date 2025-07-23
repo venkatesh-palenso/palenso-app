@@ -5,6 +5,10 @@ import type {
   CreateJobForm,
   UpdateJobForm,
   JobSearchParams,
+  JobApplication,
+  CreateJobApplicationForm,
+  SavedJob,
+  CreateSaveJobForm,
 } from "@/interfaces/job";
 
 class JobService extends APIService {
@@ -27,6 +31,8 @@ class JobService extends APIService {
    */
   searchJobs(params: JobSearchParams): Promise<Job[]> {
     const queryParams = new URLSearchParams();
+
+    console.log(params, "search params");
 
     if (params.search) queryParams.append("search", params.search);
     if (params.location) queryParams.append("location", params.location);
@@ -103,6 +109,130 @@ class JobService extends APIService {
    */
   deleteJob(jobId: string): Promise<Job> {
     return this.delete(JOB_ENDPOINTS.JOB_DETAIL(jobId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Applies for a job.
+   * @param jobId - The ID of the job to apply for.
+   * @param data - The application data.
+   * @returns A promise that resolves to the job application.
+   */
+  applyForJob(
+    jobId: string,
+    data: CreateJobApplicationForm,
+  ): Promise<JobApplication> {
+    return this.post(JOB_ENDPOINTS.APPLY_FOR_JOB(jobId), data)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Gets job applications for a specific job.
+   * @param jobId - The ID of the job.
+   * @returns A promise that resolves to an array of job applications.
+   */
+  getJobApplications(jobId: string): Promise<JobApplication[]> {
+    return this.get(JOB_ENDPOINTS.JOB_APPLICATIONS(jobId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Gets user's saved jobs.
+   * @returns A promise that resolves to an array of saved jobs.
+   */
+  getSavedJobs(): Promise<SavedJob[]> {
+    return this.get(JOB_ENDPOINTS.SAVED_JOBS)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Saves a job.
+   * @param jobId - The ID of the job to save.
+   * @param data - The save job data.
+   * @returns A promise that resolves to the saved job.
+   */
+  saveJob(jobId: string, data?: CreateSaveJobForm): Promise<SavedJob> {
+    return this.post(JOB_ENDPOINTS.SAVE_JOB(jobId), data || {})
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Unsaves a job.
+   * @param jobId - The ID of the job to unsave.
+   * @returns A promise that resolves to the unsaved job.
+   */
+  unsaveJob(jobId: string): Promise<SavedJob> {
+    return this.delete(JOB_ENDPOINTS.UNSAVE_JOB(jobId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Gets user's job applications.
+   * @returns A promise that resolves to an array of job applications.
+   */
+  getMyApplications(): Promise<JobApplication[]> {
+    return this.get(JOB_ENDPOINTS.MY_APPLICATIONS)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Gets a specific job application.
+   * @param applicationId - The ID of the application.
+   * @returns A promise that resolves to the job application.
+   */
+  getApplication(applicationId: string): Promise<JobApplication> {
+    return this.get(JOB_ENDPOINTS.APPLICATION_DETAIL(applicationId))
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Updates a job application.
+   * @param applicationId - The ID of the application.
+   * @param data - The data to update the application with.
+   * @returns A promise that resolves to the updated application.
+   */
+  updateApplication(
+    applicationId: string,
+    data: Partial<JobApplication>,
+  ): Promise<JobApplication> {
+    return this.put(JOB_ENDPOINTS.UPDATE_APPLICATION(applicationId), data)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Withdraws a job application.
+   * @param applicationId - The ID of the application.
+   * @returns A promise that resolves to the withdrawn application.
+   */
+  withdrawApplication(applicationId: string): Promise<JobApplication> {
+    return this.post(JOB_ENDPOINTS.WITHDRAW_APPLICATION(applicationId))
       .then((response) => response.data)
       .catch((error) => {
         throw error;

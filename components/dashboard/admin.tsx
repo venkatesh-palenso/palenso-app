@@ -1,5 +1,13 @@
+// react
 import React from "react";
+
+// date utils
+import { format } from "date-fns";
+
+// framer motion
 import { motion } from "framer-motion";
+
+// lucide icons
 import {
   Users,
   Building,
@@ -13,42 +21,33 @@ import {
   CheckCircle,
   Sparkles,
 } from "lucide-react";
+
+// components
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+// context
+import { useUser } from "@/context";
+
+// interfaces
+import {
+  AdminDashboardInfo,
+  DashboardUser,
+  SystemAlert,
+  AdminAnalytics,
+} from "@/interfaces";
+
 interface AdminDashboardProps {
-  stats?: {
-    totalUsers: number;
-    totalCompanies: number;
-    totalJobs: number;
-    activeEvents: number;
-  };
-  recentUsers?: Array<{
-    id: string;
-    name: string;
-    email: string;
-    role: "student" | "employer" | "admin";
-    joinDate: string;
-    status: "active" | "pending" | "suspended";
-  }>;
-  systemAlerts?: Array<{
-    id: string;
-    type: "info" | "warning" | "error" | "success";
-    message: string;
-    timestamp: string;
-  }>;
+  analytics: AdminAnalytics;
+  dashboardInfo: AdminDashboardInfo;
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  stats = {
-    totalUsers: 1247,
-    totalCompanies: 89,
-    totalJobs: 234,
-    activeEvents: 12,
-  },
-  recentUsers = [],
-  systemAlerts = [],
+  analytics,
+  dashboardInfo,
 }) => {
+  const { user } = useUser();
+
   const getRoleColor = (role: string) => {
     switch (role) {
       case "admin":
@@ -62,17 +61,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400";
-      case "pending":
-        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400";
-      case "suspended":
-        return "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400";
-      default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400";
-    }
+  const getStatusColor = (isActive: boolean) => {
+    return isActive
+      ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+      : "bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400";
   };
 
   const getAlertColor = (type: string) => {
@@ -132,7 +124,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
               <div>
                 <h1 className="heading-handshake-large text-4xl mb-4">
-                  Welcome back, Admin! 👋
+                  Welcome back, {user?.first_name}! 👋
                 </h1>
                 <p className="heading-handshake-subtitle text-xl max-w-2xl mx-auto">
                   Monitor platform activity, manage users, and ensure smooth
@@ -144,7 +136,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* analytics Section */}
       <section className="py-12 px-4 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -160,10 +152,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Total Users
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.totalUsers}
+                      {analytics.total_users.total}
                     </p>
                     <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                      +45 this week
+                      +{analytics.total_users.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
@@ -185,10 +177,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Companies
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.totalCompanies}
+                      {analytics.companies.total}
                     </p>
                     <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                      +3 this week
+                      +{analytics.companies.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
@@ -210,10 +202,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       Active Jobs
                     </p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.totalJobs}
+                      {analytics.active_jobs.total}
                     </p>
                     <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                      +12 this week
+                      +{analytics.active_jobs.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -233,10 +225,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Events</p>
                     <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {stats.activeEvents}
+                      {analytics.events.total}
                     </p>
                     <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                      +2 this week
+                      +{analytics.events.this_week} this week
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
@@ -268,57 +260,65 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                  {recentUsers.length > 0 ? (
-                    recentUsers.map((user, index) => (
-                      <motion.div
-                        key={user.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
-                        className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                              {user.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {user.email}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                <span>Joined {user.joinDate}</span>
+                  {dashboardInfo.recent_users.length > 0 ? (
+                    dashboardInfo.recent_users.map(
+                      (user: DashboardUser, index: number) => (
+                        <motion.div
+                          key={user.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.6 + index * 0.1,
+                          }}
+                          className="p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                {user.first_name} {user.last_name}
+                              </h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {user.email}
+                              </p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>
+                                    Joined{" "}
+                                    {format(user.date_joined, "yyyy-mm-dd")}
+                                  </span>
+                                </div>
                               </div>
                             </div>
+                            <div className="flex flex-col gap-2">
+                              <Badge
+                                className={`text-xs capitalize ${getRoleColor(user.role)}`}
+                              >
+                                {user.role}
+                              </Badge>
+                              <Badge
+                                className={`text-xs ${getStatusColor(user.is_active)}`}
+                              >
+                                {user.is_active ? "Active" : "Inactive"}
+                              </Badge>
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <Badge
-                              className={`text-xs ${getRoleColor(user.role)}`}
+                          <div className="flex gap-2 mt-3">
+                            <Button className="btn-handshake btn-sm">
+                              <Eye className="w-3 h-3 mr-1" />
+                              View Profile
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="btn-secondary btn-sm"
                             >
-                              {user.role}
-                            </Badge>
-                            <Badge
-                              className={`text-xs ${getStatusColor(user.status)}`}
-                            >
-                              {user.status}
-                            </Badge>
+                              <Settings className="w-3 h-3" />
+                            </Button>
                           </div>
-                        </div>
-                        <div className="flex gap-2 mt-3">
-                          <Button className="btn-handshake btn-sm">
-                            <Eye className="w-3 h-3 mr-1" />
-                            View Profile
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="btn-secondary btn-sm"
-                          >
-                            <Settings className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </motion.div>
-                    ))
+                        </motion.div>
+                      ),
+                    )
                   ) : (
                     <div className="text-center py-8">
                       <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -344,41 +344,46 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                  {systemAlerts.length > 0 ? (
-                    systemAlerts.map((alert, index) => (
-                      <motion.div
-                        key={alert.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
-                        className={`p-4 border rounded-lg ${getAlertColor(alert.type)}`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <p className="text-sm font-medium mb-1">
-                              {alert.message}
-                            </p>
-                            <p className="text-xs opacity-75">
-                              {alert.timestamp}
-                            </p>
+                  {dashboardInfo.system_alerts.length > 0 ? (
+                    dashboardInfo.system_alerts.map(
+                      (alert: SystemAlert, index: number) => (
+                        <motion.div
+                          key={alert.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.8 + index * 0.1,
+                          }}
+                          className={`p-4 border rounded-lg ${getAlertColor(alert.type)}`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium mb-1">
+                                {alert.message}
+                              </p>
+                              <p className="text-xs opacity-75">
+                                {alert.timestamp}
+                              </p>
+                            </div>
+                            <div className="ml-4">
+                              {alert.type === "success" && (
+                                <CheckCircle className="w-4 h-4" />
+                              )}
+                              {alert.type === "warning" && (
+                                <AlertTriangle className="w-4 h-4" />
+                              )}
+                              {alert.type === "error" && (
+                                <AlertTriangle className="w-4 h-4" />
+                              )}
+                              {alert.type === "info" && (
+                                <BarChart3 className="w-4 h-4" />
+                              )}
+                            </div>
                           </div>
-                          <div className="ml-4">
-                            {alert.type === "success" && (
-                              <CheckCircle className="w-4 h-4" />
-                            )}
-                            {alert.type === "warning" && (
-                              <AlertTriangle className="w-4 h-4" />
-                            )}
-                            {alert.type === "error" && (
-                              <AlertTriangle className="w-4 h-4" />
-                            )}
-                            {alert.type === "info" && (
-                              <BarChart3 className="w-4 h-4" />
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))
+                        </motion.div>
+                      ),
+                    )
                   ) : (
                     <div className="text-center py-8">
                       <Shield className="w-12 h-12 mx-auto mb-4 text-gray-300" />

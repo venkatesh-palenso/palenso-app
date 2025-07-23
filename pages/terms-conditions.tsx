@@ -139,7 +139,7 @@ export default function Terms() {
               className="max-w-4xl mx-auto"
             >
               {/* Introduction */}
-              <div className="feature-card-handshake p-8 mb-8">
+              <div className="feature-card-handshake p-8 mb-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="heading-handshake text-2xl mb-6">
                   Agreement to Terms
                 </h2>
@@ -156,7 +156,7 @@ export default function Terms() {
               </div>
 
               {/* Terms Sections */}
-              <div className="feature-card-handshake p-8">
+              <div className="feature-card-handshake p-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="heading-handshake text-2xl mb-6 text-center">
                   Terms & Conditions
                 </h2>
@@ -169,7 +169,7 @@ export default function Terms() {
                         value={`item-${index}`}
                         className="border border-gray-200 dark:border-gray-700 rounded-lg mb-4 last:mb-0"
                       >
-                        <AccordionTrigger className="px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+                        <AccordionTrigger className="px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors border-b border-gray-200 dark:border-gray-700">
                           <div className="flex items-center gap-3">
                             <IconComponent className="w-5 h-5 text-primary flex-shrink-0" />
                             <span className="font-medium text-gray-900 dark:text-white">
@@ -189,7 +189,7 @@ export default function Terms() {
               </div>
 
               {/* Contact Section */}
-              <div className="feature-card-handshake p-8 mt-8">
+              <div className="feature-card-handshake p-8 mt-8 border border-gray-200 dark:border-gray-700">
                 <h2 className="heading-handshake text-2xl mb-6 text-center">
                   Questions About Terms?
                 </h2>

@@ -18,6 +18,9 @@ export const UPLOAD_MEDIA = "/api/upload";
 export const USER_ENDPOINTS = {
   GET_CURRENT_USER: "/api/users/me",
   PROFILE_INFO: (userId: string) => `/api/users/${userId}/profile`,
+  LIST_USERS: "/api/users",
+  USER_DETAIL: (userId: string) => `/api/users/${userId}`,
+  BULK_UPDATE_USERS: "/api/users/bulk-update",
 };
 
 // company endpoints
@@ -30,12 +33,29 @@ export const COMPANY_ENDPOINTS = {
 export const EVENT_ENDPOINTS = {
   LIST_CREATE_EVENT: "/api/events",
   EVENT_DETAIL: (eventId: string) => `/api/events/${eventId}`,
+  EVENT_REGISTRATIONS: (eventId: string) =>
+    `/api/events/${eventId}/registrations`,
+  REGISTER_FOR_EVENT: (eventId: string) => `/api/events/${eventId}/register`,
+  UNREGISTER_FOR_EVENT: (eventId: string) =>
+    `/api/events/${eventId}/unregister`,
 };
 
 // job endpoints
 export const JOB_ENDPOINTS = {
   LIST_CREATE_JOB: "/api/jobs",
   JOB_DETAIL: (jobId: string) => `/api/jobs/${jobId}`,
+  JOB_APPLICATIONS: (jobId: string) => `/api/jobs/${jobId}/applications`,
+  APPLY_FOR_JOB: (jobId: string) => `/api/jobs/${jobId}/apply`,
+  SAVED_JOBS: "/api/saved-jobs",
+  SAVE_JOB: (jobId: string) => `/api/saved-jobs/${jobId}`,
+  UNSAVE_JOB: (jobId: string) => `/api/saved-jobs/${jobId}`,
+  MY_APPLICATIONS: "/api/applications",
+  APPLICATION_DETAIL: (applicationId: string) =>
+    `/api/applications/${applicationId}`,
+  UPDATE_APPLICATION: (applicationId: string) =>
+    `/api/applications/${applicationId}`,
+  WITHDRAW_APPLICATION: (applicationId: string) =>
+    `/api/applications/${applicationId}/withdraw`,
 };
 
 // profile endpoints
@@ -53,4 +73,10 @@ export const PROFILE_ITEMS_ENDPOINTS = {
   SKILL_INFO: (skillId: string) => `/api/skills/${skillId}`,
   RESUME_INFO: (resumeId: string) => `/api/resumes/${resumeId}`,
   INTEREST_INFO: (interestId: string) => `/api/interests/${interestId}`,
+};
+
+// analytics endpoints
+export const DASHBOARD_ENDPOINTS = {
+  DASHBOARD_ANALYTICS: "/api/dashboard-analytics",
+  DASHBOARD_INFO: "/api/dashboard-info",
 };
