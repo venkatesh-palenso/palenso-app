@@ -44,7 +44,7 @@ const companySizeOptions = [
   { label: "1000+ employees", value: "1000+" },
 ];
 
-const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
+const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as Company }) => {
   const [mode] = useState<"edit" | "create">(company?.id ? "edit" : "create");
   const [media, setMedia] = useState<{
     companyLogo: File | null;
