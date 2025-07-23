@@ -41,8 +41,7 @@ export interface CreateProjectForm {
   image_url?: string;
 }
 
-export interface UpdateProjectForm extends Partial<CreateProjectForm> {
-}
+export interface UpdateProjectForm extends Partial<CreateProjectForm> {}
 
 // Project search and filter interfaces
 export interface ProjectSearchParams {
@@ -62,4 +61,4 @@ export interface ProjectCollaboration {
   end_date?: string;
   created_at: string;
   updated_at: string;
-} 
+}

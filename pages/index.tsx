@@ -1,13 +1,9 @@
-// layout
+import React from "react";
 import { Layouts } from "@/layouts";
+import Marketing from "@/components/marketing";
 
-// components
-import MarketingView from "@/components/marketing";
+export default function Home() {
+  return <Marketing />;
+}
 
-const LandingPage = () => {
-  return <MarketingView />;
-};
-
-LandingPage.getLayout = Layouts.Public;
-
-export default LandingPage;
+Home.getLayout = Layouts.Public;

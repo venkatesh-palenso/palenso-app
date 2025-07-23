@@ -98,6 +98,11 @@ Based on Handshake's modern career platform design:
   --muted: #334155;
   --muted-foreground: #94a3b8;
 
+  /* Border and Input Colors */
+  --border: #334155;
+  --input: #334155;
+  --ring: #0057ff;
+
   /* Accent Colors */
   --accent: #1e3a8a;
   --accent-foreground: #93c5fd;
@@ -140,8 +145,6 @@ Based on Handshake's modern career platform design:
   align-items: center;
   gap: 8px;
 }
-
-
 
 .heading-handshake-large {
   background: linear-gradient(135deg, #0057ff 0%, #3b82f6 50%, #0057ff 100%);
@@ -189,16 +192,22 @@ Based on Handshake's modern career platform design:
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-20px) rotate(5deg);
   }
 }
 
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(0, 87, 255, 0.3);
   }
   50% {
@@ -241,13 +250,18 @@ Based on Handshake's modern career platform design:
 }
 
 .btn-handshake::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -365,7 +379,7 @@ Based on Handshake's modern career platform design:
 }
 
 .tab-handshake[data-state="active"]::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 50%;
@@ -471,7 +485,7 @@ Based on Handshake's modern career platform design:
 }
 
 .card-handshake::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -506,11 +520,10 @@ Based on Handshake's modern career platform design:
   transition: all 0.3s ease;
   position: relative;
   padding: 8px 16px;
-  border-radius: 8px;
 }
 
 .nav-link-handshake::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 50%;
@@ -527,7 +540,6 @@ Based on Handshake's modern career platform design:
 
 .nav-link-handshake:hover {
   color: #0057ff;
-  background: rgba(0, 87, 255, 0.05);
 }
 
 /* Hero section - more elegant */
@@ -539,13 +551,17 @@ Based on Handshake's modern career platform design:
 }
 
 .hero-handshake::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(0, 87, 255, 0.02) 0%, rgba(59, 130, 246, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 87, 255, 0.02) 0%,
+    rgba(59, 130, 246, 0.02) 100%
+  );
   pointer-events: none;
 }
 
@@ -610,8 +626,12 @@ Based on Handshake's modern career platform design:
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Handshake success animation */
@@ -624,7 +644,9 @@ Based on Handshake's modern career platform design:
   stroke: #0057ff;
   stroke-miterlimit: 10;
   box-shadow: inset 0px 0px 0px #10b981;
-  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  animation:
+    fill 0.4s ease-in-out 0.4s forwards,
+    scale 0.3s ease-in-out 0.9s both;
   position: relative;
   margin: 0 auto;
 }
@@ -653,7 +675,8 @@ Based on Handshake's modern career platform design:
 }
 
 @keyframes scale {
-  0%, 100% {
+  0%,
+  100% {
     transform: none;
   }
   50% {
@@ -1216,4 +1239,69 @@ Based on Handshake's modern career platform design:
 .dark .tabs-handshake {
   background: #1e293b;
   border-color: #475569;
+}
+
+/* Dark theme text visibility fixes */
+.dark {
+  color: var(--foreground);
+}
+
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: var(--foreground);
+}
+
+.dark p {
+  color: var(--foreground);
+}
+
+.dark span {
+  color: inherit;
+}
+
+.dark .text-foreground {
+  color: var(--foreground) !important;
+}
+
+.dark .text-muted-foreground {
+  color: var(--muted-foreground) !important;
+}
+
+.dark .text-primary {
+  color: var(--primary) !important;
+}
+
+.dark .text-secondary {
+  color: var(--secondary-foreground) !important;
+}
+
+/* Ensure dropdown menus are visible in dark theme */
+.dark [data-radix-dropdown-menu-content] {
+  background: var(--popover);
+  border-color: var(--border);
+  color: var(--popover-foreground);
+}
+
+.dark [data-radix-dropdown-menu-item] {
+  color: var(--popover-foreground);
+}
+
+.dark [data-radix-dropdown-menu-item]:hover {
+  background: var(--muted);
+}
+
+/* Ensure sheet content is visible in dark theme */
+.dark [data-radix-sheet-content] {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Ensure dialog content is visible in dark theme */
+.dark [data-radix-dialog-content] {
+  background: var(--popover);
+  color: var(--popover-foreground);
 }

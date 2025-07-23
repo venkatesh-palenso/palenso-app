@@ -5,7 +5,15 @@ export interface Event {
   company_id?: string;
   title: string;
   description: string;
-  event_type: "workshop" | "seminar" | "conference" | "hackathon" | "career_fair" | "networking" | "webinar" | "other";
+  event_type:
+    | "workshop"
+    | "seminar"
+    | "conference"
+    | "hackathon"
+    | "career_fair"
+    | "networking"
+    | "webinar"
+    | "other";
   start_date: string;
   end_date: string;
   registration_deadline?: string;
@@ -48,7 +56,15 @@ export interface EventRegistration {
 export interface CreateEventForm {
   title: string;
   description: string;
-  event_type: "workshop" | "seminar" | "conference" | "hackathon" | "career_fair" | "networking" | "webinar" | "other";
+  event_type:
+    | "workshop"
+    | "seminar"
+    | "conference"
+    | "hackathon"
+    | "career_fair"
+    | "networking"
+    | "webinar"
+    | "other";
   start_date: string;
   end_date: string;
   registration_deadline?: string;
@@ -80,7 +96,15 @@ export interface CreateEventRegistrationForm {
 // Event search and filter interfaces
 export interface EventSearchParams {
   search?: string;
-  event_type?: "workshop" | "seminar" | "conference" | "hackathon" | "career_fair" | "networking" | "webinar" | "other";
+  event_type?:
+    | "workshop"
+    | "seminar"
+    | "conference"
+    | "hackathon"
+    | "career_fair"
+    | "networking"
+    | "webinar"
+    | "other";
   location?: string;
   start_date?: string;
   end_date?: string;

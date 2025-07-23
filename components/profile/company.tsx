@@ -150,8 +150,10 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
           {/* Basic Information */}
           <div className="dashboard-card-handshake p-6">
-            <h4 className="heading-handshake text-lg mb-4">Basic Information</h4>
-            
+            <h4 className="heading-handshake text-lg mb-4">
+              Basic Information
+            </h4>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 label="Company Name"
@@ -162,7 +164,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 required
                 error={errors.name}
               />
-              
+
               <FormField
                 label="Industry"
                 name="industry"
@@ -174,7 +176,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 required
                 error={errors.industry}
               />
-              
+
               <FormField
                 label="Company Size"
                 name="company_size"
@@ -186,7 +188,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 required
                 error={errors.company_size}
               />
-              
+
               <FormField
                 label="Founded Year"
                 name="founded_year"
@@ -196,7 +198,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 error={errors.founded_year}
               />
             </div>
-            
+
             <div className="mt-6">
               <FormField
                 label="Company Description"
@@ -213,8 +215,10 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
 
           {/* Contact Information */}
           <div className="dashboard-card-handshake p-6">
-            <h4 className="heading-handshake text-lg mb-4">Contact Information</h4>
-            
+            <h4 className="heading-handshake text-lg mb-4">
+              Contact Information
+            </h4>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 label="Website"
@@ -224,7 +228,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 register={register}
                 error={errors.website}
               />
-              
+
               <FormField
                 label="Email"
                 name="email"
@@ -233,7 +237,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 register={register}
                 error={errors.email}
               />
-              
+
               <FormField
                 label="Phone"
                 name="phone"
@@ -249,7 +253,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
           {/* Location */}
           <div className="dashboard-card-handshake p-6">
             <h4 className="heading-handshake text-lg mb-4">Location</h4>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 label="Country"
@@ -260,7 +264,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 required
                 error={errors.country}
               />
-              
+
               <FormField
                 label="State/Province"
                 name="state"
@@ -270,7 +274,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 required
                 error={errors.state}
               />
-              
+
               <FormField
                 label="City"
                 name="city"
@@ -281,7 +285,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 error={errors.city}
               />
             </div>
-            
+
             <div className="mt-6">
               <FormField
                 label="Address"
@@ -298,7 +302,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
           {/* Social Media */}
           <div className="dashboard-card-handshake p-6">
             <h4 className="heading-handshake text-lg mb-4">Social Media</h4>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 label="LinkedIn"
@@ -308,7 +312,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 register={register}
                 error={errors.linkedin}
               />
-              
+
               <FormField
                 label="Twitter"
                 name="twitter"
@@ -317,7 +321,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                 register={register}
                 error={errors.twitter}
               />
-              
+
               <FormField
                 label="Facebook"
                 name="facebook"
@@ -332,11 +336,14 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
           {/* Media Upload */}
           <div className="dashboard-card-handshake p-6">
             <h4 className="heading-handshake text-lg mb-4">Company Media</h4>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Logo Upload */}
               <div className="space-y-2">
-                <Label htmlFor="companyLogo" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="companyLogo"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Company Logo
                 </Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -352,16 +359,17 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                     <p className="text-sm text-gray-600 mb-1">
                       Click to upload company logo
                     </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG up to 5MB
-                    </p>
+                    <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
                   </label>
                 </div>
               </div>
 
               {/* Banner Upload */}
               <div className="space-y-2">
-                <Label htmlFor="companyBanner" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="companyBanner"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Company Banner
                 </Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -377,9 +385,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
                     <p className="text-sm text-gray-600 mb-1">
                       Click to upload banner image
                     </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG up to 10MB
-                    </p>
+                    <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
                   </label>
                 </div>
               </div>
@@ -396,9 +402,17 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company }) => {
               <X className="w-4 h-4 mr-2" />
               Reset
             </Button>
-            <Button type="submit" className="btn-handshake" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="btn-handshake"
+              disabled={isSubmitting}
+            >
               <Save className="w-4 h-4 mr-2" />
-              {isSubmitting ? "Saving..." : mode === "edit" ? "Update Company" : "Create Company"}
+              {isSubmitting
+                ? "Saving..."
+                : mode === "edit"
+                  ? "Update Company"
+                  : "Create Company"}
             </Button>
           </div>
         </form>

@@ -1,6 +1,11 @@
 import { USER_ENDPOINTS } from "@/constants/endpoints";
 import APIService from "./api.service";
-import { User, StudentProfile, EmployerProfile, UpdateUserForm } from "@/interfaces";
+import {
+  User,
+  StudentProfile,
+  EmployerProfile,
+  UpdateUserForm,
+} from "@/interfaces";
 
 class UserService extends APIService {
   /**

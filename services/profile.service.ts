@@ -178,7 +178,10 @@ class ProfileService extends APIService {
    * @param data - The data for the updated experience.
    * @returns A promise that resolves to the updated experience.
    */
-  updateExperience(experienceId: string, data: UpdateExperienceForm): Promise<WorkExperience> {
+  updateExperience(
+    experienceId: string,
+    data: UpdateExperienceForm,
+  ): Promise<WorkExperience> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.EXPERIENCE_INFO(experienceId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -192,7 +195,10 @@ class ProfileService extends APIService {
    * @param data - The data for the updated education.
    * @returns A promise that resolves to the updated education.
    */
-  updateEducation(educationId: string, data: UpdateEducationForm): Promise<Education> {
+  updateEducation(
+    educationId: string,
+    data: UpdateEducationForm,
+  ): Promise<Education> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.EDUCATION_INFO(educationId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -248,7 +254,10 @@ class ProfileService extends APIService {
    * @param data - The data for the updated interest.
    * @returns A promise that resolves to the updated interest.
    */
-  updateInterest(interestId: string, data: UpdateInterestForm): Promise<Interest> {
+  updateInterest(
+    interestId: string,
+    data: UpdateInterestForm,
+  ): Promise<Interest> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.INTEREST_INFO(interestId), data)
       .then((response) => response.data)
       .catch((error) => {

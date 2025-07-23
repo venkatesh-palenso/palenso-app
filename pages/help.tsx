@@ -8,7 +8,15 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 
 // lucide icons
-import { HelpCircle, Search, Mail, MessageCircle, Phone, ArrowRight } from "lucide-react";
+import {
+  HelpCircle,
+  Search,
+  Mail,
+  MessageCircle,
+  Phone,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 // components
 import { Button } from "@/components/ui/button";
@@ -110,141 +118,191 @@ export default function Help() {
     },
   ];
 
+  const filteredFaqs = faqCategories
+    .map((category) => ({
+      ...category,
+      faqs: category.faqs.filter(
+        (faq) =>
+          faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          faq.answer.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    }))
+    .filter((category) => category.faqs.length > 0);
+
   return (
     <>
       <Head>
-        <title>Help Center - Palenso</title>
+        <title>Help & Support - Palenso</title>
         <meta
           name="description"
-          content="Get help and support for using Palenso"
+          content="Get help and support for using Palenso platform"
         />
       </Head>
-
-      <div className="hero-handshake min-h-screen">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          {/* Header */}
+      <div className="bg-background overflow-hidden">
+        {/* Hero Section */}
+        <section className="hero-handshake relative pt-8 pb-16 px-4 overflow-hidden">
+          {/* Enhanced Background Elements */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-6">
-                <HelpCircle size={64} className="text-primary animate-bounce-glow" />
-              </div>
-              <h1 className="heading-handshake-large mb-4">Help Center</h1>
-              <p className="heading-handshake-subtitle">
-                Find answers to your questions and get the support you need
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Search */}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
+          />
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <div className="feature-card-handshake p-8 mb-12">
-              <div className="text-center mb-6">
-                <h2 className="heading-handshake text-2xl mb-2">Search for Help</h2>
-                <p className="text-gray-600">
-                  Can&apos;t find what you&apos;re looking for? Search our help
-                  articles
-                </p>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="absolute top-40 left-0 w-96 h-96 bg-gradient-to-r from-pink-400/30 to-orange-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"
+          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="absolute -bottom-8 right-20 w-96 h-96 bg-gradient-to-r from-green-400/30 to-blue-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"
+          />
+
+          <div className="container mx-auto relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <div className="flex items-center justify-center mb-6">
+                <div className="relative mr-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary via-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <HelpCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="heading-handshake-large text-4xl mb-4">
+                    Help & Support
+                  </h1>
+                  <p className="heading-handshake-subtitle text-xl max-w-2xl mx-auto">
+                    Find answers to your questions and get the support you need
+                  </p>
+                </div>
               </div>
-              <div className="flex gap-4 max-w-2xl mx-auto">
-                <div className="relative flex-1">
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="py-12 px-4 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20">
+          <div className="container mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-4xl mx-auto"
+            >
+              {/* Search Section */}
+              <div className="feature-card-handshake p-8 mb-8">
+                <div className="text-center mb-6">
+                  <h2 className="heading-handshake text-2xl mb-2">
+                    Search for Help
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Find answers to common questions quickly
+                  </p>
+                </div>
+                <div className="relative max-w-md mx-auto">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
-                    placeholder="Search for help articles..."
+                    type="text"
+                    placeholder="Search for help..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="input-handshake pl-10"
+                    className="pl-10"
                   />
                 </div>
-                <Button className="btn-handshake">
-                  Search
-                  <Search className="ml-2 h-4 w-4" />
-                </Button>
               </div>
-            </div>
-          </motion.div>
 
-          {/* FAQ Categories */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            {faqCategories.map((category, categoryIndex) => (
-              <motion.div
-                key={categoryIndex}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="feature-card-handshake mb-6">
-                  <div className="p-0">
-                    <h3 className="heading-handshake text-xl p-6 pb-2">
-                      {category.title}
-                    </h3>
-                    <Accordion type="single" collapsible className="w-full">
-                      {category.faqs.map((faq, faqIndex) => (
-                        <AccordionItem key={faqIndex} value={`item-${faqIndex}`}>
-                          <AccordionTrigger className="px-6 text-left hover:bg-gray-50 rounded-lg mx-2">
-                            <span className="font-medium text-gray-900">{faq.question}</span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-6">
-                            <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </div>
+              {/* Support Options */}
+              <div className="feature-card-handshake p-8 mb-8 relative">
+                <h2 className="heading-handshake text-2xl mb-6 text-center">
+                  Contact Support
+                </h2>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {supportOptions.map((option, index) => {
+                    const IconComponent = option.icon;
+                    return (
+                      <motion.div
+                        key={option.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 * index }}
+                        className="text-center p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary/50 transition-colors"
+                      >
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <IconComponent className="w-6 h-6 text-primary" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                          {option.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          {option.description}
+                        </p>
+                        <Button variant="outline" className="w-full">
+                          {option.action}
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </motion.div>
+                    );
+                  })}
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                  <Button className="btn-handshake">
+                    Contact Support
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
 
-          {/* Support Options */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <h2 className="heading-handshake text-3xl mb-8 text-center">
-              Still Need Help?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {supportOptions.map((option, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="feature-card-handshake p-8 text-center h-full">
-                    <div className="flex justify-center mb-4">
-                      <option.icon size={48} className="text-primary" />
-                    </div>
-                    <h3 className="heading-handshake text-xl mb-2">{option.title}</h3>
-                    <p className="text-gray-600 mb-6">{option.description}</p>
-                    <Button className="btn-handshake w-full">
-                      {option.action}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+              {/* FAQ Section */}
+              <div className="feature-card-handshake p-8">
+                <h2 className="heading-handshake text-2xl mb-6 text-center">
+                  Frequently Asked Questions
+                </h2>
+                {filteredFaqs.length > 0 ? (
+                  <Accordion type="single" collapsible className="w-full">
+                    {filteredFaqs.map((category, categoryIndex) => (
+                      <div key={category.title} className="mb-6">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                          {category.title}
+                        </h3>
+                        {category.faqs.map((faq, faqIndex) => (
+                          <AccordionItem
+                            key={`${categoryIndex}-${faqIndex}`}
+                            value={`${categoryIndex}-${faqIndex}`}
+                            className="border border-gray-200 dark:border-gray-700 rounded-lg mb-2 last:mb-0"
+                          >
+                            <AccordionTrigger className="px-4 py-3 text-left">
+                              {faq.question}
+                            </AccordionTrigger>
+                            <AccordionContent className="px-4 pb-3 text-muted-foreground">
+                              {faq.answer}
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </div>
+                    ))}
+                  </Accordion>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      No questions found matching your search. Try different
+                      keywords or contact our support team.
+                    </p>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </section>
       </div>
     </>
   );

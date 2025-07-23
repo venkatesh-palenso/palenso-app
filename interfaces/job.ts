@@ -33,7 +33,15 @@ export interface JobApplication {
   applicant_id: string;
   cover_letter: string;
   resume_id?: string;
-  status: "pending" | "reviewed" | "shortlisted" | "interviewed" | "offered" | "hired" | "rejected" | "withdrawn";
+  status:
+    | "pending"
+    | "reviewed"
+    | "shortlisted"
+    | "interviewed"
+    | "offered"
+    | "hired"
+    | "rejected"
+    | "withdrawn";
   expected_salary?: number;
   available_from?: string;
   notes?: string;
@@ -171,7 +179,12 @@ export interface CreateSaveJobForm {
 export interface JobSearchParams {
   search?: string;
   location?: string;
-  job_type?: "full_time" | "part_time" | "contract" | "internship" | "freelance";
+  job_type?:
+    | "full_time"
+    | "part_time"
+    | "contract"
+    | "internship"
+    | "freelance";
   experience_level?: "entry" | "mid" | "senior" | "executive";
   salary_min?: number;
   salary_max?: number;

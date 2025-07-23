@@ -35,7 +35,14 @@ export interface Institution {
 export interface Degree {
   id: string;
   name: string;
-  level: "High School" | "Associate" | "Bachelor" | "Master" | "Doctorate" | "Certificate" | "Diploma";
+  level:
+    | "High School"
+    | "Associate"
+    | "Bachelor"
+    | "Master"
+    | "Doctorate"
+    | "Certificate"
+    | "Diploma";
   field: string;
   duration?: number; // in years
   description?: string;
@@ -55,8 +62,7 @@ export interface CreateEducationForm {
   description?: string;
 }
 
-export interface UpdateEducationForm extends Partial<CreateEducationForm> {
-}
+export interface UpdateEducationForm extends Partial<CreateEducationForm> {}
 
 // Education search and filter interfaces
 export interface EducationSearchParams {
@@ -78,4 +84,4 @@ export interface EducationVerification {
   notes?: string;
   created_at: string;
   updated_at: string;
-} 
+}

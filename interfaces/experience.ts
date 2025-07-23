@@ -26,8 +26,7 @@ export interface CreateExperienceForm {
   description?: string;
 }
 
-export interface UpdateExperienceForm extends Partial<CreateExperienceForm> {
-}
+export interface UpdateExperienceForm extends Partial<CreateExperienceForm> {}
 
 // Experience search and filter interfaces
 export interface ExperienceSearchParams {
@@ -64,4 +63,4 @@ export interface ExperienceReference {
   can_contact: boolean;
   created_at: string;
   updated_at: string;
-} 
+}

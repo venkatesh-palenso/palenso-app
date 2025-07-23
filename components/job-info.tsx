@@ -46,7 +46,9 @@ const JobInfo = ({ job }: JobInfoProps) => {
 
           <div className="flex items-center mb-3">
             <Building size={16} className="text-gray-500 mr-2" />
-            <span className="text-gray-600 text-sm">Company ID: {job.company_id}</span>
+            <span className="text-gray-600 text-sm">
+              Company ID: {job.company_id}
+            </span>
           </div>
 
           <div className="flex items-center mb-3">
@@ -57,17 +59,18 @@ const JobInfo = ({ job }: JobInfoProps) => {
           <div className="flex items-center mb-3">
             <DollarSign size={16} className="text-gray-500 mr-2" />
             <span className="text-gray-600 text-sm">
-              {job.salary_min && job.salary_max 
+              {job.salary_min && job.salary_max
                 ? `$${job.salary_min} - $${job.salary_max} ${job.salary_currency}`
-                : 'Salary not specified'
-              }
+                : "Salary not specified"}
             </span>
           </div>
 
           <div className="flex items-center mb-3">
             <Users size={16} className="text-gray-500 mr-2" />
             <span className="text-gray-600 text-sm">
-              {job.max_applications ? `${job.max_applications} max applications` : 'Unlimited applications'}
+              {job.max_applications
+                ? `${job.max_applications} max applications`
+                : "Unlimited applications"}
             </span>
           </div>
 
@@ -75,22 +78,23 @@ const JobInfo = ({ job }: JobInfoProps) => {
 
           {job.required_skills && job.required_skills.length > 0 && (
             <div className="mb-6">
-              <p className="text-sm font-semibold mb-2">
-                Required Skills:
-              </p>
+              <p className="text-sm font-semibold mb-2">Required Skills:</p>
               <div className="flex flex-wrap gap-2">
-                {job.required_skills.split(',').slice(0, 3).map((skill: string, skillIndex: number) => (
-                  <Badge
-                    key={skillIndex}
-                    variant="secondary"
-                    className="text-xs"
-                  >
-                    {skill.trim()}
-                  </Badge>
-                ))}
-                {job.required_skills.split(',').length > 3 && (
+                {job.required_skills
+                  .split(",")
+                  .slice(0, 3)
+                  .map((skill: string, skillIndex: number) => (
+                    <Badge
+                      key={skillIndex}
+                      variant="secondary"
+                      className="text-xs"
+                    >
+                      {skill.trim()}
+                    </Badge>
+                  ))}
+                {job.required_skills.split(",").length > 3 && (
                   <Badge variant="secondary" className="text-xs">
-                    +{job.required_skills.split(',').length - 3} more
+                    +{job.required_skills.split(",").length - 3} more
                   </Badge>
                 )}
               </div>
@@ -99,10 +103,9 @@ const JobInfo = ({ job }: JobInfoProps) => {
 
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600 text-sm">
-              {job.application_deadline 
+              {job.application_deadline
                 ? `Deadline: ${new Date(job.application_deadline).toLocaleDateString()}`
-                : 'No deadline'
-              }
+                : "No deadline"}
             </span>
           </div>
 

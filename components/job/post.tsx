@@ -36,9 +36,6 @@ import { Progress } from "@/components/ui/progress";
 import { jobService } from "@/services";
 import { format } from "date-fns";
 
-
-
-
 // Validation Schema
 const jobFormSchema = z.object({
   title: z
@@ -59,13 +56,16 @@ const jobFormSchema = z.object({
     .max(2000, "Responsibilities must be less than 2000 characters"),
   job_type: z.enum([
     "full_time",
-    "part_time", 
+    "part_time",
     "contract",
     "internship",
     "freelance",
   ]),
   experience_level: z.enum(["entry", "mid", "senior", "executive"]),
-  location: z.string().min(1, "Location is required").max(200, "Location must be less than 200 characters"),
+  location: z
+    .string()
+    .min(1, "Location is required")
+    .max(200, "Location must be less than 200 characters"),
   is_remote: z.boolean(),
   salary_min: z.string().optional(),
   salary_max: z.string().optional(),
@@ -174,7 +174,12 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
 
   // Helper function to format skills for display
   const formatSkills = (skills: string) => {
-    return skills ? skills.split(',').map(skill => skill.trim()).filter(Boolean) : [];
+    return skills
+      ? skills
+          .split(",")
+          .map((skill) => skill.trim())
+          .filter(Boolean)
+      : [];
   };
 
   const nextStep = () => {
@@ -190,15 +195,19 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
   };
 
   const onSubmit = async (data: JobFormData) => {
-    console.log(data)
+    console.log(data);
     setIsSubmitting(true);
     try {
       const jobData = {
         ...data,
-        application_deadline: data.application_deadline ? format(data.application_deadline as string, "yyyy-MM-dd") : undefined,
+        application_deadline: data.application_deadline
+          ? format(data.application_deadline as string, "yyyy-MM-dd")
+          : undefined,
         salary_min: data.salary_min ? parseFloat(data.salary_min) : undefined,
         salary_max: data.salary_max ? parseFloat(data.salary_max) : undefined,
-        max_applications: data.max_applications ? parseInt(data.max_applications) : undefined,
+        max_applications: data.max_applications
+          ? parseInt(data.max_applications)
+          : undefined,
       };
       await jobService.createJob(jobData);
       setShowSuccess(true);
@@ -210,8 +219,6 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
       setIsSubmitting(false);
     }
   };
-
-
 
   const renderJobDescriptionStep = () => (
     <motion.div
@@ -227,11 +234,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <Briefcase className="h-5 w-5 text-blue-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
-            <p className="text-sm text-gray-600">Essential details about the position</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Basic Information
+            </h3>
+            <p className="text-sm text-gray-600">
+              Essential details about the position
+            </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Job Title"
@@ -295,7 +306,10 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
               {...register("is_remote")}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
-            <label htmlFor="is_remote" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="is_remote"
+              className="text-sm font-medium text-gray-900"
+            >
               Remote Position
             </label>
           </div>
@@ -309,12 +323,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <DollarSign className="h-5 w-5 text-green-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Salary Information</h3>
-            <p className="text-sm text-gray-600">Compensation details for the position</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Salary Information
+            </h3>
+            <p className="text-sm text-gray-600">
+              Compensation details for the position
+            </p>
           </div>
         </div>
-        
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             label="Minimum Salary"
@@ -354,11 +371,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <FileText className="h-5 w-5 text-purple-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Job Description</h3>
-            <p className="text-sm text-gray-600">Detailed information about the role</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Job Description
+            </h3>
+            <p className="text-sm text-gray-600">
+              Detailed information about the role
+            </p>
           </div>
         </div>
-        
+
         <FormField
           label="Job Description"
           name="description"
@@ -378,11 +399,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <Target className="h-5 w-5 text-orange-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Requirements & Responsibilities</h3>
-            <p className="text-sm text-gray-600">What we&apos;re looking for and what you&apos;ll do</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Requirements & Responsibilities
+            </h3>
+            <p className="text-sm text-gray-600">
+              What we&apos;re looking for and what you&apos;ll do
+            </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Requirements"
@@ -415,10 +440,12 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Skills</h3>
-            <p className="text-sm text-gray-600">Technical and soft skills needed</p>
+            <p className="text-sm text-gray-600">
+              Technical and soft skills needed
+            </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Required Skills"
@@ -448,11 +475,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <Calendar className="h-5 w-5 text-red-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Application Details</h3>
-            <p className="text-sm text-gray-600">Application deadline and limits</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Application Details
+            </h3>
+            <p className="text-sm text-gray-600">
+              Application deadline and limits
+            </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             label="Application Deadline"
@@ -482,10 +513,12 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Job Status</h3>
-            <p className="text-sm text-gray-600">Control job visibility and features</p>
+            <p className="text-sm text-gray-600">
+              Control job visibility and features
+            </p>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
             <input
@@ -494,11 +527,14 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
               {...register("is_active")}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
-            <label htmlFor="is_active" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="is_active"
+              className="text-sm font-medium text-gray-900"
+            >
               Active Job Posting
             </label>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <input
               type="checkbox"
@@ -506,7 +542,10 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
               {...register("is_featured")}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
-            <label htmlFor="is_featured" className="text-sm font-medium text-gray-900">
+            <label
+              htmlFor="is_featured"
+              className="text-sm font-medium text-gray-900"
+            >
               Featured Job (Premium placement)
             </label>
           </div>
@@ -526,13 +565,18 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
         <CardHeader className="border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl text-gray-900">{formData.title}</CardTitle>
+              <CardTitle className="text-2xl text-gray-900">
+                {formData.title}
+              </CardTitle>
               <CardDescription className="text-lg text-gray-600">
                 {profile?.company?.name || "Your Company"}
               </CardDescription>
             </div>
-            <Badge variant="secondary" className="text-sm bg-blue-100 text-blue-800 border-blue-200">
-              {formData.job_type?.replace('_', ' ')}
+            <Badge
+              variant="secondary"
+              className="text-sm bg-blue-100 text-blue-800 border-blue-200"
+            >
+              {formData.job_type?.replace("_", " ")}
             </Badge>
           </div>
         </CardHeader>
@@ -546,33 +590,40 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-gray-500" />
               <span className="text-sm">
-                {formData.salary_min && formData.salary_max 
+                {formData.salary_min && formData.salary_max
                   ? `${formData.salary_min} - ${formData.salary_max} ${formData.salary_currency}`
-                  : "Salary not specified"
-                }
+                  : "Salary not specified"}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-gray-500" />
-              <span className="text-sm">{formData.experience_level?.replace('_', ' ')}</span>
+              <span className="text-sm">
+                {formData.experience_level?.replace("_", " ")}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-gray-500" />
-              <span className="text-sm">{formData.is_remote ? "Remote" : "On-site"}</span>
+              <span className="text-sm">
+                {formData.is_remote ? "Remote" : "On-site"}
+              </span>
             </div>
           </div>
 
           {/* Description */}
           <div>
             <h3 className="font-semibold mb-2">Job Description</h3>
-            <p className="text-gray-700 whitespace-pre-wrap">{formData.description}</p>
+            <p className="text-gray-700 whitespace-pre-wrap">
+              {formData.description}
+            </p>
           </div>
 
           {/* Requirements */}
           {formData.requirements && (
             <div>
               <h3 className="font-semibold mb-2">Requirements</h3>
-              <div className="text-gray-700 whitespace-pre-wrap">{formData.requirements}</div>
+              <div className="text-gray-700 whitespace-pre-wrap">
+                {formData.requirements}
+              </div>
             </div>
           )}
 
@@ -580,7 +631,9 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
           {formData.responsibilities && (
             <div>
               <h3 className="font-semibold mb-2">Responsibilities</h3>
-              <div className="text-gray-700 whitespace-pre-wrap">{formData.responsibilities}</div>
+              <div className="text-gray-700 whitespace-pre-wrap">
+                {formData.responsibilities}
+              </div>
             </div>
           )}
 
@@ -611,8 +664,6 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
               </div>
             </div>
           )}
-
-
 
           {/* Application Details */}
           <div className="border-t pt-4">
@@ -650,9 +701,12 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
         <Card className="text-center py-12 border border-gray-200">
           <CardContent>
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2 text-gray-900">Job Posted Successfully!</h2>
+            <h2 className="text-2xl font-bold mb-2 text-gray-900">
+              Job Posted Successfully!
+            </h2>
             <p className="text-gray-600 mb-6">
-              Your job posting has been published and is now live on our platform.
+              Your job posting has been published and is now live on our
+              platform.
             </p>
             <Button onClick={() => setShowSuccess(false)}>
               Post Another Job
@@ -667,12 +721,15 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
               Ready to Publish
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Review the information below and click publish to make your job posting live.
+              Review the information below and click publish to make your job
+              posting live.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pt-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="font-semibold text-blue-900 mb-2">What happens next?</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">
+                What happens next?
+              </h3>
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• Your job will be visible to all job seekers</li>
                 <li>• You&apos;ll receive applications in your dashboard</li>
@@ -782,9 +839,7 @@ const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {
 
       {/* Step Content */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <AnimatePresence mode="wait">
-          {renderStepContent()}
-        </AnimatePresence>
+        <AnimatePresence mode="wait">{renderStepContent()}</AnimatePresence>
       </div>
 
       {/* Navigation Buttons */}

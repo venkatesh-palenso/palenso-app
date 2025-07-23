@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  FileText, 
-  Download, 
-  Upload, 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  FileText,
+  Download,
+  Upload,
   Save,
   X,
   CheckCircle,
@@ -94,7 +94,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
         const response = await mediaService.uploadFile(formData);
         resumeData["file_url"] = response.display_url;
       }
-      
+
       if (editingResume?.id) {
         await profileService.updateResume(editingResume.id, resumeData);
       } else {
@@ -146,11 +146,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                         <Badge className="badge-handshake">Primary</Badge>
                       )}
                     </div>
-                    
+
                     {resume.description && (
                       <p className="text-gray-600 mb-3">{resume.description}</p>
                     )}
-                    
+
                     {resume.file_url && (
                       <div className="flex items-center gap-2 text-sm text-gray-500">
                         <FileText className="w-4 h-4" />
@@ -158,14 +158,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2 ml-4">
                     {resume.file_url && (
                       <Button
                         variant="outline"
                         size="sm"
                         className="btn-secondary btn-sm"
-                        onClick={() => window.open(resume.file_url, '_blank')}
+                        onClick={() => window.open(resume.file_url, "_blank")}
                       >
                         <Download className="w-4 h-4" />
                       </Button>
@@ -191,7 +191,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-          
+
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -212,7 +212,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                 {editingResume ? "Edit Resume" : "Add Resume"}
               </DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"
@@ -234,7 +234,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
               />
 
               <div className="space-y-2">
-                <Label htmlFor="file" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="file"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Upload Resume File
                 </Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -257,7 +260,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                       <div className="mt-3 p-2 bg-green-50 rounded border border-green-200">
                         <div className="flex items-center gap-2 text-sm text-green-700">
                           <CheckCircle className="w-4 h-4" />
-                          {selectedFile.name} ({formatFileSize(selectedFile.size)})
+                          {selectedFile.name} (
+                          {formatFileSize(selectedFile.size)})
                         </div>
                       </div>
                     )}
@@ -272,7 +276,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                   {...register("is_primary")}
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
-                <Label htmlFor="is_primary" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="is_primary"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Set as primary resume
                 </Label>
               </div>

@@ -3,22 +3,12 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  User,
-  MapPin,
-  Globe,
-  Upload,
-  ArrowRight,
-  CheckCircle,
-  Save,
-  Edit3,
-} from "lucide-react";
+import { User, Upload, CheckCircle, Save, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
-import { Card, CardContent } from "@/components/ui/card";
-import { mediaService, userService } from "@/services";
-import { Label } from "@/components/ui/label";
+import { userService } from "@/services";
 import { format } from "date-fns";
+import Image from "next/image";
 
 // Zod schema for user profile validation
 const userProfileSchema = z.object({
@@ -146,7 +136,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(
-    userProfile.profile.profile_picture_url || null
+    userProfile.profile.profile_picture_url || null,
   );
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
 
@@ -196,13 +186,13 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
     try {
       // Update user profile
       await userService.updateProfile(userProfile.id, data);
-      
+
       // Update avatar if changed
       if (avatarFile) {
         // Handle avatar upload logic here
         // await mediaService.uploadAvatar(avatarFile);
       }
-      
+
       setIsEditing(false);
       setAvatarFile(null);
       reset(data);
@@ -234,7 +224,9 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
                 // Cancel editing - reset everything
                 setIsEditing(false);
                 reset();
-                setAvatarPreview(userProfile.profile.profile_picture_url || null);
+                setAvatarPreview(
+                  userProfile.profile.profile_picture_url || null,
+                );
                 setAvatarFile(null);
               } else {
                 // Start editing
@@ -264,11 +256,18 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               {isEditing ? (
                 <label className="cursor-pointer">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
-                    {avatarPreview || userProfile.profile.profile_picture_url ? (
-                      <img
-                        src={avatarPreview || userProfile.profile.profile_picture_url || "/default-avatar.png"}
+                    {avatarPreview ||
+                    userProfile.profile.profile_picture_url ? (
+                      <Image
+                        src={
+                          avatarPreview ||
+                          userProfile.profile.profile_picture_url ||
+                          "/default-avatar.png"
+                        }
                         alt="Profile"
                         className="w-full h-full object-cover"
+                        width={100}
+                        height={100}
                       />
                     ) : (
                       <div className="w-full h-full bg-primary/10 flex items-center justify-center">
@@ -292,10 +291,16 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               ) : (
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
                   {avatarPreview || userProfile.profile.profile_picture_url ? (
-                    <img
-                      src={avatarPreview || userProfile.profile.profile_picture_url || "/default-avatar.png"}
+                    <Image
+                      src={
+                        avatarPreview ||
+                        userProfile.profile.profile_picture_url ||
+                        "/default-avatar.png"
+                      }
                       alt="Profile"
                       className="w-full h-full object-cover"
+                      width={100}
+                      height={100}
                     />
                   ) : (
                     <div className="w-full h-full bg-primary/10 flex items-center justify-center">
@@ -350,7 +355,11 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               error={errors.email}
               required
               disabled={!isEditing}
-              rightIcon={userProfile.is_email_verified ? <CheckCircle className="text-green-500 w-5 h-5" /> : undefined}
+              rightIcon={
+                userProfile.is_email_verified ? (
+                  <CheckCircle className="text-green-500 w-5 h-5" />
+                ) : undefined
+              }
             />
 
             <FormField
@@ -362,7 +371,11 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               error={errors.mobile_number}
               required
               disabled={!isEditing}
-              rightIcon={userProfile.is_mobile_verified ? <CheckCircle className="text-green-500 w-5 h-5" /> : undefined}
+              rightIcon={
+                userProfile.is_mobile_verified ? (
+                  <CheckCircle className="text-green-500 w-5 h-5" />
+                ) : undefined
+              }
             />
           </div>
 
@@ -494,7 +507,9 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
                 onClick={() => {
                   setIsEditing(false);
                   reset();
-                  setAvatarPreview(userProfile.profile.profile_picture_url || null);
+                  setAvatarPreview(
+                    userProfile.profile.profile_picture_url || null,
+                  );
                   setAvatarFile(null);
                 }}
                 className="btn-secondary"

@@ -1,31 +1,31 @@
 // User interfaces
-export * from './user';
+export * from "./user";
 
 // Profile interfaces
-export * from './education';
-export * from './experience';
-export * from './skill';
-export * from './interest';
-export * from './project';
-export * from './resume';
+export * from "./education";
+export * from "./experience";
+export * from "./skill";
+export * from "./interest";
+export * from "./project";
+export * from "./resume";
 
 // Job interfaces
-export * from './job';
+export * from "./job";
 
 // Event interfaces
-export * from './event';
+export * from "./event";
 
 // Company interfaces
-export * from './company';
+export * from "./company";
 
 // Analytics interfaces
-export * from './analytics';
+export * from "./analytics";
 
 // Marketing interfaces
-export * from './marketing';
+export * from "./marketing";
 
 // Navigation interfaces
-export * from './nav-item';
+export * from "./nav-item";
 
 // Re-export specific interfaces for convenience
 export type {
@@ -40,16 +40,16 @@ export type {
   ResetPasswordForm,
   ChangePasswordForm,
   UserSearchParams,
-  UserAnalytics
-} from './user';
+  UserAnalytics,
+} from "./user";
 
 export type {
   Education,
   CreateEducationForm,
   UpdateEducationForm,
   EducationSearchParams,
-  EducationVerification
-} from './education';
+  EducationVerification,
+} from "./education";
 
 export type {
   WorkExperience,
@@ -57,8 +57,8 @@ export type {
   UpdateExperienceForm,
   ExperienceSearchParams,
   ExperienceVerification,
-  ExperienceReference
-} from './experience';
+  ExperienceReference,
+} from "./experience";
 
 export type {
   Skill,
@@ -66,24 +66,24 @@ export type {
   UpdateSkillForm,
   SkillSearchParams,
   SkillCategory,
-  SkillAssessment
-} from './skill';
+  SkillAssessment,
+} from "./skill";
 
 export type {
   Interest,
   CreateInterestForm,
   UpdateInterestForm,
   InterestSearchParams,
-  InterestCategory
-} from './interest';
+  InterestCategory,
+} from "./interest";
 
 export type {
   Project,
   CreateProjectForm,
   UpdateProjectForm,
   ProjectSearchParams,
-  ProjectCollaboration
-} from './project';
+  ProjectCollaboration,
+} from "./project";
 
 export type {
   Resume,
@@ -91,8 +91,8 @@ export type {
   UpdateResumeForm,
   ResumeSearchParams,
   ResumeSharing,
-  ResumeAnalytics
-} from './resume';
+  ResumeAnalytics,
+} from "./resume";
 
 export type {
   Job,
@@ -104,8 +104,8 @@ export type {
   CreateSaveJobForm,
   JobSearchParams,
   JobRecommendation,
-  JobAnalytics
-} from './job';
+  JobAnalytics,
+} from "./job";
 
 export type {
   Event,
@@ -115,13 +115,13 @@ export type {
   CreateEventRegistrationForm,
   EventSearchParams,
   EventRecommendation,
-  EventAnalytics
-} from './event';
+  EventAnalytics,
+} from "./event";
 
 export type {
   Company,
   CreateCompanyForm,
   UpdateCompanyForm,
   CompanySearchParams,
-  CompanyAnalytics
-} from './company'; 
+  CompanyAnalytics,
+} from "./company";

@@ -62,7 +62,9 @@ const EventInfo = ({ event }: EventInfoProps) => {
           <div className="flex items-center mb-3">
             <Users size={16} className="text-gray-500 mr-2" />
             <span className="text-gray-600 text-sm">
-              {event.max_participants ? `${event.max_participants} max participants` : 'Unlimited participants'}
+              {event.max_participants
+                ? `${event.max_participants} max participants`
+                : "Unlimited participants"}
             </span>
           </div>
 
@@ -70,22 +72,23 @@ const EventInfo = ({ event }: EventInfoProps) => {
 
           {event.tags && event.tags.length > 0 && (
             <div className="mb-6">
-              <p className="text-sm font-semibold mb-2">
-                Tags:
-              </p>
+              <p className="text-sm font-semibold mb-2">Tags:</p>
               <div className="flex flex-wrap gap-2">
-                {event.tags.split(',').slice(0, 3).map((tag: string, tagIndex: number) => (
-                  <Badge
-                    key={tagIndex}
-                    variant="secondary"
-                    className="text-xs"
-                  >
-                    {tag.trim()}
-                  </Badge>
-                ))}
-                {event.tags.split(',').length > 3 && (
+                {event.tags
+                  .split(",")
+                  .slice(0, 3)
+                  .map((tag: string, tagIndex: number) => (
+                    <Badge
+                      key={tagIndex}
+                      variant="secondary"
+                      className="text-xs"
+                    >
+                      {tag.trim()}
+                    </Badge>
+                  ))}
+                {event.tags.split(",").length > 3 && (
                   <Badge variant="secondary" className="text-xs">
-                    +{event.tags.split(',').length - 3} more
+                    +{event.tags.split(",").length - 3} more
                   </Badge>
                 )}
               </div>
@@ -94,7 +97,10 @@ const EventInfo = ({ event }: EventInfoProps) => {
 
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600 text-sm">
-              Price: {event.registration_fee === 0 ? 'Free' : `$${event.registration_fee}`}
+              Price:{" "}
+              {event.registration_fee === 0
+                ? "Free"
+                : `$${event.registration_fee}`}
             </span>
           </div>
 

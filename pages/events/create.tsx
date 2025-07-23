@@ -4,34 +4,14 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { 
-  Calendar, 
-  MapPin, 
-  Users, 
-  DollarSign, 
-  ArrowLeft,
-  Upload,
-  Plus,
-  ExternalLink,
-  Mail,
-  Phone,
-  Linkedin,
-  Twitter,
-  Facebook,
-  CheckCircle,
-  FileText,
-  Save,
-  X,
-} from "lucide-react";
+import { Calendar, ArrowLeft, Upload, Save, X, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Layouts } from "@/layouts";
 import { eventService, mediaService } from "@/services";
+import { useUser } from "@/context";
 
 interface EventFormData {
   title: string;
@@ -50,6 +30,7 @@ interface EventFormData {
 }
 
 const CreateEvent = () => {
+  const { user } = useUser();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -66,7 +47,7 @@ const CreateEvent = () => {
   });
 
   const eventTypeOptions = [
-    { value: "career-fair", label: "Career Fair" },
+    { value: "career_fair", label: "Career Fair" },
     { value: "workshop", label: "Workshop" },
     { value: "networking", label: "Networking Event" },
     { value: "conference", label: "Conference" },
@@ -91,32 +72,43 @@ const CreateEvent = () => {
   const onSubmit = async (data: EventFormData) => {
     try {
       let imageUrl = "";
-      
+
       if (selectedImage) {
         const formData = new FormData();
         formData.append("file", selectedImage);
-        formData.append("asset_type", "event");
+        formData.append("asset_type", "event_banner");
         const response = await mediaService.uploadFile(formData);
         imageUrl = response.display_url;
       }
 
-              const eventData = {
-          ...data,
-          event_type: data.event_type as "workshop" | "networking" | "conference" | "seminar" | "hackathon" | "webinar" | "other" | "career_fair",
-          tags: data.tags || "",
-          is_virtual: data.is_online,
+      const eventData = {
+        ...data,
+        event_type: data.event_type as
+          | "workshop"
+          | "networking"
+          | "conference"
+          | "seminar"
+          | "hackathon"
+          | "webinar"
+          | "other"
+          | "career_fair",
+        image_url: imageUrl,
+        is_virtual: data.is_online,
         virtual_meeting_url: data.online_url,
         max_participants: data.max_attendees,
         is_registration_required: true,
         registration_fee: 0,
+        organizer: user?.id,
       };
 
       await eventService.createEvent(eventData);
-      // Redirect to events page or show success message
+      router.push("/events");
     } catch (error) {
       console.error("Error creating event:", error);
     }
   };
+
+  const router = useRouter();
 
   return (
     <>
@@ -124,277 +116,340 @@ const CreateEvent = () => {
         <title>Create Event - Palenso</title>
         <meta
           name="description"
-          content="Create and host your own career events on Palenso"
+          content="Create a new event on Palenso platform"
         />
       </Head>
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
+      <div className="bg-background overflow-hidden">
+        {/* Hero Section */}
+        <section className="hero-handshake relative pt-8 pb-16 px-4 overflow-hidden">
+          {/* Enhanced Background Elements */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Hero Section */}
-            <div className="hero-handshake p-8 rounded-2xl mb-8">
-              <div className="text-center">
-                <h1 className="heading-handshake-large text-4xl mb-4">
-                  Create Your Event
-                </h1>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Host career fairs, workshops, networking events, and more. 
-                  Connect with students and professionals in your industry.
-                </p>
-              </div>
-            </div>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
+          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="absolute top-40 left-0 w-96 h-96 bg-gradient-to-r from-pink-400/30 to-orange-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"
+          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="absolute -bottom-8 right-20 w-96 h-96 bg-gradient-to-r from-green-400/30 to-blue-400/30 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"
+          />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              {/* Basic Information */}
-              <div className="dashboard-card-handshake p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <FileText className="w-5 h-5 text-primary" />
-                  <h2 className="heading-handshake text-xl">Basic Information</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    label="Event Title"
-                    name="title"
-                    type="text"
-                    placeholder="Enter event title"
-                    register={register}
-                    required
-                    error={errors.title}
-                  />
-                  
-                  <FormField
-                    label="Event Type"
-                    name="event_type"
-                    type="select"
-                    placeholder="Select event type"
-                    options={eventTypeOptions}
-                    setValue={setValue}
-                    watch={watch}
-                    required
-                    error={errors.event_type}
-                  />
-                </div>
-                
-                <div className="mt-6">
-                  <FormField
-                    label="Description"
-                    name="description"
-                    type="textarea"
-                    placeholder="Describe your event, what attendees can expect, and any important details..."
-                    register={register}
-                    rows={4}
-                    required
-                    error={errors.description}
-                  />
-                </div>
-              </div>
-
-              {/* Date and Time */}
-              <div className="dashboard-card-handshake p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  <h2 className="heading-handshake text-xl">Date & Time</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    label="Start Date"
-                    name="start_date"
-                    type="date"
-                    setValue={setValue}
-                    watch={watch}
-                    required
-                    error={errors.start_date}
-                  />
-                  
-                  <FormField
-                    label="End Date"
-                    name="end_date"
-                    type="date"
-                    setValue={setValue}
-                    watch={watch}
-                    required
-                    error={errors.end_date}
-                  />
-                  
-                  <FormField
-                    label="Start Time"
-                    name="start_time"
-                    type="text"
-                    placeholder="e.g., 09:00 AM"
-                    register={register}
-                    required
-                    error={errors.start_time}
-                  />
-                  
-                  <FormField
-                    label="End Time"
-                    name="end_time"
-                    type="text"
-                    placeholder="e.g., 05:00 PM"
-                    register={register}
-                    required
-                    error={errors.end_time}
-                  />
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="dashboard-card-handshake p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <h2 className="heading-handshake text-xl">Location</h2>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      id="is_online"
-                      type="checkbox"
-                      {...register("is_online")}
-                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <Label htmlFor="is_online" className="text-sm font-medium text-gray-700">
-                      This is an online event
-                    </Label>
+          <div className="container mx-auto relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <div className="flex items-center justify-center mb-6">
+                <div className="relative mr-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary via-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <Calendar className="w-8 h-8 text-white" />
                   </div>
-                  
-                  {watch("is_online") ? (
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="heading-handshake-large text-4xl mb-4">
+                    Create Event
+                  </h1>
+                  <p className="heading-handshake-subtitle text-xl max-w-2xl mx-auto">
+                    Share your event with the Palenso community
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Form Section */}
+        <section className="py-12 px-4 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20">
+          <div className="container mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-4xl mx-auto"
+            >
+              <div className="feature-card-handshake p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <Link
+                    href="/events"
+                    className="flex items-center text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Events
+                  </Link>
+                </div>
+
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                  {/* Basic Information */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4">
+                      Basic Information
+                    </h2>
+
                     <FormField
-                      label="Online Meeting URL"
-                      name="online_url"
-                      type="url"
-                      placeholder="https://zoom.us/j/..."
-                      register={register}
-                      error={errors.online_url}
-                    />
-                  ) : (
-                    <FormField
-                      label="Event Location"
-                      name="location"
+                      label="Event Title"
+                      name="title"
                       type="text"
-                      placeholder="Enter venue address"
+                      placeholder="Enter event title"
                       register={register}
-                      icon={<MapPin className="w-4 h-4" />}
+                      error={errors.title}
                       required
-                      error={errors.location}
                     />
-                  )}
-                </div>
-              </div>
 
-              {/* Event Details */}
-              <div className="dashboard-card-handshake p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <Users className="w-5 h-5 text-primary" />
-                  <h2 className="heading-handshake text-xl">Event Details</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    label="Maximum Attendees"
-                    name="max_attendees"
-                    type="number"
-                    placeholder="Leave empty for unlimited"
-                    register={register}
-                    min={1}
-                    error={errors.max_attendees}
-                  />
-                  
-                  <FormField
-                    label="Registration Deadline"
-                    name="registration_deadline"
-                    type="date"
-                    setValue={setValue}
-                    watch={watch}
-                    required
-                    error={errors.registration_deadline}
-                  />
-                </div>
-                
-                <div className="mt-6">
-                  <FormField
-                    label="Tags (comma separated)"
-                    name="tags"
-                    type="text"
-                    placeholder="e.g., technology, networking, career development"
-                    register={register}
-                    error={errors.tags}
-                  />
-                </div>
-              </div>
-
-              {/* Event Image */}
-              <div className="dashboard-card-handshake p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <Upload className="w-5 h-5 text-primary" />
-                  <h2 className="heading-handshake text-xl">Event Image</h2>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <input
-                      id="event-image"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
+                    <FormField
+                      label="Description"
+                      name="description"
+                      type="textarea"
+                      placeholder="Describe your event"
+                      register={register}
+                      error={errors.description}
+                      rows={4}
+                      required
                     />
-                    <label htmlFor="event-image" className="cursor-pointer">
-                      <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                      <p className="text-sm text-gray-600 mb-1">
-                        Click to upload or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </label>
+
+                    <FormField
+                      label="Event Type"
+                      name="event_type"
+                      type="select"
+                      placeholder="Select event type"
+                      options={eventTypeOptions}
+                      setValue={setValue}
+                      watch={watch}
+                      required
+                    />
                   </div>
-                  
-                  {imagePreview && (
-                    <div className="mt-4">
-                      <img
-                        src={imagePreview}
-                        alt="Event preview"
-                        className="w-full max-w-md h-48 object-cover rounded-lg"
+
+                  {/* Date and Time */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4">
+                      Date & Time
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Start Date"
+                        name="start_date"
+                        type="date"
+                        setValue={setValue}
+                        watch={watch}
+                        required
+                      />
+
+                      <FormField
+                        label="End Date"
+                        name="end_date"
+                        type="date"
+                        setValue={setValue}
+                        watch={watch}
+                        required
                       />
                     </div>
-                  )}
-                </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="btn-secondary"
-                  onClick={() => window.history.back()}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="btn-handshake"
-                  disabled={isSubmitting}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {isSubmitting ? "Creating..." : "Create Event"}
-                </Button>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Start Time"
+                        name="start_time"
+                        type="text"
+                        placeholder="09:00 AM"
+                        register={register}
+                        error={errors.start_time}
+                        required
+                      />
+
+                      <FormField
+                        label="End Time"
+                        name="end_time"
+                        type="text"
+                        placeholder="05:00 PM"
+                        register={register}
+                        error={errors.end_time}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4">
+                      Location
+                    </h2>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-4">
+                        <input
+                          type="checkbox"
+                          id="is_online"
+                          {...register("is_online")}
+                          className="rounded border-gray-300"
+                        />
+                        <Label htmlFor="is_online">
+                          This is an online event
+                        </Label>
+                      </div>
+
+                      {watch("is_online") ? (
+                        <FormField
+                          label="Online URL"
+                          name="online_url"
+                          type="url"
+                          placeholder="https://meet.google.com/..."
+                          register={register}
+                          error={errors.online_url}
+                        />
+                      ) : (
+                        <FormField
+                          label="Location"
+                          name="location"
+                          type="text"
+                          placeholder="Enter event location"
+                          register={register}
+                          error={errors.location}
+                          required
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Additional Details */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4">
+                      Additional Details
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Max Attendees"
+                        name="max_attendees"
+                        type="number"
+                        placeholder="100"
+                        register={register}
+                        error={errors.max_attendees}
+                      />
+
+                      <FormField
+                        label="Registration Deadline"
+                        name="registration_deadline"
+                        type="date"
+                        setValue={setValue}
+                        watch={watch}
+                        required
+                      />
+                    </div>
+
+                    <FormField
+                      label="Tags"
+                      name="tags"
+                      type="text"
+                      placeholder="career, networking, technology"
+                      register={register}
+                      error={errors.tags}
+                    />
+                  </div>
+
+                  {/* Event Image */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4">
+                      Event Image
+                    </h2>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-center w-full">
+                        <label
+                          htmlFor="event-image"
+                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold">
+                                Click to upload
+                              </span>{" "}
+                              or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              PNG, JPG, GIF up to 10MB
+                            </p>
+                          </div>
+                          <input
+                            id="event-image"
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                          />
+                        </label>
+                      </div>
+
+                      {imagePreview && (
+                        <div className="relative">
+                          <Image
+                            src={imagePreview}
+                            alt="Event preview"
+                            width={300}
+                            height={200}
+                            className="rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedImage(null);
+                              setImagePreview(null);
+                            }}
+                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="flex justify-end space-x-4 pt-6">
+                    <Link href="/events">
+                      <Button variant="outline" type="button">
+                        Cancel
+                      </Button>
+                    </Link>
+                    <Button
+                      type="submit"
+                      className="btn-handshake"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Creating...
+                        </div>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Create Event
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </section>
       </div>
     </>
   );
 };
 
-CreateEvent.getLayout = Layouts.Public;
-
-export default CreateEvent; 
+CreateEvent.getLayout = Layouts.Employer;
+export default CreateEvent;

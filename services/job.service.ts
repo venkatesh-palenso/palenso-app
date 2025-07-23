@@ -31,14 +31,19 @@ class JobService extends APIService {
     if (params.search) queryParams.append("search", params.search);
     if (params.location) queryParams.append("location", params.location);
     if (params.job_type) queryParams.append("job_type", params.job_type);
-    if (params.experience_level) queryParams.append("experience_level", params.experience_level);
-    if (params.salary_min) queryParams.append("salary_min", params.salary_min.toString());
-    if (params.salary_max) queryParams.append("salary_max", params.salary_max.toString());
+    if (params.experience_level)
+      queryParams.append("experience_level", params.experience_level);
+    if (params.salary_min)
+      queryParams.append("salary_min", params.salary_min.toString());
+    if (params.salary_max)
+      queryParams.append("salary_max", params.salary_max.toString());
     if (params.skills) queryParams.append("skills", params.skills);
     if (params.company_id) queryParams.append("company_id", params.company_id);
     if (params.category) queryParams.append("category", params.category);
-    if (params.is_active !== undefined) queryParams.append("is_active", params.is_active.toString());
-    if (params.is_featured !== undefined) queryParams.append("is_featured", params.is_featured.toString());
+    if (params.is_active !== undefined)
+      queryParams.append("is_active", params.is_active.toString());
+    if (params.is_featured !== undefined)
+      queryParams.append("is_featured", params.is_featured.toString());
 
     const url = queryParams.toString()
       ? `${JOB_ENDPOINTS.LIST_CREATE_JOB}?${queryParams.toString()}`

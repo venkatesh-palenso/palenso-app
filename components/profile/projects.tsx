@@ -137,26 +137,36 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                         <Badge className="badge-handshake">Active</Badge>
                       )}
                     </div>
-                    
+
                     <p className="text-gray-600 mb-3">{project.description}</p>
-                    
+
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(project.start_date)} - {project.is_current ? "Present" : project.end_date ? formatDate(project.end_date) : "Present"}
+                        {formatDate(project.start_date)} -{" "}
+                        {project.is_current
+                          ? "Present"
+                          : project.end_date
+                            ? formatDate(project.end_date)
+                            : "Present"}
                       </div>
                     </div>
-                    
-                    {project.technologies && project.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {project.technologies.map((tech, techIndex) => (
-                          <Badge key={techIndex} variant="secondary" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    
+
+                    {project.technologies &&
+                      project.technologies.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {project.technologies.map((tech, techIndex) => (
+                            <Badge
+                              key={techIndex}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
                     {project.url && (
                       <a
                         href={project.url}
@@ -170,7 +180,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                       </a>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2 ml-4">
                     <Button
                       onClick={() => handleEdit(project)}
@@ -193,7 +203,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-          
+
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Code className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -214,7 +224,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                 {editingProject ? "Edit Project" : "Add Project"}
               </DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"
@@ -273,7 +283,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                   {...register("is_current")}
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
-                <Label htmlFor="is_current" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="is_current"
+                  className="text-sm font-medium text-gray-700"
+                >
                   I am currently working on this project
                 </Label>
               </div>

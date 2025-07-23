@@ -1,15 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Star,
-  Save,
-  X,
-} from "lucide-react";
+import { Plus, Edit, Trash2, Star, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
@@ -154,22 +146,27 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
                       <h4 className="font-semibold text-lg text-gray-900">
                         {skill.name}
                       </h4>
-                      <Badge className={`${getProficiencyColor(skill.proficiency_level)}`}>
-                        {skill.proficiency_level.charAt(0).toUpperCase() + skill.proficiency_level.slice(1)}
+                      <Badge
+                        className={`${getProficiencyColor(skill.proficiency_level)}`}
+                      >
+                        {skill.proficiency_level.charAt(0).toUpperCase() +
+                          skill.proficiency_level.slice(1)}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex items-center gap-2 mb-2">
-                      {renderStars(getProficiencyStars(skill.proficiency_level))}
+                      {renderStars(
+                        getProficiencyStars(skill.proficiency_level),
+                      )}
                     </div>
-                    
+
                     {skill.category && (
                       <p className="text-sm text-gray-600">
                         Category: {skill.category}
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2 ml-4">
                     <Button
                       onClick={() => handleEdit(skill)}
@@ -192,7 +189,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-          
+
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -213,7 +210,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
                 {editingSkill ? "Edit Skill" : "Add Skill"}
               </DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"

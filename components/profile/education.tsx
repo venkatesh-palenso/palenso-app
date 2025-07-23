@@ -5,7 +5,6 @@ import {
   Edit,
   Trash2,
   Calendar,
-  MapPin,
   GraduationCap,
   Save,
   X,
@@ -18,7 +17,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
@@ -84,10 +82,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
         : undefined;
 
       if (editingEducation && editingEducation.id) {
-        await profileService.updateEducation(
-          editingEducation.id,
-          formData,
-        );
+        await profileService.updateEducation(editingEducation.id, formData);
       } else {
         await profileService.createEducation(formData);
       }
@@ -116,8 +111,8 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
           </h3>
           <Button onClick={handleAddNew} className="btn-handshake btn-sm">
             <Plus className="w-4 h-4 mr-2" />
-                    Add Education
-                  </Button>
+            Add Education
+          </Button>
         </div>
 
         {/* Education List */}
@@ -143,26 +138,35 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
                     <p className="text-primary font-medium mb-1">
                       {education.institution}
                     </p>
-                    <p className="text-gray-600 mb-2">{education.field_of_study}</p>
-                    
+                    <p className="text-gray-600 mb-2">
+                      {education.field_of_study}
+                    </p>
+
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(education.start_date)} - {education.is_current ? "Present" : education.end_date ? formatDate(education.end_date) : "Present"}
+                        {formatDate(education.start_date)} -{" "}
+                        {education.is_current
+                          ? "Present"
+                          : education.end_date
+                            ? formatDate(education.end_date)
+                            : "Present"}
                       </div>
                     </div>
-                    
+
                     {education.grade && (
                       <p className="text-sm text-gray-600 mb-2">
                         Grade: {education.grade}
                       </p>
                     )}
-                    
+
                     {education.description && (
-                      <p className="text-sm text-gray-600">{education.description}</p>
+                      <p className="text-sm text-gray-600">
+                        {education.description}
+                      </p>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2 ml-4">
                     <Button
                       onClick={() => handleEdit(education)}
@@ -185,7 +189,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-          
+
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <GraduationCap className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -201,12 +205,12 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
         {/* Add/Edit Dialog */}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent className="max-w-2xl">
-                  <DialogHeader>
+            <DialogHeader>
               <DialogTitle className="heading-handshake text-xl">
-                      {editingEducation ? "Edit Education" : "Add Education"}
-                    </DialogTitle>
-                  </DialogHeader>
-            
+                {editingEducation ? "Edit Education" : "Add Education"}
+              </DialogTitle>
+            </DialogHeader>
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -262,16 +266,19 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
               </div>
 
               <div className="flex items-center space-x-2">
-                        <input
+                <input
                   id="is_current"
-                          type="checkbox"
-                          {...register("is_current")}
+                  type="checkbox"
+                  {...register("is_current")}
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
-                <Label htmlFor="is_current" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="is_current"
+                  className="text-sm font-medium text-gray-700"
+                >
                   I am currently studying here
                 </Label>
-                      </div>
+              </div>
 
               <FormField
                 type="text"
@@ -291,23 +298,23 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
               />
 
               <div className="action-buttons-handshake">
-                      <Button
-                        type="button"
-                        onClick={() => setIsOpen(false)}
+                <Button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
                   className="btn-secondary"
-                      >
+                >
                   <X className="w-4 h-4 mr-2" />
-                        Cancel
-                      </Button>
+                  Cancel
+                </Button>
                 <Button type="submit" className="btn-handshake">
                   <Save className="w-4 h-4 mr-2" />
                   {editingEducation ? "Update Education" : "Add Education"}
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            </div>
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
     </motion.div>
   );
 };

@@ -23,34 +23,36 @@ const MobileVerificationForm = ({
   onSuccess,
   userData,
 }: MobileVerificationFormProps) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneOtp, setPhoneOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [phoneAvailability, setPhoneAvailability] = useState<MediumAvailabilityResponse>({
-    available: false,
-    message: "",
-  });
+  const [phoneAvailability, setPhoneAvailability] =
+    useState<MediumAvailabilityResponse>({
+      available: false,
+      message: "",
+    });
 
   const phoneSchema = z.object({
     phoneNumber: z.string().min(1, "Phone number is required"),
   });
 
   const {
-    register,
-    handleSubmit,
     setValue,
     watch,
     formState: { errors },
+    getValues,
   } = useForm({
     resolver: zodResolver(phoneSchema),
     defaultValues: {
       phoneNumber: "",
     },
   });
+
+  // Watch the phone number from the form
+  const phoneNumber = watch("phoneNumber");
 
   useEffect(() => {
     if (countdown > 0) {
@@ -59,12 +61,6 @@ const MobileVerificationForm = ({
     }
   }, [countdown]);
 
-  const handlePhoneChange = (value: string) => {
-    setPhoneNumber(value || "");
-    setValue("phoneNumber", value || "");
-    setError(""); // Clear error when user types
-  };
-
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setPhoneOtp(value);
@@ -72,11 +68,12 @@ const MobileVerificationForm = ({
   };
 
   const validatePhoneNumber = () => {
-    if (!phoneNumber.trim()) {
+    const currentPhoneNumber = getValues("phoneNumber");
+    if (!currentPhoneNumber || !currentPhoneNumber.trim()) {
       setError("Please enter your phone number");
       return false;
     }
-    if (phoneNumber.length < 10) {
+    if (currentPhoneNumber.length < 10) {
       setError("Please enter a valid phone number");
       return false;
     }
@@ -96,14 +93,25 @@ const MobileVerificationForm = ({
   };
 
   const handlePhoneBlur = async () => {
-    const response = await authService.mobileAvailabilty({
-      mobile_number: phoneNumber,
-    });
-    setPhoneAvailability((prev) => ({
-      ...prev,
-      available: response.available,
-      message: response.message,
-    }));
+    const currentPhoneNumber = getValues("phoneNumber");
+
+    // Only check availability if phone number is not empty
+    if (!currentPhoneNumber || currentPhoneNumber.trim() === "") {
+      return;
+    }
+
+    try {
+      const response = await authService.mobileAvailabilty({
+        mobile_number: currentPhoneNumber,
+      });
+      setPhoneAvailability((prev) => ({
+        ...prev,
+        available: response.available,
+        message: response.message,
+      }));
+    } catch (error) {
+      console.log("error for mobile availability check", error);
+    }
   };
 
   const handleSendOtp = async () => {
@@ -111,6 +119,7 @@ const MobileVerificationForm = ({
       return;
     }
 
+    const currentPhoneNumber = getValues("phoneNumber");
     setLoading(true);
     setError("");
 
@@ -118,7 +127,7 @@ const MobileVerificationForm = ({
       // Simulate sending OTP
       await authService.requestMobileCode({
         user_id: userData.id as string,
-        mobile_number: phoneNumber,
+        mobile_number: currentPhoneNumber,
       });
 
       setOtpSent(true);
@@ -136,6 +145,7 @@ const MobileVerificationForm = ({
       return;
     }
 
+    const currentPhoneNumber = getValues("phoneNumber");
     setLoading(true);
     setError("");
 
@@ -143,7 +153,7 @@ const MobileVerificationForm = ({
       // Simulate OTP verification
       await authService.verifyMobileCode({
         medium: "mobile",
-        mobile_number: phoneNumber,
+        mobile_number: currentPhoneNumber,
         code: phoneOtp,
       });
 
@@ -157,6 +167,7 @@ const MobileVerificationForm = ({
   };
 
   const handleResendPhoneOTP = async () => {
+    const currentPhoneNumber = getValues("phoneNumber");
     setLoading(true);
     setError("");
 
@@ -164,7 +175,7 @@ const MobileVerificationForm = ({
       // Simulate resending OTP
       await authService.requestMobileCode({
         user_id: userData.id as string,
-        mobile_number: phoneNumber,
+        mobile_number: currentPhoneNumber,
       });
 
       setCountdown(60);
@@ -209,18 +220,18 @@ const MobileVerificationForm = ({
           </p>
         </div>
 
-                <div className="space-y-4">
+        <div className="space-y-4">
           <FormField
-              type="phone"
-              label="Phone Number"
-              name="phoneNumber"
-              placeholder="Enter your phone number"
-              setValue={setValue}
-              watch={watch}
-              error={errors.phoneNumber}
-              onBlur={handlePhoneBlur}
-              className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
-            />
+            type="phone"
+            label="Phone Number"
+            name="phoneNumber"
+            placeholder="Enter your phone number"
+            setValue={setValue}
+            watch={watch}
+            error={errors.phoneNumber}
+            onBlur={handlePhoneBlur}
+            className="border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
+          />
           {error && <p className="text-xs text-red-500">{error}</p>}
           <p className="text-xs text-gray-500 dark:text-gray-400">
             We&apos;ll send a verification code to your phone number
@@ -230,7 +241,7 @@ const MobileVerificationForm = ({
               {phoneAvailability.message}
             </p>
           )}
-          {!phoneAvailability.available && (
+          {!phoneAvailability.available && phoneAvailability.message && (
             <p className="text-xs text-red-500">{phoneAvailability.message}</p>
           )}
         </div>

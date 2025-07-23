@@ -30,7 +30,17 @@ export interface ResumeTemplate {
 export interface ResumeSection {
   id: string;
   resume_id: string;
-  type: "personal_info" | "summary" | "experience" | "education" | "skills" | "projects" | "languages" | "certifications" | "volunteer" | "awards";
+  type:
+    | "personal_info"
+    | "summary"
+    | "experience"
+    | "education"
+    | "skills"
+    | "projects"
+    | "languages"
+    | "certifications"
+    | "volunteer"
+    | "awards";
   title: string;
   content: Record<string, unknown>; // JSON content for the section
   order: number;
@@ -82,4 +92,4 @@ export interface ResumeAnalytics {
   last_downloaded_at?: string;
   created_at: string;
   updated_at: string;
-} 
+}

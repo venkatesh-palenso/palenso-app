@@ -12,4 +12,4 @@ export const companyService = new CompanyService();
 export const mediaService = new MediaService();
 export const profileService = new ProfileService();
 export const jobService = new JobService();
-export const eventService = new EventService
+export const eventService = new EventService();

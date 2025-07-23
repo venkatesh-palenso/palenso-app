@@ -4,13 +4,13 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { 
-  Building, 
-  MapPin, 
-  Globe, 
-  Users, 
-  Calendar, 
-  Briefcase, 
+import {
+  Building,
+  MapPin,
+  Globe,
+  Users,
+  Calendar,
+  Briefcase,
   ArrowLeft,
   ExternalLink,
   Mail,
@@ -34,19 +34,19 @@ const CompanyDetail = () => {
   const { data: company, isLoading: companyLoading } = useSWR(
     companyId ? ["FETCH_COMPANY", companyId] : null,
     () => companyService.getCompany(companyId as string),
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const { data: jobs, isLoading: jobsLoading } = useSWR(
     companyId ? ["FETCH_COMPANY_JOBS", companyId] : null,
     () => jobService.searchJobs({ company_id: companyId as string }),
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   const { data: events, isLoading: eventsLoading } = useSWR(
     companyId ? ["FETCH_COMPANY_EVENTS", companyId] : null,
     () => eventService.searchEvents({ company_id: companyId as string }),
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   if (companyLoading) {
@@ -65,8 +65,12 @@ const CompanyDetail = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Building className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Company not found</h2>
-          <p className="text-gray-600 mb-4">The company you&apos;re looking for doesn&apos;t exist.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Company not found
+          </h2>
+          <p className="text-gray-600 mb-4">
+            The company you&apos;re looking for doesn&apos;t exist.
+          </p>
           <Link href="/companies">
             <Button className="btn-handshake">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -119,12 +123,14 @@ const CompanyDetail = () => {
                       </Badge>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-6 text-gray-600 mb-4">
                     {company.city && (
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
-                        <span>{company.city}, {company.state}, {company.country}</span>
+                        <span>
+                          {company.city}, {company.state}, {company.country}
+                        </span>
                       </div>
                     )}
                     {company.company_size && (
@@ -140,13 +146,13 @@ const CompanyDetail = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {company.description && (
                     <p className="text-gray-700 text-lg leading-relaxed mb-6">
                       {company.description}
                     </p>
                   )}
-                  
+
                   <div className="flex items-center gap-4">
                     {company.website && (
                       <a
@@ -180,7 +186,7 @@ const CompanyDetail = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {company.logo_url && (
                   <div className="ml-8">
                     <Image
@@ -274,10 +280,10 @@ const CompanyDetail = () => {
                                     {job.title}
                                   </h4>
                                   <Badge className="badge-handshake">
-                                    {job.job_type.replace('_', ' ')}
+                                    {job.job_type.replace("_", " ")}
                                   </Badge>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-4 text-gray-600 mb-2">
                                   {job.location && (
                                     <div className="flex items-center gap-1">
@@ -287,18 +293,22 @@ const CompanyDetail = () => {
                                   )}
                                   {(job.salary_min || job.salary_max) && (
                                     <span className="text-green-600 font-medium">
-                                      💰 {job.salary_min && job.salary_max ? `${job.salary_min} - ${job.salary_max}` : job.salary_min || job.salary_max} {job.salary_currency}
+                                      💰{" "}
+                                      {job.salary_min && job.salary_max
+                                        ? `${job.salary_min} - ${job.salary_max}`
+                                        : job.salary_min || job.salary_max}{" "}
+                                      {job.salary_currency}
                                     </span>
                                   )}
                                 </div>
-                                
+
                                 {job.description && (
                                   <p className="text-gray-600 text-sm line-clamp-2">
                                     {job.description}
                                   </p>
                                 )}
                               </div>
-                              
+
                               <div className="flex gap-2 ml-4">
                                 <Link href={`/jobs/${job.id}`}>
                                   <Button className="btn-handshake btn-sm">
@@ -318,7 +328,8 @@ const CompanyDetail = () => {
                         No jobs available
                       </h3>
                       <p className="text-gray-600">
-                        This company doesn&apos;t have any active job postings at the moment.
+                        This company doesn&apos;t have any active job postings
+                        at the moment.
                       </p>
                     </div>
                   )}
@@ -350,11 +361,15 @@ const CompanyDetail = () => {
                                     {event.event_type}
                                   </Badge>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-4 text-gray-600 mb-2">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="w-4 h-4" />
-                                    <span>{new Date(event.start_date).toLocaleDateString()}</span>
+                                    <span>
+                                      {new Date(
+                                        event.start_date,
+                                      ).toLocaleDateString()}
+                                    </span>
                                   </div>
                                   {event.location && (
                                     <div className="flex items-center gap-1">
@@ -363,14 +378,14 @@ const CompanyDetail = () => {
                                     </div>
                                   )}
                                 </div>
-                                
+
                                 {event.description && (
                                   <p className="text-gray-600 text-sm line-clamp-2">
                                     {event.description}
                                   </p>
                                 )}
                               </div>
-                              
+
                               <div className="flex gap-2 ml-4">
                                 <Link href={`/events/${event.id}`}>
                                   <Button className="btn-handshake btn-sm">
@@ -390,7 +405,8 @@ const CompanyDetail = () => {
                         No events available
                       </h3>
                       <p className="text-gray-600">
-                        This company doesn&apos;t have any upcoming events at the moment.
+                        This company doesn&apos;t have any upcoming events at
+                        the moment.
                       </p>
                     </div>
                   )}
@@ -406,4 +422,4 @@ const CompanyDetail = () => {
 
 CompanyDetail.getLayout = Layouts.Public;
 
-export default CompanyDetail; 
+export default CompanyDetail;

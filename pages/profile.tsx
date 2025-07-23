@@ -32,13 +32,10 @@ const EmployerProfile = dynamic(
   },
 );
 
-const StudentProfile = dynamic(
-  () => import("@/components/profile/student"),
-  {
-    ssr: false,
-    loading: () => <Spinner />,
-  },
-);
+const StudentProfile = dynamic(() => import("@/components/profile/student"), {
+  ssr: false,
+  loading: () => <Spinner />,
+});
 
 const Profile = () => {
   const { user } = useUser();
@@ -78,9 +75,15 @@ const Profile = () => {
         <meta name="description" content={titleDescription} />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="bg-background overflow-hidden">
         <div className="p-5">
-          {Component && profile && <Component userProfile={profile as StudentProfile & { [key: string]: unknown }} />}
+          {Component && profile && (
+            <Component
+              userProfile={
+                profile as StudentProfile & { [key: string]: unknown }
+              }
+            />
+          )}
         </div>
       </div>
     </>

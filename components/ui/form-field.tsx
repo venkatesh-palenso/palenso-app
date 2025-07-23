@@ -92,13 +92,22 @@ type FormFieldProps =
   | DateFieldProps;
 
 const FormField: React.FC<FormFieldProps> = (props) => {
-  const { label, name, error, required = false, className = "", disabled = false } = props;
+  const {
+    label,
+    name,
+    error,
+    required = false,
+    className = "",
+    disabled = false,
+  } = props;
   const [open, setOpen] = useState(false);
 
   const renderInput = () => {
     if (props.type === "textarea") {
       return (
-        <div className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}>
+        <div
+          className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+        >
           <Textarea
             id={name}
             {...props.register(name)}
@@ -136,7 +145,9 @@ const FormField: React.FC<FormFieldProps> = (props) => {
 
     if (props.type === "phone") {
       return (
-        <div className={`flex items-center gap-3 px-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}>
+        <div
+          className={`flex items-center gap-3 px-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+        >
           <PhoneInput
             value={props.watch(name) as string}
             onChange={(value) => props.setValue(name, value)}
@@ -146,9 +157,7 @@ const FormField: React.FC<FormFieldProps> = (props) => {
             className="flex-1 border-0 px-0 py-0 focus:ring-0 focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none bg-transparent"
           />
           {props.rightIcon && (
-            <div className="text-gray-400 flex-shrink-0">
-              {props.rightIcon}
-            </div>
+            <div className="text-gray-400 flex-shrink-0">{props.rightIcon}</div>
           )}
         </div>
       );
@@ -156,7 +165,9 @@ const FormField: React.FC<FormFieldProps> = (props) => {
 
     if (props.type === "date") {
       return (
-        <div className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}>
+        <div
+          className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+        >
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -171,7 +182,10 @@ const FormField: React.FC<FormFieldProps> = (props) => {
                 <ChevronDownIcon />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <PopoverContent
+              className="w-auto overflow-hidden p-0"
+              align="start"
+            >
               <Calendar
                 mode="single"
                 captionLayout="dropdown"
@@ -209,20 +223,18 @@ const FormField: React.FC<FormFieldProps> = (props) => {
     // If icon is provided, wrap input with icon
     if (props.icon || props.rightIcon) {
       return (
-        <div className={`flex items-center gap-3 px-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}>
+        <div
+          className={`flex items-center gap-3 px-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+        >
           {props.icon && (
-            <div className="text-gray-400 flex-shrink-0">
-              {props.icon}
-            </div>
+            <div className="text-gray-400 flex-shrink-0">{props.icon}</div>
           )}
           <Input
             {...inputProps}
             className="flex-1 border-0 py-0 px-0 focus:ring-0 focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none bg-transparent"
           />
           {props.rightIcon && (
-            <div className="text-gray-400 flex-shrink-0">
-              {props.rightIcon}
-            </div>
+            <div className="text-gray-400 flex-shrink-0">{props.rightIcon}</div>
           )}
         </div>
       );
@@ -230,7 +242,9 @@ const FormField: React.FC<FormFieldProps> = (props) => {
 
     // Regular input without icons
     return (
-      <div className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}>
+      <div
+        className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+      >
         <Input
           {...inputProps}
           className="border-0 px-3 py-0 focus:ring-0 focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none bg-transparent w-full"
@@ -255,4 +269,4 @@ const FormField: React.FC<FormFieldProps> = (props) => {
   );
 };
 
-export { FormField }; 
+export { FormField };

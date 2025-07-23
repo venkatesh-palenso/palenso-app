@@ -55,10 +55,8 @@ class AuthService extends APIService {
    * @returns A promise that resolves to an `AvailabilityResponse` object.
    * @throws Throws an error if the request fails.
    */
-  mobileAvailabilty(mobile_number: MediumAvailabilityForm) {
-    return this.post(AUTH_ENDPOINTS.CHECK_MEDIUM_AVAILABILITY, {
-      mobile_number,
-    })
+  mobileAvailabilty(data: MediumAvailabilityForm) {
+    return this.post(AUTH_ENDPOINTS.CHECK_MEDIUM_AVAILABILITY, data)
       .then((response: { data: MediumAvailabilityResponse }) => {
         return response.data;
       })

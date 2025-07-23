@@ -33,12 +33,23 @@ class EventService extends APIService {
     if (params.location) queryParams.append("location", params.location);
     if (params.start_date) queryParams.append("start_date", params.start_date);
     if (params.end_date) queryParams.append("end_date", params.end_date);
-    if (params.is_virtual !== undefined) queryParams.append("is_virtual", params.is_virtual.toString());
-    if (params.registration_fee_min) queryParams.append("registration_fee_min", params.registration_fee_min.toString());
-    if (params.registration_fee_max) queryParams.append("registration_fee_max", params.registration_fee_max.toString());
+    if (params.is_virtual !== undefined)
+      queryParams.append("is_virtual", params.is_virtual.toString());
+    if (params.registration_fee_min)
+      queryParams.append(
+        "registration_fee_min",
+        params.registration_fee_min.toString(),
+      );
+    if (params.registration_fee_max)
+      queryParams.append(
+        "registration_fee_max",
+        params.registration_fee_max.toString(),
+      );
     if (params.company_id) queryParams.append("company_id", params.company_id);
-    if (params.is_active !== undefined) queryParams.append("is_active", params.is_active.toString());
-    if (params.is_featured !== undefined) queryParams.append("is_featured", params.is_featured.toString());
+    if (params.is_active !== undefined)
+      queryParams.append("is_active", params.is_active.toString());
+    if (params.is_featured !== undefined)
+      queryParams.append("is_featured", params.is_featured.toString());
 
     const url = queryParams.toString()
       ? `${EVENT_ENDPOINTS.LIST_CREATE_EVENT}?${queryParams.toString()}`

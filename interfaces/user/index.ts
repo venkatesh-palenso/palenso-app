@@ -1,5 +1,12 @@
 // Import related interfaces
-import type { Education, WorkExperience, Skill, Interest, Project, Resume } from "@/interfaces";
+import type {
+  Education,
+  WorkExperience,
+  Skill,
+  Interest,
+  Project,
+  Resume,
+} from "@/interfaces";
 
 // User interface based on Django User model
 export interface User {
@@ -59,7 +66,7 @@ export interface StudentProfile {
   updated_at: string;
   created_by?: string;
   updated_by?: string;
-  
+
   // Related data
   education?: Education[];
   work_experience?: WorkExperience[];
@@ -102,7 +109,11 @@ export interface EmployerProfile {
 export interface Token {
   id: string;
   token: string;
-  token_type: "bearer" | "email_verification" | "otp_verification" | "forgot_password";
+  token_type:
+    | "bearer"
+    | "email_verification"
+    | "otp_verification"
+    | "forgot_password";
   user_id: string;
   is_used: boolean;
   expires_at: string;
@@ -124,8 +135,7 @@ export interface CreateUserForm {
   password?: string;
 }
 
-export interface UpdateUserForm extends Partial<CreateUserForm> {
-}
+export interface UpdateUserForm extends Partial<CreateUserForm> {}
 
 export interface LoginForm {
   username: string;

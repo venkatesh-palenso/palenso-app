@@ -45,4 +45,4 @@ export interface InterestRecommendation {
   relevance_score: number;
   related_skills?: string[];
   related_jobs?: string[];
-} 
+}

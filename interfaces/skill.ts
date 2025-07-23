@@ -16,8 +16,7 @@ export interface CreateSkillForm {
   proficiency_level: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
-export interface UpdateSkillForm extends Partial<CreateSkillForm> {
-}
+export interface UpdateSkillForm extends Partial<CreateSkillForm> {}
 
 // Skill search and filter interfaces
 export interface SkillSearchParams {
@@ -47,4 +46,4 @@ export interface SkillAssessment {
   assessment_date: string;
   created_at: string;
   updated_at: string;
-} 
+}

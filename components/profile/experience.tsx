@@ -86,10 +86,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
       };
 
       if (editingExperience && editingExperience.id) {
-        await profileService.updateExperience(
-          editingExperience.id,
-          submitData,
-        );
+        await profileService.updateExperience(editingExperience.id, submitData);
       } else {
         await profileService.createExperience(submitData);
       }
@@ -151,19 +148,26 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
                         {experience.location}
                       </p>
                     )}
-                    
+
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(experience.start_date)} - {experience.is_current ? "Present" : experience.end_date ? formatDate(experience.end_date) : "Present"}
+                        {formatDate(experience.start_date)} -{" "}
+                        {experience.is_current
+                          ? "Present"
+                          : experience.end_date
+                            ? formatDate(experience.end_date)
+                            : "Present"}
                       </div>
                     </div>
-                    
+
                     {experience.description && (
-                      <p className="text-sm text-gray-600">{experience.description}</p>
+                      <p className="text-sm text-gray-600">
+                        {experience.description}
+                      </p>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2 ml-4">
                     <Button
                       onClick={() => handleEdit(experience)}
@@ -174,7 +178,9 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button
-                      onClick={() => experience.id && handleDelete(experience.id)}
+                      onClick={() =>
+                        experience.id && handleDelete(experience.id)
+                      }
                       variant="outline"
                       size="sm"
                       className="btn-secondary btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -186,7 +192,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-          
+
           {data.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Building className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -207,7 +213,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
                 {editingExperience ? "Edit Experience" : "Add Experience"}
               </DialogTitle>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -267,7 +273,10 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ data = [] }) => {
                   {...register("is_current")}
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
-                <Label htmlFor="is_current" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="is_current"
+                  className="text-sm font-medium text-gray-700"
+                >
                   I am currently working here
                 </Label>
               </div>
