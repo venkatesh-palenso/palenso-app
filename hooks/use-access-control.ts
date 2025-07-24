@@ -14,19 +14,25 @@ interface AccessControlResult {
   user: any;
 }
 
-export const useAccessControl = (options: AccessControlOptions): AccessControlResult => {
+export const useAccessControl = (
+  options: AccessControlOptions,
+): AccessControlResult => {
   const { user } = useUser();
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { allowedRoles, redirectTo = "/dashboard", showUnauthorizedMessage = true } = options;
+  const {
+    allowedRoles,
+    redirectTo = "/dashboard",
+    showUnauthorizedMessage = true,
+  } = options;
 
   useEffect(() => {
     if (user) {
       const hasPermission = allowedRoles.includes(user.role);
       setIsAuthorized(hasPermission);
-      
+
       if (!hasPermission && redirectTo) {
         // Redirect unauthorized users
         router.push(redirectTo);
@@ -76,4 +82,4 @@ export const useAuthenticatedAccess = (redirectTo?: string) => {
     allowedRoles: ["admin", "employer", "student"],
     redirectTo,
   });
-}; 
+};

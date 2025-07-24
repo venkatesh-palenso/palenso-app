@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/context/user";
 
-
 const ProfileCard: React.FC = () => {
   const { user } = useUser();
   const isStudent = user?.role === "student";
@@ -23,9 +22,7 @@ const ProfileCard: React.FC = () => {
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-lg">
-              {user?.first_name?.charAt(0) ||
-                user?.email?.charAt(0) ||
-                "U"}
+              {user?.first_name?.charAt(0) || user?.email?.charAt(0) || "U"}
             </span>
           </div>
           <div>
@@ -103,4 +100,4 @@ const ProfileCard: React.FC = () => {
   );
 };
 
-export default ProfileCard; 
+export default ProfileCard;

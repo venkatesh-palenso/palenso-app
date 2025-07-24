@@ -1,6 +1,23 @@
-import React, { useState } from "react";
+// react
+import { FC, useState } from "react";
+
+// react hook form
 import { useForm } from "react-hook-form";
-import { Plus, Edit, Trash2, Star, Save, X } from "lucide-react";
+
+// framer-motion
+import { motion } from "framer-motion";
+
+// lucide icons
+import { Edit, Plus, Save, Star, Trash2, X } from "lucide-react";
+
+// interfaces
+import { ISkill, IStudentProfile } from "@/interfaces";
+
+// services
+import { profileService } from "@/services";
+
+// components
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import {
@@ -9,65 +26,62 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { profileService } from "@/services";
 
-interface Skill {
-  id?: string;
-  name: string;
-  proficiency_level: "beginner" | "intermediate" | "advanced" | "expert";
-  category?: string;
+interface IFormState {
+  open: boolean;
+  skill: ISkill | null;
 }
 
-interface SkillFormProps {
-  data?: Skill[];
-}
+const SkillForm: FC<{ data: IStudentProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const { skills } = data;
 
-const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+  const [formState, setFormState] = useState<IFormState>({
+    open: false,
+    skill: null,
+  });
 
   const {
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
     setValue,
     watch,
-  } = useForm<Skill>();
+    reset,
+    formState: { errors },
+  } = useForm<ISkill>();
 
   const handleAddNew = () => {
-    setEditingSkill(null);
-    reset();
-    setIsOpen(true);
+    setFormState({ open: true, skill: null });
   };
 
-  const handleEdit = (skill: Skill) => {
-    setEditingSkill(skill);
-    reset(skill);
-    setIsOpen(true);
+  const handleEdit = (skill: ISkill) => {
+    setFormState({ open: true, skill });
+    reset({ ...skill });
   };
 
   const handleDelete = async (id: string) => {
     try {
       await profileService.deleteSkill(id);
+      mutate();
     } catch (error) {
-      console.log("error deleting skill", error);
+      console.error("Error deleting skill:", error);
     }
   };
 
-  const onSubmit = async (formData: Skill) => {
+  const onSubmit = async (formData: ISkill) => {
     try {
-      if (editingSkill && editingSkill.id) {
-        await profileService.updateSkill(editingSkill.id, formData);
+      if (formState.skill?.id) {
+        await profileService.updateSkill(formState.skill.id, formData);
       } else {
         await profileService.createSkill(formData);
       }
-      setIsOpen(false);
+      mutate();
       reset();
+      setFormState({ open: false, skill: null });
     } catch (error) {
-      console.log("error submitting skill", error);
+      console.error("Error submitting skill:", error);
     }
   };
 
@@ -130,9 +144,8 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
           </Button>
         </div>
 
-        {/* Skills List */}
         <div className="space-y-4">
-          {data.map((skill, index) => (
+          {skills.map((skill, index) => (
             <motion.div
               key={skill.id || index}
               initial={{ opacity: 0, x: -20 }}
@@ -159,12 +172,6 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
                         getProficiencyStars(skill.proficiency_level),
                       )}
                     </div>
-
-                    {skill.category && (
-                      <p className="text-sm text-gray-600">
-                        Category: {skill.category}
-                      </p>
-                    )}
                   </div>
 
                   <div className="flex gap-2 ml-4">
@@ -190,27 +197,24 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
             </motion.div>
           ))}
 
-          {data.length === 0 && (
+          {skills.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
               <p>No skills added yet.</p>
-              <Button onClick={handleAddNew} className="btn-handshake mt-4">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Skill
-              </Button>
             </div>
           )}
         </div>
 
-        {/* Add/Edit Dialog */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent className="max-w-md">
+        <Dialog
+          open={formState.open}
+          onOpenChange={() => setFormState({ open: false, skill: null })}
+        >
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="heading-handshake text-xl">
-                {editingSkill ? "Edit Skill" : "Add Skill"}
+                {formState.skill ? "Edit Skill" : "Add Skill"}
               </DialogTitle>
             </DialogHeader>
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"
@@ -239,18 +243,10 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
                 ]}
               />
 
-              <FormField
-                type="text"
-                label="Category (Optional)"
-                name="category"
-                register={register}
-                placeholder="e.g., Programming, Design, Management"
-              />
-
               <div className="action-buttons-handshake">
                 <Button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setFormState({ open: false, skill: null })}
                   className="btn-secondary"
                 >
                   <X className="w-4 h-4 mr-2" />
@@ -258,7 +254,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
                 </Button>
                 <Button type="submit" className="btn-handshake">
                   <Save className="w-4 h-4 mr-2" />
-                  {editingSkill ? "Update Skill" : "Add Skill"}
+                  {formState.skill ? "Update Skill" : "Add Skill"}
                 </Button>
               </div>
             </form>
@@ -268,5 +264,4 @@ const SkillForm: React.FC<SkillFormProps> = ({ data = [] }) => {
     </motion.div>
   );
 };
-
 export default SkillForm;

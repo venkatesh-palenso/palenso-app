@@ -2,7 +2,6 @@ import React from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import { UseFormRegister } from "react-hook-form";
 
-
 interface PasswordFieldProps {
   name: string;
   label: string;
@@ -48,11 +47,9 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
           )}
         </button>
       </div>
-      {error && (
-        <p className="text-red-500 text-xs">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-xs">{error}</p>}
     </div>
   );
 };
 
-export default PasswordField; 
+export default PasswordField;

@@ -1,17 +1,13 @@
 import APIService from "./api.service";
 import { COMPANY_ENDPOINTS } from "@/constants/endpoints";
-import {
-  Company,
-  CreateCompanyForm,
-  UpdateCompanyForm,
-} from "@/interfaces/company";
+import { ICompany } from "@/interfaces/company";
 
 class CompanyService extends APIService {
   /**
    * Lists all companies.
    * @returns A promise that resolves to the list of companies.
    */
-  listCompanies(): Promise<Company[]> {
+  listCompanies(): Promise<ICompany[]> {
     return this.get(COMPANY_ENDPOINTS.LIST_CREATE_COMPANY)
       .then((response) => response.data)
       .catch((error) => {
@@ -28,7 +24,7 @@ class CompanyService extends APIService {
     search?: string;
     industry?: string;
     location?: string;
-  }): Promise<Company[]> {
+  }): Promise<ICompany[]> {
     const queryParams = new URLSearchParams();
     if (params.search) queryParams.append("search", params.search);
     if (params.industry && params.industry !== "all")
@@ -50,7 +46,7 @@ class CompanyService extends APIService {
    * @param data - The data for the new company.
    * @returns A promise that resolves to the created company.
    */
-  createCompany(data: CreateCompanyForm): Promise<Company> {
+  createCompany(data: ICompany): Promise<ICompany> {
     return this.post(COMPANY_ENDPOINTS.LIST_CREATE_COMPANY, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -63,7 +59,7 @@ class CompanyService extends APIService {
    * @param companyId - The ID of the company to retrieve.
    * @returns A promise that resolves to the company.
    */
-  getCompany(companyId: string): Promise<Company> {
+  getCompany(companyId: string): Promise<ICompany> {
     return this.get(COMPANY_ENDPOINTS.COMPANY_DETAIL(companyId))
       .then((response) => response.data)
       .catch((error) => {
@@ -77,7 +73,7 @@ class CompanyService extends APIService {
    * @param data - The data to update the company with.
    * @returns A promise that resolves to the updated company.
    */
-  updateCompany(companyId: string, data: UpdateCompanyForm): Promise<Company> {
+  updateCompany(companyId: string, data: Partial<ICompany>): Promise<ICompany> {
     return this.put(COMPANY_ENDPOINTS.COMPANY_DETAIL(companyId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -90,7 +86,7 @@ class CompanyService extends APIService {
    * @param companyId - The ID of the company to delete.
    * @returns A promise that resolves to the deleted company.
    */
-  deleteCompany(companyId: string): Promise<Company> {
+  deleteCompany(companyId: string): Promise<string> {
     return this.delete(COMPANY_ENDPOINTS.COMPANY_DETAIL(companyId))
       .then((response) => response.data)
       .catch((error) => {

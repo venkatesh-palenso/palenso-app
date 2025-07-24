@@ -52,7 +52,7 @@ import { useUser } from "@/context";
 import { Layouts } from "@/layouts";
 
 // interfaces
-import { User } from "@/interfaces";
+import { IUser } from "@/interfaces";
 
 const UserDetail = () => {
   const router = useRouter();
@@ -60,13 +60,13 @@ const UserDetail = () => {
   const { user: currentUser } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<Partial<User>>({});
+  const [formData, setFormData] = useState<Partial<IUser>>({});
 
   const {
     data: user,
     isLoading: userLoading,
     mutate,
-  } = useSWR<User>(
+  } = useSWR<IUser>(
     userId ? ["FETCH_USER", userId] : null,
     () => userService.getUser(userId as string),
     { revalidateOnFocus: false },

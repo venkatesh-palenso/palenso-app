@@ -52,7 +52,7 @@ import { useUser } from "@/context";
 import { Layouts } from "@/layouts";
 
 // interfaces
-import { User, UserSearchParams } from "@/interfaces";
+import { IUser, IUserSearchParams } from "@/interfaces";
 
 // Form interface for the search form
 interface UserSearchForm {
@@ -73,7 +73,7 @@ const AdminUsers = () => {
     },
   });
 
-  const [debouncedFilters, setDebouncedFilters] = useState<UserSearchParams>({
+  const [debouncedFilters, setDebouncedFilters] = useState<IUserSearchParams>({
     search: "",
     role: undefined,
     is_active: undefined,
@@ -146,7 +146,11 @@ const AdminUsers = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked && users) {
-      setSelectedUsers(users.map((user: User) => user.id));
+      setSelectedUsers(
+        users
+          .map((user: IUser) => user.id)
+          .filter((id): id is string => id !== undefined),
+      );
     } else {
       setSelectedUsers([]);
     }
@@ -400,15 +404,20 @@ const AdminUsers = () => {
                           </td>
                         </tr>
                       ) : users && users.length > 0 ? (
-                        users.map((user: User) => (
+                        users.map((user: IUser) => (
                           <tr
                             key={user.id}
                             className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                           >
                             <td className="p-4">
                               <Checkbox
-                                checked={selectedUsers.includes(user.id)}
+                                checked={
+                                  user.id
+                                    ? selectedUsers.includes(user.id)
+                                    : false
+                                }
                                 onCheckedChange={(checked) =>
+                                  user.id &&
                                   handleSelectUser(user.id, checked as boolean)
                                 }
                               />
@@ -417,9 +426,6 @@ const AdminUsers = () => {
                               <div>
                                 <div className="font-medium text-gray-900 dark:text-white">
                                   {user.first_name} {user.last_name}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  @{user.username}
                                 </div>
                               </div>
                             </td>
@@ -476,7 +482,7 @@ const AdminUsers = () => {
                                     Edit User
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
-                                    onClick={() => handleDeleteUser(user.id)}
+                                    onClick={() => handleDeleteUser(user.id!)}
                                     className="text-red-600 hover:text-red-700"
                                   >
                                     <Trash2 className="w-4 h-4 mr-2" />

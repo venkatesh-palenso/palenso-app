@@ -133,7 +133,6 @@ class EventService extends APIService {
       });
   }
 
-
   /**
    * Gets event registrations for a specific event.
    * @param eventId - The ID of the event.

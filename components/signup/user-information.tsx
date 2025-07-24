@@ -7,10 +7,10 @@ import { Label } from "@/components/ui/label";
 
 import { authService } from "@/services";
 import { MediumAvailabilityForm, CreateUserForm } from "@/interfaces/auth";
-import { User as UserInfo } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 
 interface UserInformationFormProps {
-  onSuccess: (data: UserInfo) => void;
+  onSuccess: (data: IUser) => void;
 }
 
 const UserInformationForm = ({ onSuccess }: UserInformationFormProps) => {

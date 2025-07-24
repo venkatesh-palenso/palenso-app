@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import ChangePasswordForm from "./change-password-form";
 
 const PasswordCard: React.FC = () => {
@@ -50,4 +56,4 @@ const PasswordCard: React.FC = () => {
   );
 };
 
-export default PasswordCard; 
+export default PasswordCard;

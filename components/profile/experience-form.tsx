@@ -1,16 +1,38 @@
-import React, { useState } from "react";
+// react
+import { FC, useState } from "react";
+
+// react hook form
 import { useForm } from "react-hook-form";
+
+// date fns
+import { format } from "date-fns";
+
+// framer-motion
+import { motion } from "framer-motion";
+
+// lucide icons
 import {
-  Plus,
-  Edit,
-  Trash2,
+  Briefcase,
+  Building,
   Calendar,
-  GraduationCap,
+  Edit,
+  MapPin,
+  Plus,
   Save,
+  Trash2,
   X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// interfaces
+import { IStudentProfile, IWorkExperience } from "@/interfaces";
+
+// services
+import { profileService } from "@/services";
+
+// components
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
@@ -18,32 +40,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { profileService } from "@/services";
-import { format } from "date-fns";
 
-interface Education {
-  id?: string;
-  degree: string;
-  institution: string;
-  field_of_study: string;
-  start_date: string;
-  end_date?: string;
-  is_current: boolean;
-  grade?: string;
-  description?: string;
+interface IFormState {
+  open: boolean;
+  experience: IWorkExperience | null;
 }
 
-interface EducationFormProps {
-  data?: Education[];
-}
+const ExperienceForm: FC<{ data: IStudentProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const { experiences } = data;
 
-const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [editingEducation, setEditingEducation] = useState<Education | null>(
-    null,
-  );
+  const [formState, setFormState] = useState<IFormState>({
+    open: false,
+    experience: null,
+  });
 
   const {
     register,
@@ -52,49 +64,50 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<Education>();
+  } = useForm<IWorkExperience>();
 
   const handleAddNew = () => {
-    setEditingEducation(null);
-    reset();
-    setIsOpen(true);
+    setFormState({ open: true, experience: null });
   };
 
-  const handleEdit = (education: Education) => {
-    setEditingEducation(education);
-    reset(education);
-    setIsOpen(true);
+  const handleEdit = (experience: IWorkExperience) => {
+    setFormState({ open: true, experience });
+    reset({ ...experience });
   };
 
   const handleDelete = async (id: string) => {
     try {
-      await profileService.deleteEducation(id);
+      await profileService.deleteExperience(id);
+      mutate();
     } catch (error) {
-      console.log("error deleting education", error);
+      console.error("Error deleting experience:", error);
     }
   };
 
-  const onSubmit = async (formData: Education) => {
+  const onSubmit = async (formData: IWorkExperience) => {
     try {
-      formData["start_date"] = format(formData.start_date, "yyyy-MM-dd");
-      formData["end_date"] = formData.end_date
-        ? format(formData.end_date, "yyyy-MM-dd")
-        : undefined;
-
-      if (editingEducation && editingEducation.id) {
-        await profileService.updateEducation(editingEducation.id, formData);
+      formData.start_date = formatDate(formData.start_date);
+      formData.end_date = formData.end_date
+        ? formatDate(formData.end_date)
+        : null;
+      if (formState.experience?.id) {
+        await profileService.updateExperience(
+          formState.experience.id,
+          formData,
+        );
       } else {
-        await profileService.createEducation(formData);
+        await profileService.createExperience(formData);
       }
-      setIsOpen(false);
+      mutate();
       reset();
+      setFormState({ open: false, experience: null });
     } catch (error) {
-      console.log("error submitting education", error);
+      console.error("Error submitting experience:", error);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "MMM yyyy");
+    return dateString ? format(new Date(dateString), "yyyy-MM-dd") : "";
   };
 
   return (
@@ -106,20 +119,18 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
       <div className="form-section-handshake">
         <div className="flex items-center justify-between mb-6">
           <h3 className="heading-handshake text-xl">
-            <GraduationCap className="w-6 h-6 text-primary" />
-            Education
+            <Briefcase className="w-6 h-6 text-primary" />
+            Work Experience
           </h3>
-          <Button onClick={handleAddNew} className="btn-handshake btn-sm">
+          <Button variant="outline" onClick={handleAddNew}>
             <Plus className="w-4 h-4 mr-2" />
-            Add Education
+            Add New Experience
           </Button>
         </div>
-
-        {/* Education List */}
         <div className="space-y-4">
-          {data.map((education, index) => (
+          {experiences.map((experience, index) => (
             <motion.div
-              key={education.id || index}
+              key={experience.id || index}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -129,47 +140,44 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h4 className="font-semibold text-lg text-gray-900">
-                        {education.degree}
+                        {experience.position}
                       </h4>
-                      {education.is_current && (
+                      {experience.is_current && (
                         <Badge className="badge-handshake">Current</Badge>
                       )}
                     </div>
                     <p className="text-primary font-medium mb-1">
-                      {education.institution}
+                      {experience.company}
                     </p>
-                    <p className="text-gray-600 mb-2">
-                      {education.field_of_study}
-                    </p>
+                    {experience.location && (
+                      <p className="text-gray-600 mb-2 flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        {experience.location}
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(education.start_date)} -{" "}
-                        {education.is_current
+                        {formatDate(experience.start_date)} -{" "}
+                        {experience.is_current
                           ? "Present"
-                          : education.end_date
-                            ? formatDate(education.end_date)
+                          : experience.end_date
+                            ? formatDate(experience.end_date)
                             : "Present"}
                       </div>
                     </div>
 
-                    {education.grade && (
-                      <p className="text-sm text-gray-600 mb-2">
-                        Grade: {education.grade}
-                      </p>
-                    )}
-
-                    {education.description && (
+                    {experience.description && (
                       <p className="text-sm text-gray-600">
-                        {education.description}
+                        {experience.description}
                       </p>
                     )}
                   </div>
 
                   <div className="flex gap-2 ml-4">
                     <Button
-                      onClick={() => handleEdit(education)}
+                      onClick={() => handleEdit(experience)}
                       variant="outline"
                       size="sm"
                       className="btn-secondary btn-sm"
@@ -177,7 +185,9 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button
-                      onClick={() => education.id && handleDelete(education.id)}
+                      onClick={() =>
+                        experience.id && handleDelete(experience.id)
+                      }
                       variant="outline"
                       size="sm"
                       className="btn-secondary btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -189,59 +199,53 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-
-          {data.length === 0 && (
+          {experiences.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              <GraduationCap className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>No education history added yet.</p>
-              <Button onClick={handleAddNew} className="btn-handshake mt-4">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Education
-              </Button>
+              <Building className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>No work experience added yet.</p>
             </div>
           )}
         </div>
 
-        {/* Add/Edit Dialog */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog
+          open={formState.open}
+          onOpenChange={() => setFormState({ open: false, experience: null })}
+        >
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="heading-handshake text-xl">
-                {editingEducation ? "Edit Education" : "Add Education"}
+                {formState.experience ? "Edit Experience" : "Add Experience"}
               </DialogTitle>
             </DialogHeader>
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   type="text"
-                  label="Degree"
-                  name="degree"
+                  label="Job Postion"
+                  name="position"
                   register={register}
-                  error={errors.degree}
+                  error={errors.position}
                   required
-                  placeholder="e.g., Bachelor of Science"
+                  placeholder="e.g., Software Engineer"
                 />
 
                 <FormField
                   type="text"
-                  label="Institution"
-                  name="institution"
+                  label="Company"
+                  name="company"
                   register={register}
-                  error={errors.institution}
+                  error={errors.company}
                   required
-                  placeholder="e.g., University of California"
+                  placeholder="e.g., Google"
                 />
               </div>
 
               <FormField
                 type="text"
-                label="Field of Study"
-                name="field_of_study"
+                label="Location (Optional)"
+                name="location"
                 register={register}
-                error={errors.field_of_study}
-                required
-                placeholder="e.g., Computer Science"
+                placeholder="e.g., San Francisco, CA"
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -276,31 +280,25 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
                   htmlFor="is_current"
                   className="text-sm font-medium text-gray-700"
                 >
-                  I am currently studying here
+                  I am currently working here
                 </Label>
               </div>
-
-              <FormField
-                type="text"
-                label="Grade (Optional)"
-                name="grade"
-                register={register}
-                placeholder="e.g., 3.8 GPA, First Class"
-              />
 
               <FormField
                 type="textarea"
                 label="Description (Optional)"
                 name="description"
                 register={register}
-                placeholder="Describe your academic achievements, projects, or relevant coursework..."
-                rows={3}
+                placeholder="Describe your responsibilities, achievements, and key contributions..."
+                rows={4}
               />
 
               <div className="action-buttons-handshake">
                 <Button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() =>
+                    setFormState({ open: false, experience: null })
+                  }
                   className="btn-secondary"
                 >
                   <X className="w-4 h-4 mr-2" />
@@ -308,7 +306,9 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
                 </Button>
                 <Button type="submit" className="btn-handshake">
                   <Save className="w-4 h-4 mr-2" />
-                  {editingEducation ? "Update Education" : "Add Education"}
+                  {formState.experience
+                    ? "Update Experience"
+                    : "Add Experience"}
                 </Button>
               </div>
             </form>
@@ -318,5 +318,4 @@ const EducationForm: React.FC<EducationFormProps> = ({ data = [] }) => {
     </motion.div>
   );
 };
-
-export default EducationForm;
+export default ExperienceForm;

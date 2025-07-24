@@ -1,11 +1,11 @@
 import { USER_ENDPOINTS } from "@/constants/endpoints";
 import APIService from "./api.service";
 import {
-  User,
-  StudentProfile,
-  EmployerProfile,
-  UpdateUserForm,
-  UserSearchParams,
+  IEmployerProfile,
+  IStudentProfile,
+  IUser,
+  IUserProfile,
+  IUserSearchParams,
   PaginatedResponse,
 } from "@/interfaces";
 
@@ -14,7 +14,7 @@ class UserService extends APIService {
    * Retrieves the current user's information.
    * @returns A promise that resolves to the current user's information.
    */
-  getCurrentUser(): Promise<User> {
+  getCurrentUser(): Promise<IUser> {
     return this.get(USER_ENDPOINTS.GET_CURRENT_USER)
       .then((response) => {
         return response.data;
@@ -29,7 +29,9 @@ class UserService extends APIService {
    * @param userId - The ID of the user to retrieve the profile for.
    * @returns A promise that resolves to the user's profile information.
    */
-  getProfile(userId: string): Promise<StudentProfile | EmployerProfile> {
+  getProfile(
+    userId: string,
+  ): Promise<IUserProfile | IStudentProfile | IEmployerProfile> {
     return this.get(USER_ENDPOINTS.PROFILE_INFO(userId))
       .then((response) => {
         return response.data;
@@ -45,7 +47,10 @@ class UserService extends APIService {
    * @param data - The data to update the profile with.
    * @returns A promise that resolves to the updated profile information.
    */
-  updateProfile(userId: string, data: UpdateUserForm): Promise<User> {
+  updateProfile(
+    userId: string,
+    data: Partial<IUserProfile | IStudentProfile | IEmployerProfile>,
+  ): Promise<IUserProfile | IStudentProfile | IEmployerProfile> {
     return this.put(USER_ENDPOINTS.PROFILE_INFO(userId), data)
       .then((response) => {
         return response.data;
@@ -60,7 +65,7 @@ class UserService extends APIService {
    * @param params - Search parameters for filtering users.
    * @returns A promise that resolves to a paginated response of users.
    */
-  getUsers(params?: UserSearchParams): Promise<PaginatedResponse<User>> {
+  getUsers(params?: IUserSearchParams): Promise<PaginatedResponse<IUser>> {
     const queryParams = new URLSearchParams();
 
     if (params?.search) queryParams.append("search", params.search);
@@ -90,7 +95,7 @@ class UserService extends APIService {
    * @param userId - The ID of the user to retrieve.
    * @returns A promise that resolves to the user.
    */
-  getUser(userId: string): Promise<User> {
+  getUser(userId: string): Promise<IUser> {
     return this.get(USER_ENDPOINTS.USER_DETAIL(userId))
       .then((response) => response.data)
       .catch((error) => {
@@ -104,7 +109,7 @@ class UserService extends APIService {
    * @param data - The data to update the user with.
    * @returns A promise that resolves to the updated user.
    */
-  updateUser(userId: string, data: Partial<User>): Promise<User> {
+  updateUser(userId: string, data: Partial<IUser>): Promise<IUser> {
     return this.put(USER_ENDPOINTS.USER_DETAIL(userId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -117,7 +122,7 @@ class UserService extends APIService {
    * @param userId - The ID of the user to delete.
    * @returns A promise that resolves to the deleted user.
    */
-  deleteUser(userId: string): Promise<User> {
+  deleteUser(userId: string): Promise<string> {
     return this.delete(USER_ENDPOINTS.USER_DETAIL(userId))
       .then((response) => response.data)
       .catch((error) => {
@@ -131,7 +136,7 @@ class UserService extends APIService {
    * @param data - The data to update the users with.
    * @returns A promise that resolves to the updated users.
    */
-  bulkUpdateUsers(userIds: string[], data: Partial<User>): Promise<User[]> {
+  bulkUpdateUsers(userIds: string[], data: Partial<IUser>): Promise<string> {
     return this.put(USER_ENDPOINTS.BULK_UPDATE_USERS, {
       user_ids: userIds,
       data,

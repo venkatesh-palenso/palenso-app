@@ -165,8 +165,7 @@ const RegisterEventPage = () => {
         notes: data.interests,
       };
 
-    await eventService.registerForEvent(registrationData)
-
+      await eventService.registerForEvent(registrationData);
     } catch (err) {
       setError("Registration failed. Please try again.");
       console.error("Registration error:", err);

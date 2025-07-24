@@ -19,13 +19,13 @@ import { Label } from "@/components/ui/label";
 import { authService } from "@/services";
 
 // interfaces
-import { User } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 
 // context
 import { useUser } from "@/context";
 
 interface SetPasswordFormProps {
-  userData: User;
+  userData: IUser;
   prevStep: () => void;
 }
 

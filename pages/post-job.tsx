@@ -26,13 +26,15 @@ import { userService } from "@/services";
 
 // hooks
 import { useEmployerAccess } from "@/hooks";
+import { IEmployerProfile } from "@/interfaces";
 
 const PostJobPage = () => {
   const { user } = useUser();
-  const { isAuthorized, isLoading: authLoading } = useEmployerAccess("/dashboard");
+  const { isAuthorized, isLoading: authLoading } =
+    useEmployerAccess("/dashboard");
   const { data: profile, isLoading: profileLoading } = useSWR(
     user?.id ? "FETCH_COMPANY_PROFILE" : null,
-    user?.id ? () => userService.getProfile(user.id) : null,
+    user?.id ? () => userService.getProfile(user.id!) : null,
     { revalidateOnFocus: false },
   );
 
@@ -47,11 +49,11 @@ const PostJobPage = () => {
         message="Only employers can post job listings. You don't have permission to access this page."
         primaryAction={{
           label: "Go to Dashboard",
-          onClick: () => window.location.href = "/dashboard",
+          onClick: () => (window.location.href = "/dashboard"),
         }}
         secondaryAction={{
           label: "View Jobs",
-          onClick: () => window.location.href = "/jobs",
+          onClick: () => (window.location.href = "/jobs"),
         }}
       />
     );
@@ -126,7 +128,7 @@ const PostJobPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <PostJobForm profile={profile} />
+              <PostJobForm profile={profile as IEmployerProfile} />
             </motion.div>
           </div>
         </section>

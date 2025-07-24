@@ -11,11 +11,11 @@ import {
 import useSWR from "swr";
 
 // interfaces
-import { User } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 import { authService, userService } from "@/services";
 
 type UserContextType = {
-  user: User | null;
+  user: IUser | null;
   isLoading: boolean;
   isLoggedIn: boolean | null;
   logout: () => void;

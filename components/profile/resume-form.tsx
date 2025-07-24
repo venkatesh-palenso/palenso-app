@@ -1,18 +1,35 @@
-import React, { useState } from "react";
+// react
+import { FC, useState } from "react";
+
+// react hook form
 import { useForm } from "react-hook-form";
+
+// framer-motion
+import { motion } from "framer-motion";
+
+// lucide icons
 import {
-  Plus,
-  Edit,
-  Trash2,
-  FileText,
-  Download,
-  Upload,
-  Save,
-  X,
   CheckCircle,
+  Download,
+  Edit,
+  FileText,
+  Plus,
+  Save,
+  Trash2,
+  Upload,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// interfaces
+import { IResume, IStudentProfile } from "@/interfaces";
+
+// services
+import { mediaService, profileService } from "@/services";
+
+// components
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
@@ -20,60 +37,54 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { mediaService, profileService } from "@/services";
 
-interface Resume {
-  id?: string;
-  title: string;
-  description?: string;
-  file_url?: string;
-  is_primary: boolean;
+interface IFormState {
+  open: boolean;
+  resume: IResume | null;
+  file: File | null;
 }
 
-interface ResumeFormProps {
-  data?: Resume[];
-}
+const ResumeForm: FC<{ data: IStudentProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const { resumes } = data;
 
-const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [editingResume, setEditingResume] = useState<Resume | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [formState, setFormState] = useState<IFormState>({
+    open: false,
+    resume: null,
+    file: null,
+  });
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Resume>();
+  } = useForm<IResume>();
 
   const handleAddNew = () => {
-    setEditingResume(null);
-    setSelectedFile(null);
-    reset();
-    setIsOpen(true);
+    setFormState({ open: true, resume: null, file: null });
   };
 
-  const handleEdit = (resume: Resume) => {
-    setEditingResume(resume);
-    setSelectedFile(null);
-    reset(resume);
-    setIsOpen(true);
+  const handleEdit = (resume: IResume) => {
+    setFormState({ open: true, resume, file: null });
+    reset({ ...resume });
   };
 
   const handleDelete = async (id: string) => {
     try {
       await profileService.deleteResume(id);
+      mutate();
     } catch (error) {
-      console.log("error deleting resume", error);
+      console.error("Error deleting resume:", error);
     }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
+      setFormState({ ...formState, file });
     }
   };
 
@@ -85,26 +96,25 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const onSubmit = async (resumeData: Resume) => {
+  const onSubmit = async (resumeData: IResume) => {
     try {
-      if (selectedFile) {
+      if (formState.file) {
         const formData = new FormData();
-        formData.append("file", selectedFile);
+        formData.append("file", formState.file);
         formData.append("asset_type", "resume");
         const response = await mediaService.uploadFile(formData);
         resumeData["file_url"] = response.display_url;
       }
-
-      if (editingResume?.id) {
-        await profileService.updateResume(editingResume.id, resumeData);
+      if (formState.resume?.id) {
+        await profileService.updateResume(formState.resume.id, resumeData);
       } else {
         await profileService.createResume(resumeData);
       }
-      setIsOpen(false);
+      mutate();
       reset();
-      setSelectedFile(null);
+      setFormState({ open: false, resume: null, file: null });
     } catch (error) {
-      console.log("error submitting resume", error);
+      console.error("Error submitting resume:", error);
     }
   };
 
@@ -125,10 +135,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
             Add Resume
           </Button>
         </div>
-
-        {/* Resume List */}
         <div className="space-y-4">
-          {data.map((resume, index) => (
+          {resumes.map((resume, index) => (
             <motion.div
               key={resume.id || index}
               initial={{ opacity: 0, x: -20 }}
@@ -165,7 +173,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                         variant="outline"
                         size="sm"
                         className="btn-secondary btn-sm"
-                        onClick={() => window.open(resume.file_url, "_blank")}
+                        onClick={() =>
+                          window.open(resume.file_url as string, "_blank")
+                        }
                       >
                         <Download className="w-4 h-4" />
                       </Button>
@@ -191,28 +201,26 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-
-          {data.length === 0 && (
+          {resumes.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <FileText className="w-12 h-12 mx-auto mb-4 text-gray-300" />
               <p>No resumes uploaded yet.</p>
-              <Button onClick={handleAddNew} className="btn-handshake mt-4">
-                <Plus className="w-4 h-4 mr-2" />
-                Upload Your First Resume
-              </Button>
             </div>
           )}
         </div>
 
-        {/* Add/Edit Dialog */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent className="max-w-md">
+        <Dialog
+          open={formState.open}
+          onOpenChange={() =>
+            setFormState({ open: false, resume: null, file: null })
+          }
+        >
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="heading-handshake text-xl">
-                {editingResume ? "Edit Resume" : "Add Resume"}
+                {formState.resume ? "Edit Resume" : "Add Resume"}
               </DialogTitle>
             </DialogHeader>
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"
@@ -256,12 +264,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                     <p className="text-xs text-gray-500">
                       PDF, DOC, or DOCX (max 10MB)
                     </p>
-                    {selectedFile && (
+                    {formState.file && (
                       <div className="mt-3 p-2 bg-green-50 rounded border border-green-200">
                         <div className="flex items-center gap-2 text-sm text-green-700">
                           <CheckCircle className="w-4 h-4" />
-                          {selectedFile.name} (
-                          {formatFileSize(selectedFile.size)})
+                          {formState.file.name} (
+                          {formatFileSize(formState.file.size)})
                         </div>
                       </div>
                     )}
@@ -283,11 +291,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                   Set as primary resume
                 </Label>
               </div>
-
               <div className="action-buttons-handshake">
                 <Button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() =>
+                    setFormState({ open: false, resume: null, file: null })
+                  }
                   className="btn-secondary"
                 >
                   <X className="w-4 h-4 mr-2" />
@@ -295,7 +304,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
                 </Button>
                 <Button type="submit" className="btn-handshake">
                   <Save className="w-4 h-4 mr-2" />
-                  {editingResume ? "Update Resume" : "Add Resume"}
+                  {formState.resume ? "Update Resume" : "Add Resume"}
                 </Button>
               </div>
             </form>
@@ -305,5 +314,4 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ data = [] }) => {
     </motion.div>
   );
 };
-
 export default ResumeForm;

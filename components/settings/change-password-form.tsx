@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Save, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,7 +32,9 @@ interface ChangePasswordFormProps {
   onCancel: () => void;
 }
 
-const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onCancel }) => {
+const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
+  onCancel,
+}) => {
   const [passwordsView, setPasswordsView] = useState({
     old_password: false,
     new_password: false,
@@ -193,4 +201,4 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onCancel }) => 
   );
 };
 
-export default ChangePasswordForm; 
+export default ChangePasswordForm;

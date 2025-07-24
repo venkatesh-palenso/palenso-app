@@ -1,32 +1,20 @@
+import {
+  IEducation,
+  IInterest,
+  IProject,
+  IResume,
+  ISkill,
+  IWorkExperience,
+} from "@/interfaces";
 import APIService from "./api.service";
 import { PROFILE_ITEMS_ENDPOINTS } from "@/constants/endpoints";
-import {
-  WorkExperience,
-  Education,
-  Project,
-  Skill,
-  Resume,
-  Interest,
-  CreateExperienceForm,
-  UpdateExperienceForm,
-  CreateEducationForm,
-  UpdateEducationForm,
-  CreateProjectForm,
-  UpdateProjectForm,
-  CreateSkillForm,
-  UpdateSkillForm,
-  CreateResumeForm,
-  UpdateResumeForm,
-  CreateInterestForm,
-  UpdateInterestForm,
-} from "@/interfaces";
 
 class ProfileService extends APIService {
   /**
    * Lists all experiences for a given profile ID.
    * @returns A promise that resolves to the list of experiences.
    */
-  listExperiences(): Promise<WorkExperience[]> {
+  listExperiences(): Promise<IWorkExperience[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_EXPERIENCES)
       .then((response) => response.data)
       .catch((error) => {
@@ -38,7 +26,7 @@ class ProfileService extends APIService {
    * Lists all educations for a given profile ID.
    * @returns A promise that resolves to the list of educations.
    */
-  listEducations(): Promise<Education[]> {
+  listEducations(): Promise<IEducation[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_EDUCATIONS)
       .then((response) => response.data)
       .catch((error) => {
@@ -50,7 +38,7 @@ class ProfileService extends APIService {
    * Lists all projects for a given profile ID.
    * @returns A promise that resolves to the list of projects.
    */
-  listProjects(): Promise<Project[]> {
+  listProjects(): Promise<IProject[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_PROJECTS)
       .then((response) => response.data)
       .catch((error) => {
@@ -62,7 +50,7 @@ class ProfileService extends APIService {
    * Lists all skills for a given profile ID.
    * @returns A promise that resolves to the list of skills.
    */
-  listSkills(): Promise<Skill[]> {
+  listSkills(): Promise<ISkill[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_SKILLS)
       .then((response) => response.data)
       .catch((error) => {
@@ -74,7 +62,7 @@ class ProfileService extends APIService {
    * Lists all resumes for a given profile ID.
    * @returns A promise that resolves to the list of resumes.
    */
-  listResumes(): Promise<Resume[]> {
+  listResumes(): Promise<IResume[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_RESUMES)
       .then((response) => response.data)
       .catch((error) => {
@@ -86,7 +74,7 @@ class ProfileService extends APIService {
    * Lists all interests for a given profile ID.
    * @returns A promise that resolves to the list of interests.
    */
-  listInterests(): Promise<Interest[]> {
+  listInterests(): Promise<IInterest[]> {
     return this.get(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_INTERESTS)
       .then((response) => response.data)
       .catch((error) => {
@@ -99,7 +87,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new experience.
    * @returns A promise that resolves to the created experience.
    */
-  createExperience(data: CreateExperienceForm): Promise<WorkExperience> {
+  createExperience(data: IWorkExperience): Promise<IWorkExperience> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_EXPERIENCES, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -112,7 +100,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new education.
    * @returns A promise that resolves to the created education.
    */
-  createEducation(data: CreateEducationForm): Promise<Education> {
+  createEducation(data: IEducation): Promise<IEducation> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_EDUCATIONS, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -125,7 +113,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new project.
    * @returns A promise that resolves to the created project.
    */
-  createProject(data: CreateProjectForm): Promise<Project> {
+  createProject(data: IProject): Promise<IProject> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_PROJECTS, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -138,7 +126,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new skill.
    * @returns A promise that resolves to the created skill.
    */
-  createSkill(data: CreateSkillForm): Promise<Skill> {
+  createSkill(data: ISkill): Promise<ISkill> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_SKILLS, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -151,7 +139,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new resume.
    * @returns A promise that resolves to the created resume.
    */
-  createResume(data: CreateResumeForm): Promise<Resume> {
+  createResume(data: IResume): Promise<IResume> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_RESUMES, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -164,7 +152,7 @@ class ProfileService extends APIService {
    * @param data - The data for the new interest.
    * @returns A promise that resolves to the created interest.
    */
-  createInterest(data: CreateInterestForm): Promise<Interest> {
+  createInterest(data: IInterest): Promise<IInterest> {
     return this.post(PROFILE_ITEMS_ENDPOINTS.LIST_CREATE_INTERESTS, data)
       .then((response) => response.data)
       .catch((error) => {
@@ -180,8 +168,8 @@ class ProfileService extends APIService {
    */
   updateExperience(
     experienceId: string,
-    data: UpdateExperienceForm,
-  ): Promise<WorkExperience> {
+    data: Partial<IWorkExperience>,
+  ): Promise<IWorkExperience> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.EXPERIENCE_INFO(experienceId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -197,8 +185,8 @@ class ProfileService extends APIService {
    */
   updateEducation(
     educationId: string,
-    data: UpdateEducationForm,
-  ): Promise<Education> {
+    data: Partial<IEducation>,
+  ): Promise<IEducation> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.EDUCATION_INFO(educationId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -212,7 +200,7 @@ class ProfileService extends APIService {
    * @param data - The data for the updated project.
    * @returns A promise that resolves to the updated project.
    */
-  updateProject(projectId: string, data: UpdateProjectForm): Promise<Project> {
+  updateProject(projectId: string, data: Partial<IProject>): Promise<IProject> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.PROJECT_INFO(projectId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -226,7 +214,7 @@ class ProfileService extends APIService {
    * @param data - The data for the updated skill.
    * @returns A promise that resolves to the updated skill.
    */
-  updateSkill(skillId: string, data: UpdateSkillForm): Promise<Skill> {
+  updateSkill(skillId: string, data: Partial<ISkill>): Promise<ISkill> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.SKILL_INFO(skillId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -240,7 +228,7 @@ class ProfileService extends APIService {
    * @param data - The data for the updated resume.
    * @returns A promise that resolves to the updated resume.
    */
-  updateResume(resumeId: string, data: UpdateResumeForm): Promise<Resume> {
+  updateResume(resumeId: string, data: Partial<IResume>): Promise<IResume> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.RESUME_INFO(resumeId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -256,8 +244,8 @@ class ProfileService extends APIService {
    */
   updateInterest(
     interestId: string,
-    data: UpdateInterestForm,
-  ): Promise<Interest> {
+    data: Partial<IInterest>,
+  ): Promise<IInterest> {
     return this.put(PROFILE_ITEMS_ENDPOINTS.INTEREST_INFO(interestId), data)
       .then((response) => response.data)
       .catch((error) => {
@@ -270,7 +258,7 @@ class ProfileService extends APIService {
    * @param experienceId - The ID of the experience to delete.
    * @returns A promise that resolves to the deleted experience.
    */
-  deleteExperience(experienceId: string): Promise<WorkExperience> {
+  deleteExperience(experienceId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.EXPERIENCE_INFO(experienceId))
       .then((response) => response.data)
       .catch((error) => {
@@ -283,7 +271,7 @@ class ProfileService extends APIService {
    * @param educationId - The ID of the education to delete.
    * @returns A promise that resolves to the deleted education.
    */
-  deleteEducation(educationId: string): Promise<Education> {
+  deleteEducation(educationId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.EDUCATION_INFO(educationId))
       .then((response) => response.data)
       .catch((error) => {
@@ -296,7 +284,7 @@ class ProfileService extends APIService {
    * @param projectId - The ID of the project to delete.
    * @returns A promise that resolves to the deleted project.
    */
-  deleteProject(projectId: string): Promise<Project> {
+  deleteProject(projectId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.PROJECT_INFO(projectId))
       .then((response) => response.data)
       .catch((error) => {
@@ -309,7 +297,7 @@ class ProfileService extends APIService {
    * @param skillId - The ID of the skill to delete.
    * @returns A promise that resolves to the deleted skill.
    */
-  deleteSkill(skillId: string): Promise<Skill> {
+  deleteSkill(skillId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.SKILL_INFO(skillId))
       .then((response) => response.data)
       .catch((error) => {
@@ -322,7 +310,7 @@ class ProfileService extends APIService {
    * @param resumeId - The ID of the resume to delete.
    * @returns A promise that resolves to the deleted resume.
    */
-  deleteResume(resumeId: string): Promise<Resume> {
+  deleteResume(resumeId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.RESUME_INFO(resumeId))
       .then((response) => response.data)
       .catch((error) => {
@@ -335,7 +323,7 @@ class ProfileService extends APIService {
    * @param interestId - The ID of the interest to delete.
    * @returns A promise that resolves to the deleted interest.
    */
-  deleteInterest(interestId: string): Promise<Interest> {
+  deleteInterest(interestId: string): Promise<string> {
     return this.delete(PROFILE_ITEMS_ENDPOINTS.INTEREST_INFO(interestId))
       .then((response) => response.data)
       .catch((error) => {

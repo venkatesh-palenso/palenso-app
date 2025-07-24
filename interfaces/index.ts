@@ -1,13 +1,11 @@
-// User interfaces
+// user interfaces
 export * from "./user";
 
-// Profile interfaces
-export * from "./education";
-export * from "./experience";
-export * from "./skill";
-export * from "./interest";
-export * from "./project";
-export * from "./resume";
+// profile interfaces
+export * from "./profile";
+
+// auth interfaces
+export * from "./auth";
 
 // Job interfaces
 export * from "./job";
@@ -30,72 +28,27 @@ export * from "./marketing";
 // Navigation interfaces
 export * from "./nav-item";
 
-// Re-export specific interfaces for convenience
-export type {
-  User,
-  StudentProfile,
-  EmployerProfile,
-  Token,
-  CreateUserForm,
-  UpdateUserForm,
-  LoginForm,
-  ForgotPasswordForm,
-  ResetPasswordForm,
-  ChangePasswordForm,
-  UserSearchParams,
-  UserAnalytics,
-} from "./user";
+export type PaginatedResponse<T> = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
+export type { IUser, IUserSearchParams } from "./user";
 
 export type {
-  Education,
-  CreateEducationForm,
-  UpdateEducationForm,
-  EducationSearchParams,
-  EducationVerification,
-} from "./education";
-
-export type {
-  WorkExperience,
-  CreateExperienceForm,
-  UpdateExperienceForm,
-  ExperienceSearchParams,
-  ExperienceVerification,
-  ExperienceReference,
-} from "./experience";
-
-export type {
-  Skill,
-  CreateSkillForm,
-  UpdateSkillForm,
-  SkillSearchParams,
-  SkillCategory,
-  SkillAssessment,
-} from "./skill";
-
-export type {
-  Interest,
-  CreateInterestForm,
-  UpdateInterestForm,
-  InterestSearchParams,
-  InterestCategory,
-} from "./interest";
-
-export type {
-  Project,
-  CreateProjectForm,
-  UpdateProjectForm,
-  ProjectSearchParams,
-  ProjectCollaboration,
-} from "./project";
-
-export type {
-  Resume,
-  CreateResumeForm,
-  UpdateResumeForm,
-  ResumeSearchParams,
-  ResumeSharing,
-  ResumeAnalytics,
-} from "./resume";
+  IProfile,
+  IUserProfile,
+  IStudentProfile,
+  IEmployerProfile,
+  IEducation,
+  IWorkExperience,
+  IProject,
+  ISkill,
+  IInterest,
+  IResume,
+} from "./profile";
 
 export type {
   Job,
@@ -121,10 +74,4 @@ export type {
   EventAnalytics,
 } from "./event";
 
-export type {
-  Company,
-  CreateCompanyForm,
-  UpdateCompanyForm,
-  CompanySearchParams,
-  CompanyAnalytics,
-} from "./company";
+export type { ICompany, ICompanySearchParams } from "./company";

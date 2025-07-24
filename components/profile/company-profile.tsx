@@ -1,20 +1,42 @@
+// react
+import { FC, useState } from "react";
+
+// date fns
+import { format } from "date-fns";
+
+// framer motion
 import { motion } from "framer-motion";
+
+// react hook form
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+
+// lucide icons
 import {
   Building,
   CheckCircle,
-  Upload,
   FileImage,
   Save,
+  Upload,
   X,
 } from "lucide-react";
-import { FormField } from "@/components/ui/form-field";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Company } from "@/interfaces/company";
+
+// interfaces
+import { ICompany, IEmployerProfile } from "@/interfaces";
+
+// services
 import { companyService, mediaService } from "@/services";
+
+// components
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/ui/form-field";
+import { Badge } from "@/components/ui/badge";
+
+interface IFormState {
+  mode: "edit" | "create";
+  logo: File | null;
+  banner: File | null;
+}
 
 const industryOptions = [
   "Technology",
@@ -44,14 +66,16 @@ const companySizeOptions = [
   { label: "1000+ employees", value: "1000+" },
 ];
 
-const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as Company }) => {
-  const [mode] = useState<"edit" | "create">(company?.id ? "edit" : "create");
-  const [media, setMedia] = useState<{
-    companyLogo: File | null;
-    companyBanner: File | null;
-  }>({
-    companyLogo: null,
-    companyBanner: null,
+const CompanyProfile: FC<{ data: IEmployerProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const { company } = data;
+
+  const [formState, setFormState] = useState<IFormState>({
+    mode: company?.id ? "edit" : "create",
+    logo: null,
+    banner: null,
   });
 
   const {
@@ -61,67 +85,55 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
     setValue,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<Company>({
-    defaultValues: {
-      name: company.name || "",
-      website: company.website || "",
-      email: company.email || "",
-      phone: company.phone || "",
-      description: company.description || "",
-      industry: company.industry || "",
-      company_size: company.company_size || "",
-      founded_year: company.founded_year || "",
-      country: company.country || "",
-      state: company.state || "",
-      city: company.city || "",
-      address: company.address || "",
-      logo_url: company.logo_url || "",
-      banner_image_url: company.banner_image_url || "",
-      linkedin: company.linkedin || "",
-      twitter: company.twitter || "",
-      facebook: company.facebook || "",
-    },
+  } = useForm<ICompany>({
+    defaultValues: company ? { ...company } : {},
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (e.target.id === "companyLogo") {
-        setMedia({ ...media, companyLogo: file });
-      } else if (e.target.id === "companyBanner") {
-        setMedia({ ...media, companyBanner: file });
+      if (e.target.id === "logo") {
+        setFormState({ ...formState, logo: file });
+      } else if (e.target.id === "banner") {
+        setFormState({ ...formState, banner: file });
       }
     }
   };
 
-  const onSubmitForm = async (data: Company) => {
+  const onSubmitForm = async (payload: ICompany) => {
     try {
       // Handle logo upload
-      if (media.companyLogo) {
+      if (formState.logo) {
         const logoFormData = new FormData();
-        logoFormData.append("file", media.companyLogo);
+        logoFormData.append("file", formState.logo);
         logoFormData.append("asset_type", "company_logo");
         const logoResponse = await mediaService.uploadFile(logoFormData);
-        data.logo_url = logoResponse.display_url;
+        payload.logo_url = logoResponse.display_url;
       }
 
       // Handle banner upload
-      if (media.companyBanner) {
+      if (formState.banner) {
         const bannerFormData = new FormData();
-        bannerFormData.append("file", media.companyBanner);
+        bannerFormData.append("file", formState.banner);
         bannerFormData.append("asset_type", "company_banner");
         const bannerResponse = await mediaService.uploadFile(bannerFormData);
-        data.banner_image_url = bannerResponse.display_url;
+        payload.banner_image_url = bannerResponse.display_url;
       }
 
-      if (mode === "edit" && company.id) {
-        await companyService.updateCompany(company.id, data);
+      payload.founded_year = payload.founded_year
+        ? format(new Date(payload.founded_year), "yyyy-MM-dd")
+        : "";
+      let response;
+      if (formState.mode === "edit" && company.id) {
+        response = await companyService.updateCompany(company.id, payload);
       } else {
-        await companyService.createCompany(data);
+        response = await companyService.createCompany(payload);
       }
 
-      reset();
-      setMedia({ companyLogo: null, companyBanner: null });
+      reset({ ...response });
+
+      mutate();
+      setFormState({ logo: null, banner: null, mode: "edit" });
     } catch (error) {
       console.error("Error submitting company profile:", error);
     }
@@ -139,7 +151,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
             <Building className="w-6 h-6 text-primary" />
             Company Profile
           </h3>
-          {company.is_verified && (
+          {company?.is_verified && (
             <Badge className="badge-handshake">
               <CheckCircle className="w-3 h-3 mr-1" />
               Verified Company
@@ -341,20 +353,20 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
               {/* Logo Upload */}
               <div className="space-y-2">
                 <Label
-                  htmlFor="companyLogo"
+                  htmlFor="logo"
                   className="text-sm font-medium text-gray-700"
                 >
                   Company Logo
                 </Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                   <input
-                    id="companyLogo"
+                    id="logo"
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <label htmlFor="companyLogo" className="cursor-pointer">
+                  <label htmlFor="logo" className="cursor-pointer">
                     <FileImage className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                     <p className="text-sm text-gray-600 mb-1">
                       Click to upload company logo
@@ -367,20 +379,20 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
               {/* Banner Upload */}
               <div className="space-y-2">
                 <Label
-                  htmlFor="companyBanner"
+                  htmlFor="banner"
                   className="text-sm font-medium text-gray-700"
                 >
                   Company Banner
                 </Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                   <input
-                    id="companyBanner"
+                    id="banner"
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <label htmlFor="companyBanner" className="cursor-pointer">
+                  <label htmlFor="banner" className="cursor-pointer">
                     <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                     <p className="text-sm text-gray-600 mb-1">
                       Click to upload banner image
@@ -410,7 +422,7 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
               <Save className="w-4 h-4 mr-2" />
               {isSubmitting
                 ? "Saving..."
-                : mode === "edit"
+                : formState.mode === "edit"
                   ? "Update Company"
                   : "Create Company"}
             </Button>
@@ -420,5 +432,4 @@ const CompanyProfileForm: React.FC<{ data: Company }> = ({ data: company = {} as
     </motion.div>
   );
 };
-
-export default CompanyProfileForm;
+export default CompanyProfile;

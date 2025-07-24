@@ -10,9 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 // interfaces
-import { Company } from "@/interfaces/company";
+import { ICompany } from "@/interfaces/company";
 
-const CompanyInfo = ({ company }: { company: Company }) => {
+const CompanyInfo = ({ company }: { company: ICompany }) => {
   return (
     <motion.div
       key={company.id}

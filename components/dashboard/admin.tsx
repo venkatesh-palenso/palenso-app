@@ -256,9 +256,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="heading-handshake text-xl">Recent Users</h2>
                   <Link href="/users">
-                  <Button variant="outline" className="btn-secondary btn-sm cursor-pointer">
-                    View All
-                  </Button></Link>
+                    <Button
+                      variant="outline"
+                      className="btn-secondary btn-sm cursor-pointer"
+                    >
+                      View All
+                    </Button>
+                  </Link>
                 </div>
 
                 <div className="space-y-4">
@@ -308,10 +312,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                           <div className="flex gap-2 mt-3">
                             <Link href={`/users/${user.id}`}>
-                            <Button className="btn-handshake btn-sm">
-                              <Eye className="w-3 h-3 mr-1" />
-                              View Profile
-                            </Button>
+                              <Button className="btn-handshake btn-sm">
+                                <Eye className="w-3 h-3 mr-1" />
+                                View Profile
+                              </Button>
                             </Link>
                             <Button
                               variant="outline"

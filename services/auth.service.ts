@@ -74,10 +74,10 @@ class AuthService extends APIService {
   login(data: LoginForm) {
     return this.post(AUTH_ENDPOINTS.USER_LOGIN, data)
       .then((response: { data: AuthResponse }) => {
-        const { user, access_token, refresh_token } = response.data;
+        const { access_token, refresh_token } = response.data;
         this.setAccessToken(access_token);
         this.setRefreshToken(refresh_token);
-        return user;
+        return response.data;
       })
       .catch((error) => {
         const message = axios.isAxiosError(error)
@@ -175,10 +175,10 @@ class AuthService extends APIService {
   completeUserRegistration(data: CompleteUserRegistrationForm) {
     return this.put(AUTH_ENDPOINTS.USER_SIGNUP, data)
       .then((response: { data: AuthResponse }) => {
-        const { user, access_token, refresh_token } = response.data;
+        const { access_token, refresh_token } = response.data;
         this.setAccessToken(access_token);
         this.setRefreshToken(refresh_token);
-        return user;
+        return response.data;
       })
       .catch((error) => {
         throw error;

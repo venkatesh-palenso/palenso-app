@@ -43,4 +43,4 @@ const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   );
 };
 
-export default SettingsHeader; 
+export default SettingsHeader;

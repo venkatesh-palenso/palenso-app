@@ -1,4 +1,4 @@
-import { User } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 
 export interface MediumAvailabilityForm {
   email?: string;
@@ -37,7 +37,6 @@ export interface LoginForm {
 }
 
 export interface AuthResponse {
-  user: User;
   access_token: string;
   refresh_token: string;
 }
@@ -52,7 +51,7 @@ export interface CreateUserForm {
 
 export interface CreateUserResponse {
   message: string;
-  user: User;
+  user: IUser;
 }
 
 export interface CompleteUserRegistrationForm {
@@ -78,7 +77,7 @@ export interface ChangePasswordForm {
   confirm_password: string;
 }
 
-export interface CheckUserExistenceForm{
-email?: string;
-mobile_number?: string;
+export interface CheckUserExistenceForm {
+  email?: string;
+  mobile_number?: string;
 }

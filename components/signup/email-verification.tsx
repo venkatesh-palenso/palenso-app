@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authService } from "@/services";
 import { RequestMediumVerificationForm } from "@/interfaces/auth";
-import { User } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 
 interface EmailVerificationFormProps {
   onSuccess: () => void;
-  userData: User;
+  userData: IUser;
   prevStep: () => void;
 }
 

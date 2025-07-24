@@ -1,18 +1,38 @@
-import React, { useState } from "react";
+// react
+import { FC, useState } from "react";
+
+// react hook form
 import { useForm } from "react-hook-form";
+
+// date fns
+import { format } from "date-fns";
+
+// framer-motion
+import { motion } from "framer-motion";
+
+// lucide icons
 import {
-  Plus,
-  Edit,
-  Trash2,
   Calendar,
-  Globe,
   Code,
-  Save,
-  X,
+  Edit,
   ExternalLink,
+  Globe,
+  Plus,
+  Save,
+  Trash2,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// interfaces
+import { IProject, IStudentProfile } from "@/interfaces";
+
+// services
+import { profileService } from "@/services";
+
+// components
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
@@ -20,83 +40,71 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { profileService } from "@/services";
-import { format } from "date-fns";
 
-interface Project {
-  id?: string;
-  title: string;
-  description: string;
-  url?: string;
-  start_date: string;
-  end_date?: string;
-  is_current: boolean;
-  technologies?: string[];
+interface IFormState {
+  open: boolean;
+  project: IProject | null;
 }
 
-interface ProjectFormProps {
-  data?: Project[];
-}
+const ProjectForm: FC<{ data: IStudentProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const { projects } = data;
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [formState, setFormState] = useState<IFormState>({
+    open: false,
+    project: null,
+  });
 
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     reset,
     formState: { errors },
-    setValue,
-  } = useForm<Project>();
+  } = useForm<IProject>();
 
   const handleAddNew = () => {
-    setEditingProject(null);
-    reset();
-    setIsOpen(true);
+    setFormState({ open: true, project: null });
   };
 
-  const handleEdit = (project: Project) => {
-    setEditingProject(project);
-    reset(project);
-    setIsOpen(true);
+  const handleEdit = (project: IProject) => {
+    setFormState({ open: true, project });
+    reset({ ...project });
   };
 
   const handleDelete = async (id: string) => {
     try {
       await profileService.deleteProject(id);
+      mutate();
     } catch (error) {
-      console.log("error deleting project", error);
+      console.error("Error deleting project:", error);
     }
   };
 
-  const onSubmit = async (formData: Project) => {
+  const onSubmit = async (formData: IProject) => {
     try {
-      const submitData = {
-        ...formData,
-        start_date: format(formData.start_date, "yyyy-MM-dd"),
-        end_date: formData.end_date
-          ? format(formData.end_date, "yyyy-MM-dd")
-          : undefined,
-      };
-
-      if (editingProject && editingProject.id) {
-        await profileService.updateProject(editingProject.id, submitData);
+      formData.start_date = formatDate(formData.start_date);
+      formData.end_date = formData.end_date
+        ? formatDate(formData.end_date)
+        : null;
+      if (formState.project?.id) {
+        await profileService.updateProject(formState.project.id, formData);
       } else {
-        await profileService.createProject(submitData);
+        await profileService.createProject(formData);
       }
-      setIsOpen(false);
+      mutate();
       reset();
+      setFormState({ open: false, project: null });
     } catch (error) {
-      console.log("error submitting project", error);
+      console.error("Error submitting project:", error);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "MMM yyyy");
+    return dateString ? format(new Date(dateString), "yyyy-MM-dd") : "";
   };
 
   return (
@@ -116,10 +124,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
             Add Project
           </Button>
         </div>
-
-        {/* Projects List */}
         <div className="space-y-4">
-          {data.map((project, index) => (
+          {projects.map((project, index) => (
             <motion.div
               key={project.id || index}
               initial={{ opacity: 0, x: -20 }}
@@ -152,24 +158,26 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                       </div>
                     </div>
 
-                    {project.technologies &&
-                      project.technologies.length > 0 && (
+                    {project.technologies_used &&
+                      project.technologies_used.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-3">
-                          {project.technologies.map((tech, techIndex) => (
-                            <Badge
-                              key={techIndex}
-                              variant="secondary"
-                              className="text-xs"
-                            >
-                              {tech}
-                            </Badge>
-                          ))}
+                          {project.technologies_used
+                            .split(",")
+                            .map((tech, techIndex) => (
+                              <Badge
+                                key={techIndex}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {tech}
+                              </Badge>
+                            ))}
                         </div>
                       )}
 
-                    {project.url && (
+                    {project.project_url && (
                       <a
-                        href={project.url}
+                        href={project.project_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-primary hover:text-primary/80 transition-colors"
@@ -203,28 +211,24 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
               </div>
             </motion.div>
           ))}
-
-          {data.length === 0 && (
+          {projects.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Code className="w-12 h-12 mx-auto mb-4 text-gray-300" />
               <p>No projects added yet.</p>
-              <Button onClick={handleAddNew} className="btn-handshake mt-4">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Project
-              </Button>
             </div>
           )}
         </div>
 
-        {/* Add/Edit Dialog */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog
+          open={formState.open}
+          onOpenChange={() => setFormState({ open: false, project: null })}
+        >
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="heading-handshake text-xl">
-                {editingProject ? "Edit Project" : "Add Project"}
+                {formState.project ? "Edit Project" : "Add Project"}
               </DialogTitle>
             </DialogHeader>
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 type="text"
@@ -294,7 +298,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
               <FormField
                 type="text"
                 label="Technologies Used (Optional)"
-                name="technologies"
+                name="technologies_used"
                 register={register}
                 placeholder="e.g., React, Node.js, MongoDB (comma separated)"
               />
@@ -305,7 +309,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
               <div className="action-buttons-handshake">
                 <Button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setFormState({ open: false, project: null })}
                   className="btn-secondary"
                 >
                   <X className="w-4 h-4 mr-2" />
@@ -313,7 +317,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
                 </Button>
                 <Button type="submit" className="btn-handshake">
                   <Save className="w-4 h-4 mr-2" />
-                  {editingProject ? "Update Project" : "Add Project"}
+                  {formState.project ? "Update Project" : "Add Project"}
                 </Button>
               </div>
             </form>
@@ -323,5 +327,4 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ data = [] }) => {
     </motion.div>
   );
 };
-
 export default ProjectForm;

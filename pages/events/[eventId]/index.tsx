@@ -41,10 +41,9 @@ const EventDetail = () => {
     { revalidateOnFocus: false },
   );
 
-  if (!eventId||isLoading) return <Spinner />;
+  if (!eventId || isLoading) return <Spinner />;
 
-
-  const formatDate = (dateString: string|undefined) => {
+  const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "";
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -54,7 +53,7 @@ const EventDetail = () => {
     });
   };
 
-  const formatTime = (dateString: string|undefined) => {
+  const formatTime = (dateString: string | undefined) => {
     if (!dateString) return "";
     return new Date(dateString).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -62,7 +61,7 @@ const EventDetail = () => {
     });
   };
 
-  const getEventTypeColor = (type: string|undefined) => {
+  const getEventTypeColor = (type: string | undefined) => {
     switch (type) {
       case "career_fair":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
@@ -83,7 +82,7 @@ const EventDetail = () => {
     }
   };
 
-  if (error || (!isLoading &&!event)) {
+  if (error || (!isLoading && !event)) {
     return (
       <div className="bg-background overflow-hidden">
         <section className="hero-handshake relative pt-8 pb-16 px-4 overflow-hidden">
@@ -255,17 +254,18 @@ const EventDetail = () => {
                                 ? "Online Event"
                                 : event?.location}
                             </p>
-                            {event?.is_virtual && event?.virtual_meeting_url && (
-                              <a
-                                href={event?.virtual_meeting_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-primary hover:underline flex items-center"
-                              >
-                                Join Meeting
-                                <ExternalLink className="w-3 h-3 ml-1" />
-                              </a>
-                            )}
+                            {event?.is_virtual &&
+                              event?.virtual_meeting_url && (
+                                <a
+                                  href={event?.virtual_meeting_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm text-primary hover:underline flex items-center"
+                                >
+                                  Join Meeting
+                                  <ExternalLink className="w-3 h-3 ml-1" />
+                                </a>
+                              )}
                           </div>
                         </div>
 
@@ -304,7 +304,11 @@ const EventDetail = () => {
                           <Tag className="w-5 h-5 text-primary" />
                           <div className="flex flex-wrap gap-2">
                             {event.tags.split(",").map((tag, index) => (
-                              <Badge key={index} variant="secondary" className="capitalize">
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="capitalize"
+                              >
                                 {tag.trim()}
                               </Badge>
                             ))}
@@ -376,7 +380,7 @@ const EventDetail = () => {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
-                           {event?.organizer_name}
+                            {event?.organizer_name}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {event?.organizer_email}

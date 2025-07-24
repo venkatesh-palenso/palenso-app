@@ -81,10 +81,10 @@ const jobFormSchema = z.object({
 
 type JobFormData = z.infer<typeof jobFormSchema>;
 
-import { EmployerProfile, StudentProfile, Company } from "@/interfaces";
+import { IEmployerProfile } from "@/interfaces";
 
 interface PostJobFormProps {
-  profile?: (EmployerProfile | StudentProfile) & { company?: Company };
+  profile: IEmployerProfile;
 }
 
 const PostJobForm: React.FC<PostJobFormProps> = ({ profile }) => {

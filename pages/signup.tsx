@@ -21,14 +21,14 @@ import {
 } from "@/components/signup";
 
 // interfaces
-import { User as UserInfo } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 
 // layout
 import { Layouts } from "@/layouts";
 
 const SignUpFormWrapper = () => {
   const [step, setStep] = useState(0);
-  const [userData, setUserData] = useState<UserInfo>({} as UserInfo); // persist data across steps
+  const [userData, setUserData] = useState<IUser>({} as IUser); // persist data across steps
   const [mainError] = useState("");
 
   const nextStep = () => setStep((prev) => prev + 1);

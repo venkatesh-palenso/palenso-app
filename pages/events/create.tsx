@@ -4,7 +4,16 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calendar, ArrowLeft, Upload, Save, X, Sparkles, Shield, DollarSign } from "lucide-react";
+import {
+  Calendar,
+  ArrowLeft,
+  Upload,
+  Save,
+  X,
+  Sparkles,
+  Shield,
+  DollarSign,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
@@ -35,7 +44,8 @@ interface EventFormData {
 
 const CreateEvent = () => {
   const router = useRouter();
-  const { isAuthorized, isLoading, user } = useAdminOrEmployerAccess("/dashboard");
+  const { isAuthorized, isLoading, user } =
+    useAdminOrEmployerAccess("/dashboard");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -127,7 +137,7 @@ const CreateEvent = () => {
         virtual_meeting_url: data.online_url,
         max_participants: data.max_attendees,
         is_registration_required: true,
-        registration_fee: data.is_free ? 0 : (data.registration_fee || 0),
+        registration_fee: data.is_free ? 0 : data.registration_fee || 0,
         start_datetime,
         end_datetime,
       };
@@ -229,7 +239,8 @@ const CreateEvent = () => {
                     <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/20 rounded-full">
                       <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                        {user?.role === "admin" ? "Administrator" : "Employer"} Access
+                        {user?.role === "admin" ? "Administrator" : "Employer"}{" "}
+                        Access
                       </span>
                     </div>
                   </div>

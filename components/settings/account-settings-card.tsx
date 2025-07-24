@@ -1,7 +1,13 @@
 import React from "react";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface SettingOption {
   title: string;
@@ -15,17 +21,19 @@ interface AccountSettingsCardProps {
   options?: SettingOption[];
 }
 
-const AccountSettingsCard: React.FC<AccountSettingsCardProps> = ({ 
+const AccountSettingsCard: React.FC<AccountSettingsCardProps> = ({
   options = [
     {
       title: "Email Notifications",
-      description: "Manage your email notification preferences for jobs, events, and updates.",
+      description:
+        "Manage your email notification preferences for jobs, events, and updates.",
       buttonText: "Configure Notifications",
       buttonVariant: "outline",
     },
     {
       title: "Privacy Settings",
-      description: "Control your privacy settings and data sharing preferences.",
+      description:
+        "Control your privacy settings and data sharing preferences.",
       buttonText: "Manage Privacy",
       buttonVariant: "outline",
     },
@@ -35,7 +43,7 @@ const AccountSettingsCard: React.FC<AccountSettingsCardProps> = ({
       buttonText: "Delete Account",
       buttonVariant: "destructive",
     },
-  ]
+  ],
 }) => {
   return (
     <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 shadow-xl">
@@ -51,7 +59,10 @@ const AccountSettingsCard: React.FC<AccountSettingsCardProps> = ({
       <CardContent>
         <div className="space-y-4">
           {options.map((option, index) => (
-            <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+            <div
+              key={index}
+              className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
+            >
               <h4 className="font-medium text-gray-900 dark:text-white mb-2">
                 {option.title}
               </h4>
@@ -78,4 +89,4 @@ const AccountSettingsCard: React.FC<AccountSettingsCardProps> = ({
   );
 };
 
-export default AccountSettingsCard; 
+export default AccountSettingsCard;

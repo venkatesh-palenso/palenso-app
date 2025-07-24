@@ -11,12 +11,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { authService } from "@/services";
-import { User } from "@/interfaces";
+import { IUser } from "@/interfaces";
 import { MediumAvailabilityResponse } from "@/interfaces/auth";
 
 interface MobileVerificationFormProps {
   onSuccess: () => void;
-  userData: User;
+  userData: IUser;
 }
 
 const MobileVerificationForm = ({

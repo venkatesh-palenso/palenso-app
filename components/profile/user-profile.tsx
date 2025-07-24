@@ -1,211 +1,135 @@
-import React, { FC } from "react";
-import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { User, Upload, CheckCircle, Save, Edit3 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FormField } from "@/components/ui/form-field";
-import { userService } from "@/services";
-import { format } from "date-fns";
+// react
+import { FC, useState } from "react";
+
+// next
 import Image from "next/image";
 
-// Zod schema for user profile validation
-const userProfileSchema = z.object({
-  // Basic Information
-  first_name: z
-    .string()
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s]+$/, "First name can only contain letters and spaces"),
+// framer-motion
+import { motion } from "framer-motion";
 
-  last_name: z
-    .string()
-    .min(1, "Last name must be at least 1 character")
-    .max(50, "Last name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s]+$/, "Last name can only contain letters and spaces"),
+// react hook form
+import { useForm } from "react-hook-form";
 
-  email: z
-    .string()
-    .email("Please enter a valid email address")
-    .min(5, "Email must be at least 5 characters")
-    .max(100, "Email must be less than 100 characters"),
+// lucide icons
+import { CheckCircle, Edit3, Save, Upload, User } from "lucide-react";
 
-  mobile_number: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number must be less than 15 digits")
-    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number"),
+// date fns
+import { format } from "date-fns";
 
-  // Personal Information
-  date_of_birth: z
-    .string()
-    .min(1, "Date of birth is required")
-    .refine((date) => {
-      const today = new Date();
-      const birthDate = new Date(date);
-      const age = today.getFullYear() - birthDate.getFullYear();
-      return age >= 13 && age <= 100;
-    }, "You must be between 13 and 100 years old"),
+// interface
+import { IUserProfile } from "@/interfaces";
 
-  gender: z
-    .enum(["male", "female", "other", "prefer_not_to_say"])
-    .optional()
-    .refine((val) => val !== undefined, {
-      message: "Please select a gender",
-    }),
+// components
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
 
-  city: z
-    .string()
-    .min(2, "City must be at least 2 characters")
-    .max(50, "City must be less than 50 characters"),
+// services
+import { mediaService, userService } from "@/services";
 
-  state: z
-    .string()
-    .min(2, "State must be at least 2 characters")
-    .max(50, "State must be less than 50 characters"),
-
-  country: z
-    .string()
-    .min(2, "Country must be at least 2 characters")
-    .max(50, "Country must be less than 50 characters"),
-
-  // Bio
-  bio: z
-    .string()
-    .min(50, "Bio must be at least 50 characters")
-    .max(500, "Bio must be less than 500 characters")
-    .optional(),
-
-  // Social Links
-  linkedin: z
-    .string()
-    .url("Please enter a valid LinkedIn URL")
-    .startsWith("https://", "URL must start with https://")
-    .optional()
-    .or(z.literal("")),
-
-  github: z
-    .string()
-    .url("Please enter a valid GitHub URL")
-    .startsWith("https://", "URL must start with https://")
-    .optional()
-    .or(z.literal("")),
-
-  twitter: z
-    .string()
-    .url("Please enter a valid Twitter URL")
-    .startsWith("https://", "URL must start with https://")
-    .optional()
-    .or(z.literal("")),
-
-  website: z
-    .string()
-    .url("Please enter a valid website URL")
-    .startsWith("https://", "URL must start with https://")
-    .optional()
-    .or(z.literal("")),
-});
-
-type UserProfileFormData = z.infer<typeof userProfileSchema>;
-
-interface UserProfile {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  mobile_number: string;
-  is_email_verified: boolean;
-  is_mobile_verified: boolean;
-  profile: {
-    gender?: "male" | "female" | "other" | "prefer_not_to_say";
-    bio: string;
-    city: string;
-    state: string;
-    country: string;
-    linkedin: string;
-    github: string;
-    twitter: string;
-    website: string;
-    profile_picture_url: string;
-    date_of_birth: string;
-  };
+interface IFormState {
+  mode: "view" | "edit";
+  preview: string | null;
+  file: File | null;
 }
-
-const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(
-    userProfile.profile.profile_picture_url || null,
-  );
-  const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
+const UserProfile: FC<{ data: IUserProfile; mutate: () => void }> = ({
+  data,
+  mutate,
+}) => {
+  const [formState, setFormState] = useState<IFormState>({
+    mode: "view",
+    preview: data.profile_picture_url || null,
+    file: null,
+  });
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
     reset,
     watch,
     setValue,
-  } = useForm<UserProfileFormData>({
-    resolver: zodResolver(userProfileSchema),
+  } = useForm<IUserProfile>({
     defaultValues: {
-      first_name: userProfile.first_name || "",
-      last_name: userProfile.last_name || "",
-      email: userProfile.email || "",
-      mobile_number: userProfile.mobile_number || "",
-      date_of_birth: userProfile.profile.date_of_birth
-        ? format(new Date(userProfile.profile.date_of_birth), "yyyy-MM-dd")
+      first_name: data.first_name || "",
+      last_name: data.last_name || "",
+      email: data.email || "",
+      mobile_number: data.mobile_number || "",
+      date_of_birth: data.date_of_birth
+        ? format(new Date(data.date_of_birth), "yyyy-MM-dd")
         : "",
-      gender: userProfile.profile.gender || undefined,
-      city: userProfile.profile.city || "",
-      state: userProfile.profile.state || "",
-      country: userProfile.profile.country || "",
-      bio: userProfile.profile.bio || "",
-      linkedin: userProfile.profile.linkedin || "",
-      github: userProfile.profile.github || "",
-      twitter: userProfile.profile.twitter || "",
-      website: userProfile.profile.website || "",
+      gender: data.gender || undefined,
+      city: data.city || "",
+      state: data.state || "",
+      country: data.country || "",
+      bio: data.bio || "",
+      linkedin: data.linkedin || "",
+      github: data.github || "",
+      twitter: data.twitter || "",
+      website: data.website || "",
     },
   });
+
+  const handleFormState = (mode: "view" | "edit") => {
+    setFormState({
+      ...formState,
+      mode,
+    });
+  };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setAvatarFile(file);
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string);
+      reader.onload = (event) => {
+        setFormState((prevState) => ({
+          ...prevState,
+          file,
+          preview: event.target?.result as string,
+        }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const onSubmitForm = async (data: UserProfileFormData) => {
-    setIsLoading(true);
+  const onSubmitForm = async (payload: IUserProfile) => {
+    console.log(payload, formState);
     try {
-      // Update user profile
-      await userService.updateProfile(userProfile.id, data);
-
       // Update avatar if changed
-      if (avatarFile) {
+      if (formState.file) {
         // Handle avatar upload logic here
-        // await mediaService.uploadAvatar(avatarFile);
+        const formData = new FormData();
+        formData.append("file", formState.file);
+        formData.append("asset_type", "profile_picture");
+        const response = await mediaService.uploadFile(formData);
+        payload["profile_picture_url"] = response.display_url;
       }
+      payload["date_of_birth"] = payload["date_of_birth"]
+        ? format(new Date(payload["date_of_birth"]), "yyyy-MM-dd")
+        : "";
+      // Update user profile
+      const response = await userService.updateProfile(data.user_id, payload);
 
-      setIsEditing(false);
-      setAvatarFile(null);
-      reset(data);
+      setFormState({
+        mode: "view",
+        file: null,
+        preview: null,
+      });
+
+      reset({ ...response });
+      mutate();
     } catch (error) {
       console.error("Error updating profile:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   // Check if form is dirty or avatar has changed
-  const hasChanges = isDirty || avatarFile !== null;
+  const hasChanges = isDirty || formState.file !== null;
+  const isEditing = formState.mode === "edit";
 
+  let avatarUrl = data.profile_picture_url ?? "/default-avatar.png";
+  if (isEditing && formState.preview) {
+    avatarUrl = formState.preview;
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -218,35 +142,27 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
             <User className="w-8 h-8 text-primary" />
             <h2 className="heading-handshake text-2xl">Personal Information</h2>
           </div>
-          <Button
-            onClick={() => {
-              if (isEditing) {
-                // Cancel editing - reset everything
-                setIsEditing(false);
+
+          {isEditing ? (
+            <Button
+              onClick={() => {
+                handleFormState("view");
                 reset();
-                setAvatarPreview(
-                  userProfile.profile.profile_picture_url || null,
-                );
-                setAvatarFile(null);
-              } else {
-                // Start editing
-                setIsEditing(true);
-              }
-            }}
-            className="btn-secondary"
-          >
-            {isEditing ? (
-              <>
-                <Edit3 className="w-4 h-4 mr-2" />
-                Cancel
-              </>
-            ) : (
-              <>
-                <Edit3 className="w-4 h-4 mr-2" />
-                Edit Profile
-              </>
-            )}
-          </Button>
+              }}
+              className="btn-secondary"
+            >
+              <Edit3 className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              onClick={() => handleFormState("edit")}
+              className="btn-secondary"
+            >
+              <Edit3 className="w-4 h-4 mr-2" />
+              Edit Profile
+            </Button>
+          )}
         </div>
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-8">
@@ -256,14 +172,9 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               {isEditing ? (
                 <label className="cursor-pointer">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
-                    {avatarPreview ||
-                    userProfile.profile.profile_picture_url ? (
+                    {data.profile_picture_url || formState.preview ? (
                       <Image
-                        src={
-                          avatarPreview ||
-                          userProfile.profile.profile_picture_url ||
-                          "/default-avatar.png"
-                        }
+                        src={avatarUrl}
                         alt="Profile"
                         className="w-full h-full object-cover"
                         width={100}
@@ -272,8 +183,8 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
                     ) : (
                       <div className="w-full h-full bg-primary/10 flex items-center justify-center">
                         <span className="text-2xl font-semibold text-primary">
-                          {userProfile.first_name.charAt(0).toUpperCase()}
-                          {userProfile.last_name.charAt(0).toUpperCase()}
+                          {data.first_name.charAt(0).toUpperCase()}
+                          {data.last_name.charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
@@ -290,11 +201,11 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
                 </label>
               ) : (
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 mx-auto mb-4 relative">
-                  {avatarPreview || userProfile.profile.profile_picture_url ? (
+                  {formState.preview || data.profile_picture_url ? (
                     <Image
                       src={
-                        avatarPreview ||
-                        userProfile.profile.profile_picture_url ||
+                        formState.preview ||
+                        data.profile_picture_url ||
                         "/default-avatar.png"
                       }
                       alt="Profile"
@@ -305,14 +216,14 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
                   ) : (
                     <div className="w-full h-full bg-primary/10 flex items-center justify-center">
                       <span className="text-2xl font-semibold text-primary">
-                        {userProfile.first_name.charAt(0).toUpperCase()}
-                        {userProfile.last_name.charAt(0).toUpperCase()}
+                        {data.first_name.charAt(0).toUpperCase()}
+                        {data.last_name.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
                 </div>
               )}
-              {avatarFile && (
+              {formState.file && (
                 <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   New
                 </div>
@@ -356,7 +267,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               required
               disabled={!isEditing}
               rightIcon={
-                userProfile.is_email_verified ? (
+                data.is_email_verified ? (
                   <CheckCircle className="text-green-500 w-5 h-5" />
                 ) : undefined
               }
@@ -372,7 +283,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               required
               disabled={!isEditing}
               rightIcon={
-                userProfile.is_mobile_verified ? (
+                data.is_mobile_verified ? (
                   <CheckCircle className="text-green-500 w-5 h-5" />
                 ) : undefined
               }
@@ -417,6 +328,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               type="text"
               label="City"
               name="city"
+              placeholder="Enter your city"
               register={register}
               error={errors.city}
               required
@@ -427,6 +339,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               type="text"
               label="State"
               name="state"
+              placeholder="Enter your state"
               register={register}
               error={errors.state}
               required
@@ -437,6 +350,7 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               type="text"
               label="Country"
               name="country"
+              placeholder="Enter your country"
               register={register}
               error={errors.country}
               required
@@ -505,12 +419,8 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               <Button
                 type="button"
                 onClick={() => {
-                  setIsEditing(false);
+                  handleFormState("view");
                   reset();
-                  setAvatarPreview(
-                    userProfile.profile.profile_picture_url || null,
-                  );
-                  setAvatarFile(null);
                 }}
                 className="btn-secondary"
               >
@@ -518,10 +428,10 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading || !hasChanges}
+                disabled={isSubmitting || !hasChanges}
                 className="btn-handshake"
               >
-                {isLoading ? (
+                {isSubmitting ? (
                   <div className="loading-handshake w-4 h-4" />
                 ) : (
                   <>
@@ -537,5 +447,4 @@ const UserProfileForm: FC<{ data: UserProfile }> = ({ data: userProfile }) => {
     </motion.div>
   );
 };
-
-export default UserProfileForm;
+export default UserProfile;
