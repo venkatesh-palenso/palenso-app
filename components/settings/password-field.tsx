@@ -1,11 +1,14 @@
 import React from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { UseFormRegister } from "react-hook-form";
+
 
 interface PasswordFieldProps {
   name: string;
   label: string;
   placeholder: string;
-  register: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  register: UseFormRegister<any>;
   error?: string;
   isVisible: boolean;
   onToggleVisibility: () => void;

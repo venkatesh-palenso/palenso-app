@@ -6,7 +6,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { AlertCircle, ChevronDownIcon, Clock } from "lucide-react";
+import { AlertCircle, ChevronDownIcon } from "lucide-react";
 
 // components
 import { Input } from "@/components/ui/input";

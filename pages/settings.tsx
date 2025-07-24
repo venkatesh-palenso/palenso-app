@@ -12,14 +12,10 @@ import {
   SettingsHeader,
 } from "@/components/settings";
 
-// context
-import { useUser } from "@/context";
-
 // layout
 import { Layouts } from "@/layouts";
 
 const SettingsPage = () => {
-  const { user } = useUser();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
