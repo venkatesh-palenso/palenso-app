@@ -13,6 +13,7 @@ import { Briefcase, Sparkles } from "lucide-react";
 // components
 import PostJobForm from "@/components/job/post";
 import Spinner from "@/components/spinner";
+import AccessDenied from "@/components/ui/access-denied";
 
 // context
 import { useUser } from "@/context";
@@ -23,15 +24,39 @@ import { Layouts } from "@/layouts";
 // services
 import { userService } from "@/services";
 
+// hooks
+import { useEmployerAccess } from "@/hooks";
+
 const PostJobPage = () => {
   const { user } = useUser();
-  const { data: profile, isLoading } = useSWR(
+  const { isAuthorized, isLoading: authLoading } = useEmployerAccess("/dashboard");
+  const { data: profile, isLoading: profileLoading } = useSWR(
     user?.id ? "FETCH_COMPANY_PROFILE" : null,
     user?.id ? () => userService.getProfile(user.id) : null,
     { revalidateOnFocus: false },
   );
 
-  if (isLoading) return <Spinner />;
+  // Show loading state
+  if (authLoading || profileLoading) return <Spinner />;
+
+  // Show unauthorized access message
+  if (!isAuthorized) {
+    return (
+      <AccessDenied
+        title="Access Denied"
+        message="Only employers can post job listings. You don't have permission to access this page."
+        primaryAction={{
+          label: "Go to Dashboard",
+          onClick: () => window.location.href = "/dashboard",
+        }}
+        secondaryAction={{
+          label: "View Jobs",
+          onClick: () => window.location.href = "/jobs",
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <Head>

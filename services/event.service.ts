@@ -124,28 +124,15 @@ class EventService extends APIService {
    * @returns A promise that resolves to the event registration.
    */
   registerForEvent(
-    eventId: string,
     data: CreateEventRegistrationForm,
   ): Promise<EventRegistration> {
-    return this.post(EVENT_ENDPOINTS.REGISTER_FOR_EVENT(eventId), data)
+    return this.post(EVENT_ENDPOINTS.EVENT_REGISTRATIONS, data)
       .then((response) => response.data)
       .catch((error) => {
         throw error;
       });
   }
 
-  /**
-   * Unregisters from an event.
-   * @param eventId - The ID of the event to unregister from.
-   * @returns A promise that resolves to the unregistered event.
-   */
-  unregisterFromEvent(eventId: string): Promise<EventRegistration> {
-    return this.post(EVENT_ENDPOINTS.UNREGISTER_FOR_EVENT(eventId))
-      .then((response) => response.data)
-      .catch((error) => {
-        throw error;
-      });
-  }
 
   /**
    * Gets event registrations for a specific event.
@@ -153,7 +140,7 @@ class EventService extends APIService {
    * @returns A promise that resolves to an array of event registrations.
    */
   getEventRegistrations(eventId: string): Promise<EventRegistration[]> {
-    return this.get(EVENT_ENDPOINTS.EVENT_REGISTRATIONS(eventId))
+    return this.get(EVENT_ENDPOINTS.EVENT_REGISTRATION_DETAIL(eventId))
       .then((response) => response.data)
       .catch((error) => {
         throw error;

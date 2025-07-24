@@ -2,6 +2,9 @@
 export interface Event {
   id: string;
   organizer_id: string;
+  organizer_name: string;
+  organizer_email: string;
+  organizer_phone?: string;
   company_id?: string;
   title: string;
   description: string;
@@ -87,6 +90,10 @@ export interface UpdateEventForm extends Partial<CreateEventForm> {
 
 // Event registration form interface
 export interface CreateEventRegistrationForm {
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
   event_id: string;
   dietary_restrictions?: string;
   special_requirements?: string;

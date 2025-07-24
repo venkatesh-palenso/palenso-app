@@ -9,6 +9,7 @@ export const AUTH_ENDPOINTS = {
   CHECK_MEDIUM_AVAILABILITY: "/api/auth/check-medium-availability",
   REQUEST_MEDIUM_VERIFICATION: "/api/auth/request-medium-verification",
   VERIFY_MEDIUM: "/api/auth/verify-medium",
+  CHECK_USER_EXISTENCE: "/api/auth/check-user-existence"
 };
 
 // media endpoint
@@ -33,11 +34,8 @@ export const COMPANY_ENDPOINTS = {
 export const EVENT_ENDPOINTS = {
   LIST_CREATE_EVENT: "/api/events",
   EVENT_DETAIL: (eventId: string) => `/api/events/${eventId}`,
-  EVENT_REGISTRATIONS: (eventId: string) =>
-    `/api/events/${eventId}/registrations`,
-  REGISTER_FOR_EVENT: (eventId: string) => `/api/events/${eventId}/register`,
-  UNREGISTER_FOR_EVENT: (eventId: string) =>
-    `/api/events/${eventId}/unregister`,
+  EVENT_REGISTRATIONS: `/api/event-registrations`,
+  EVENT_REGISTRATION_DETAIL: (eventId: string) => `/api/event-registrations/${eventId}`,
 };
 
 // job endpoints

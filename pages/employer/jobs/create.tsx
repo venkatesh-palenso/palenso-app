@@ -41,9 +41,12 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Layouts } from "@/layouts";
+import { useEmployerAccess } from "@/hooks";
+import AccessDenied from "@/components/ui/access-denied";
 
 const CreateJobPage = () => {
   const router = useRouter();
+  const { isAuthorized, isLoading } = useEmployerAccess("/dashboard");
   const [isPreview, setIsPreview] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -79,6 +82,36 @@ const CreateJobPage = () => {
     // Redirect to job management page
     router.push("/employer/jobs");
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show unauthorized access message
+  if (!isAuthorized) {
+    return (
+      <AccessDenied
+        title="Access Denied"
+        message="Only employers can create job postings. You don't have permission to access this page."
+        primaryAction={{
+          label: "Go to Dashboard",
+          onClick: () => router.push("/dashboard"),
+        }}
+        secondaryAction={{
+          label: "View Jobs",
+          onClick: () => router.push("/jobs"),
+        }}
+      />
+    );
+  }
 
   const jobTypes = [
     { value: "full-time", label: "Full Time" },

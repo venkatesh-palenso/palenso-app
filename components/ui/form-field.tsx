@@ -6,7 +6,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { AlertCircle, ChevronDownIcon } from "lucide-react";
+import { AlertCircle, ChevronDownIcon, Clock } from "lucide-react";
 
 // components
 import { Input } from "@/components/ui/input";
@@ -84,12 +84,23 @@ interface DateFieldProps extends BaseFormFieldProps {
   disabled?: boolean;
 }
 
+interface TimeFieldProps extends BaseFormFieldProps {
+  type: "time";
+  placeholder?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setValue: UseFormSetValue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  watch: UseFormWatch<any>;
+  disabled?: boolean;
+}
+
 type FormFieldProps =
   | InputFormFieldProps
   | TextareaFormFieldProps
   | SelectFormFieldProps
   | PhoneFormFieldProps
-  | DateFieldProps;
+  | DateFieldProps
+  | TimeFieldProps;
 
 const FormField: React.FC<FormFieldProps> = (props) => {
   const {
@@ -204,6 +215,24 @@ const FormField: React.FC<FormFieldProps> = (props) => {
               />
             </PopoverContent>
           </Popover>
+        </div>
+      );
+    }
+
+    if (props.type === "time") {
+      return (
+        <div
+          className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent ${error ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500" : ""} ${className}`}
+        >
+          <Input
+            id={name}
+            type="time"
+            value={props.watch(name) || ""}
+            onChange={(e) => props.setValue(name, e.target.value)}
+            placeholder={props.placeholder || "Select time"}
+            disabled={disabled}
+            className="border-0 px-4 py-3 focus:ring-0 focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:border-0 focus-visible:outline-none bg-transparent appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          />
         </div>
       );
     }

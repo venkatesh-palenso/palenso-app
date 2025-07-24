@@ -22,6 +22,7 @@ import {
   ChangePasswordForm,
   MessageResponse,
   MediumAvailabilityForm,
+  CheckUserExistenceForm,
 } from "@/interfaces/auth";
 
 class AuthService extends APIService {
@@ -241,6 +242,16 @@ class AuthService extends APIService {
    */
   changePassword(data: ChangePasswordForm) {
     return this.post(AUTH_ENDPOINTS.USER_CHANGE_PASSWORD, data)
+      .then((response: { data: MessageResponse }) => {
+        return response.data.message;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  checkUserExistence(data: CheckUserExistenceForm) {
+    return this.post(AUTH_ENDPOINTS.CHECK_USER_EXISTENCE, data)
       .then((response: { data: MessageResponse }) => {
         return response.data.message;
       })

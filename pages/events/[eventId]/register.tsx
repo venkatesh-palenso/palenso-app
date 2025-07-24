@@ -60,7 +60,7 @@ import Image from "next/image";
 
 const registrationSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  lastName: z.string().min(1, "Last name must be at least 1 characters"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().optional(),
   university: z.string().optional(),
@@ -155,23 +155,18 @@ const RegisterEventPage = () => {
     try {
       // Here you would typically call the registration API
       const registrationData: CreateEventRegistrationForm = {
-        event_id: event.id,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        mobile_number: data.phone as string,
+        event_id: eventId as string,
         dietary_restrictions: data.dietaryRestrictions,
         special_requirements: data.specialNeeds,
         notes: data.interests,
       };
 
-      console.log("Registering for event:", {
-        eventId,
-        data,
-        registrationData,
-      });
+    await eventService.registerForEvent(registrationData)
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Redirect to confirmation page
-      router.push(`/events/${eventId}/confirmation`);
     } catch (err) {
       setError("Registration failed. Please try again.");
       console.error("Registration error:", err);

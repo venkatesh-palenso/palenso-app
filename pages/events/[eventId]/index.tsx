@@ -41,8 +41,49 @@ const EventDetail = () => {
     { revalidateOnFocus: false },
   );
 
-  if (isLoading) return <Spinner />;
-  if (error || !event) {
+  if (!eventId||isLoading) return <Spinner />;
+
+
+  const formatDate = (dateString: string|undefined) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (dateString: string|undefined) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getEventTypeColor = (type: string|undefined) => {
+    switch (type) {
+      case "career_fair":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "workshop":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "networking":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+      case "conference":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200";
+      case "seminar":
+        return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200";
+      case "hackathon":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      case "webinar":
+        return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+    }
+  };
+
+  if (error || (!isLoading &&!event)) {
     return (
       <div className="bg-background overflow-hidden">
         <section className="hero-handshake relative pt-8 pb-16 px-4 overflow-hidden">
@@ -78,50 +119,13 @@ const EventDetail = () => {
     );
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getEventTypeColor = (type: string) => {
-    switch (type) {
-      case "career_fair":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      case "workshop":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-      case "networking":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-      case "conference":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200";
-      case "seminar":
-        return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200";
-      case "hackathon":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-      case "webinar":
-        return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
-    }
-  };
-
   return (
     <>
       <Head>
-        <title>{event.title} - Palenso</title>
+        <title>{event?.title} - Palenso</title>
         <meta
           name="description"
-          content={event.description.substring(0, 160)}
+          content={event?.description.substring(0, 160)}
         />
       </Head>
       <div className="bg-background overflow-hidden">
@@ -204,20 +208,20 @@ const EventDetail = () => {
                     <div className="space-y-6">
                       <div>
                         <Badge
-                          className={`${getEventTypeColor(event.event_type)} mb-4`}
+                          className={`${getEventTypeColor(event?.event_type)} mb-4`}
                         >
-                          {event.event_type.replace("_", " ").toUpperCase()}
+                          {event?.event_type.replace("_", " ").toUpperCase()}
                         </Badge>
                         <h1 className="heading-handshake text-3xl mb-4">
-                          {event.title}
+                          {event?.title}
                         </h1>
                         <p className="text-muted-foreground leading-relaxed">
-                          {event.description}
+                          {event?.description}
                         </p>
                       </div>
 
                       {/* Event Image */}
-                      {event.banner_image_url && (
+                      {event?.banner_image_url && (
                         <div className="relative h-64 rounded-lg overflow-hidden">
                           <Image
                             src={event.banner_image_url}
@@ -234,11 +238,11 @@ const EventDetail = () => {
                           <Calendar className="w-5 h-5 text-primary" />
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {formatDate(event.start_date)}
+                              {formatDate(event?.start_date)}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {formatTime(event.start_date)} -{" "}
-                              {formatTime(event.end_date)}
+                              {formatTime(event?.start_date)} -{" "}
+                              {formatTime(event?.end_date)}
                             </p>
                           </div>
                         </div>
@@ -247,13 +251,13 @@ const EventDetail = () => {
                           <MapPin className="w-5 h-5 text-primary" />
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {event.is_virtual
+                              {event?.is_virtual
                                 ? "Online Event"
-                                : event.location}
+                                : event?.location}
                             </p>
-                            {event.is_virtual && event.virtual_meeting_url && (
+                            {event?.is_virtual && event?.virtual_meeting_url && (
                               <a
-                                href={event.virtual_meeting_url}
+                                href={event?.virtual_meeting_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-primary hover:underline flex items-center"
@@ -265,7 +269,7 @@ const EventDetail = () => {
                           </div>
                         </div>
 
-                        {event.max_participants && (
+                        {event?.max_participants && (
                           <div className="flex items-center space-x-3">
                             <Users className="w-5 h-5 text-primary" />
                             <div>
@@ -279,7 +283,7 @@ const EventDetail = () => {
                           </div>
                         )}
 
-                        {event.registration_deadline && (
+                        {event?.registration_deadline && (
                           <div className="flex items-center space-x-3">
                             <Clock className="w-5 h-5 text-primary" />
                             <div>
@@ -295,12 +299,12 @@ const EventDetail = () => {
                       </div>
 
                       {/* Tags */}
-                      {event.tags && (
+                      {event?.tags && (
                         <div className="flex items-center space-x-3">
                           <Tag className="w-5 h-5 text-primary" />
                           <div className="flex flex-wrap gap-2">
                             {event.tags.split(",").map((tag, index) => (
-                              <Badge key={index} variant="secondary">
+                              <Badge key={index} variant="secondary" className="capitalize">
                                 {tag.trim()}
                               </Badge>
                             ))}
@@ -309,7 +313,7 @@ const EventDetail = () => {
                       )}
 
                       {/* Requirements */}
-                      {event.requirements && (
+                      {event?.requirements && (
                         <div>
                           <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                             Requirements
@@ -331,7 +335,7 @@ const EventDetail = () => {
                       Registration
                     </h3>
 
-                    {event.registration_fee > 0 ? (
+                    {event?.registration_fee && event?.registration_fee > 0 ? (
                       <div className="flex items-center space-x-2 mb-4">
                         <DollarSign className="w-5 h-5 text-primary" />
                         <span className="font-semibold text-gray-900 dark:text-white">
@@ -353,7 +357,7 @@ const EventDetail = () => {
                       </Button>
                     </Link>
 
-                    {event.is_registration_required && (
+                    {event?.is_registration_required && (
                       <p className="text-xs text-muted-foreground mt-2 text-center">
                         Registration required to attend
                       </p>
@@ -372,10 +376,13 @@ const EventDetail = () => {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
-                            Event Organizer
+                           {event?.organizer_name}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            Palenso Community
+                            {event?.organizer_email}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {event?.organizer_phone}
                           </p>
                         </div>
                       </div>

@@ -77,3 +77,8 @@ export interface ChangePasswordForm {
   new_password: string;
   confirm_password: string;
 }
+
+export interface CheckUserExistenceForm{
+email?: string;
+mobile_number?: string;
+}

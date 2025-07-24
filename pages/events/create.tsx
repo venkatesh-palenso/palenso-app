@@ -4,14 +4,15 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calendar, ArrowLeft, Upload, Save, X, Sparkles } from "lucide-react";
+import { Calendar, ArrowLeft, Upload, Save, X, Sparkles, Shield, DollarSign } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
-import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Layouts } from "@/layouts";
 import { eventService, mediaService } from "@/services";
-import { useUser } from "@/context";
+import { useAdminOrEmployerAccess } from "@/hooks";
+import AccessDenied from "@/components/ui/access-denied";
 
 interface EventFormData {
   title: string;
@@ -27,10 +28,14 @@ interface EventFormData {
   max_attendees?: number;
   registration_deadline: string;
   tags?: string;
+  is_free: boolean;
+  registration_fee?: number;
+  currency: string;
 }
 
 const CreateEvent = () => {
-  const { user } = useUser();
+  const router = useRouter();
+  const { isAuthorized, isLoading, user } = useAdminOrEmployerAccess("/dashboard");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -43,6 +48,9 @@ const CreateEvent = () => {
   } = useForm<EventFormData>({
     defaultValues: {
       is_online: false,
+      is_free: false,
+      registration_fee: 0,
+      currency: "USD",
     },
   });
 
@@ -57,6 +65,15 @@ const CreateEvent = () => {
     { value: "other", label: "Other" },
   ];
 
+  const currencyOptions = [
+    { value: "USD", label: "USD ($)" },
+    { value: "EUR", label: "EUR (€)" },
+    { value: "GBP", label: "GBP (£)" },
+    { value: "CAD", label: "CAD (C$)" },
+    { value: "AUD", label: "AUD (A$)" },
+    { value: "INR", label: "INR (₹)" },
+  ];
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -67,6 +84,15 @@ const CreateEvent = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Function to format date and time into ISO datetime string
+  const formatDateTime = (date: string, time: string): string => {
+    if (!date || !time) return "";
+    const [hours, minutes] = time.split(":");
+    const dateObj = new Date(date);
+    dateObj.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+    return dateObj.toISOString();
   };
 
   const onSubmit = async (data: EventFormData) => {
@@ -81,6 +107,10 @@ const CreateEvent = () => {
         imageUrl = response.display_url;
       }
 
+      // Format start and end datetime
+      const start_datetime = formatDateTime(data.start_date, data.start_time);
+      const end_datetime = formatDateTime(data.end_date, data.end_time);
+
       const eventData = {
         ...data,
         event_type: data.event_type as
@@ -92,13 +122,14 @@ const CreateEvent = () => {
           | "webinar"
           | "other"
           | "career_fair",
-        image_url: imageUrl,
+        banner_image_url: imageUrl,
         is_virtual: data.is_online,
         virtual_meeting_url: data.online_url,
         max_participants: data.max_attendees,
         is_registration_required: true,
-        registration_fee: 0,
-        organizer: user?.id,
+        registration_fee: data.is_free ? 0 : (data.registration_fee || 0),
+        start_datetime,
+        end_datetime,
       };
 
       await eventService.createEvent(eventData);
@@ -108,7 +139,35 @@ const CreateEvent = () => {
     }
   };
 
-  const router = useRouter();
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show unauthorized access message
+  if (!isAuthorized) {
+    return (
+      <AccessDenied
+        title="Access Denied"
+        message="Only administrators and employers can create events. You don't have permission to access this page."
+        primaryAction={{
+          label: "Go to Dashboard",
+          onClick: () => router.push("/dashboard"),
+        }}
+        secondaryAction={{
+          label: "View Events",
+          onClick: () => router.push("/events"),
+        }}
+      />
+    );
+  }
 
   return (
     <>
@@ -165,6 +224,15 @@ const CreateEvent = () => {
                   <p className="heading-handshake-subtitle text-xl max-w-2xl mx-auto">
                     Share your event with the Palenso community
                   </p>
+                  {/* Role indicator */}
+                  <div className="mt-4 flex items-center justify-center gap-2">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+                      <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                        {user?.role === "admin" ? "Administrator" : "Employer"} Access
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -198,35 +266,37 @@ const CreateEvent = () => {
                       Basic Information
                     </h2>
 
-                    <FormField
-                      label="Event Title"
-                      name="title"
-                      type="text"
-                      placeholder="Enter event title"
-                      register={register}
-                      error={errors.title}
-                      required
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Event Title"
+                        name="title"
+                        type="text"
+                        placeholder="Enter event title"
+                        register={register}
+                        error={errors.title}
+                        required
+                      />
+
+                      <FormField
+                        label="Event Type"
+                        name="event_type"
+                        type="select"
+                        placeholder="Select event type"
+                        options={eventTypeOptions}
+                        setValue={setValue}
+                        watch={watch}
+                        error={errors.event_type}
+                        required
+                      />
+                    </div>
 
                     <FormField
                       label="Description"
                       name="description"
                       type="textarea"
-                      placeholder="Describe your event"
+                      placeholder="Describe your event..."
                       register={register}
                       error={errors.description}
-                      rows={4}
-                      required
-                    />
-
-                    <FormField
-                      label="Event Type"
-                      name="event_type"
-                      type="select"
-                      placeholder="Select event type"
-                      options={eventTypeOptions}
-                      setValue={setValue}
-                      watch={watch}
                       required
                     />
                   </div>
@@ -234,16 +304,17 @@ const CreateEvent = () => {
                   {/* Date and Time */}
                   <div className="space-y-6">
                     <h2 className="heading-handshake text-2xl mb-4">
-                      Date & Time
+                      Date and Time
                     </h2>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         label="Start Date"
                         name="start_date"
                         type="date"
                         setValue={setValue}
                         watch={watch}
+                        error={errors.start_date}
                         required
                       />
 
@@ -253,17 +324,18 @@ const CreateEvent = () => {
                         type="date"
                         setValue={setValue}
                         watch={watch}
+                        error={errors.end_date}
                         required
                       />
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
                         label="Start Time"
                         name="start_time"
-                        type="text"
-                        placeholder="09:00 AM"
-                        register={register}
+                        type="time"
+                        setValue={setValue}
+                        watch={watch}
                         error={errors.start_time}
                         required
                       />
@@ -271,71 +343,30 @@ const CreateEvent = () => {
                       <FormField
                         label="End Time"
                         name="end_time"
-                        type="text"
-                        placeholder="05:00 PM"
-                        register={register}
+                        type="time"
+                        setValue={setValue}
+                        watch={watch}
                         error={errors.end_time}
                         required
                       />
                     </div>
                   </div>
 
-                  {/* Location */}
+                  {/* Location and Registration */}
                   <div className="space-y-6">
                     <h2 className="heading-handshake text-2xl mb-4">
-                      Location
+                      Location and Registration
                     </h2>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-4">
-                        <input
-                          type="checkbox"
-                          id="is_online"
-                          {...register("is_online")}
-                          className="rounded border-gray-300"
-                        />
-                        <Label htmlFor="is_online">
-                          This is an online event
-                        </Label>
-                      </div>
-
-                      {watch("is_online") ? (
-                        <FormField
-                          label="Online URL"
-                          name="online_url"
-                          type="url"
-                          placeholder="https://meet.google.com/..."
-                          register={register}
-                          error={errors.online_url}
-                        />
-                      ) : (
-                        <FormField
-                          label="Location"
-                          name="location"
-                          type="text"
-                          placeholder="Enter event location"
-                          register={register}
-                          error={errors.location}
-                          required
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Additional Details */}
-                  <div className="space-y-6">
-                    <h2 className="heading-handshake text-2xl mb-4">
-                      Additional Details
-                    </h2>
-
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField
-                        label="Max Attendees"
-                        name="max_attendees"
-                        type="number"
-                        placeholder="100"
+                        label="Location"
+                        name="location"
+                        type="text"
+                        placeholder="Enter event location"
                         register={register}
-                        error={errors.max_attendees}
+                        error={errors.location}
+                        required
                       />
 
                       <FormField
@@ -344,18 +375,85 @@ const CreateEvent = () => {
                         type="date"
                         setValue={setValue}
                         watch={watch}
+                        error={errors.registration_deadline}
                         required
                       />
                     </div>
 
-                    <FormField
-                      label="Tags"
-                      name="tags"
-                      type="text"
-                      placeholder="career, networking, technology"
-                      register={register}
-                      error={errors.tags}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Maximum Attendees"
+                        name="max_attendees"
+                        type="number"
+                        placeholder="100"
+                        register={register}
+                        error={errors.max_attendees}
+                      />
+
+                      <FormField
+                        label="Tags"
+                        name="tags"
+                        type="text"
+                        placeholder="tech, networking, career"
+                        register={register}
+                        error={errors.tags}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Registration Fee */}
+                  <div className="space-y-6">
+                    <h2 className="heading-handshake text-2xl mb-4 flex items-center gap-2">
+                      <DollarSign className="w-6 h-6 text-green-600" />
+                      Registration Fee
+                    </h2>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="is_free"
+                          checked={watch("is_free")}
+                          onCheckedChange={(checked) => {
+                            setValue("is_free", checked as boolean);
+                            if (checked) {
+                              setValue("registration_fee", 0);
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor="is_free"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          This is a free event
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        label="Registration Fee"
+                        name="registration_fee"
+                        type="number"
+                        placeholder="25.00"
+                        register={register}
+                        error={errors.registration_fee}
+                        required={!watch("is_free")}
+                        disabled={watch("is_free")}
+                      />
+
+                      <FormField
+                        label="Currency"
+                        name="currency"
+                        type="select"
+                        placeholder="Select currency"
+                        options={currencyOptions}
+                        setValue={setValue}
+                        watch={watch}
+                        error={errors.currency}
+                        required={!watch("is_free")}
+                        disabled={watch("is_free")}
+                      />
+                    </div>
                   </div>
 
                   {/* Event Image */}
@@ -451,5 +549,7 @@ const CreateEvent = () => {
   );
 };
 
-CreateEvent.getLayout = Layouts.Employer;
+// Dynamic layout based on user role
+CreateEvent.getLayout = Layouts.Protected;
+
 export default CreateEvent;
