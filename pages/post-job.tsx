@@ -26,6 +26,8 @@ import { userService } from "@/services";
 
 // hooks
 import { useEmployerAccess } from "@/hooks";
+
+// interfaces
 import { IEmployerProfile } from "@/interfaces";
 
 const PostJobPage = () => {

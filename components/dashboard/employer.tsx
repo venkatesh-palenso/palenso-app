@@ -34,6 +34,7 @@ import {
   DashboardEvent,
   EmployerAnalytics,
 } from "@/interfaces";
+import Link from "next/link";
 
 interface EmployerDashboardProps {
   analytics: EmployerAnalytics;
@@ -332,10 +333,12 @@ const EmployerDashboard: React.FC<EmployerDashboardProps> = ({
               <div className="feature-card-handshake p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="heading-handshake text-xl">Active Jobs</h2>
-                  <Button className="btn-handshake btn-sm">
-                    <Plus className="w-3 h-3 mr-1" />
-                    Post Job
-                  </Button>
+                  <Link href="/post-job">
+                    <Button className="btn-handshake btn-sm">
+                      <Plus className="w-3 h-3 mr-1" />
+                      Post Job
+                    </Button>
+                  </Link>
                 </div>
 
                 <div className="space-y-4">

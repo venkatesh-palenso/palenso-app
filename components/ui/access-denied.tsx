@@ -47,12 +47,19 @@ const AccessDenied: React.FC<AccessDeniedProps> = ({
         <p className="text-gray-600 dark:text-gray-300 mb-6">{message}</p>
         <div className="flex gap-3 justify-center">
           {primaryAction && (
-            <Button onClick={primaryAction.onClick}>
+            <Button
+              onClick={primaryAction.onClick}
+              className="text-white cursor-pointer"
+            >
               {primaryAction.label}
             </Button>
           )}
           {secondaryAction && (
-            <Button variant="outline" onClick={secondaryAction.onClick}>
+            <Button
+              variant="outline"
+              onClick={secondaryAction.onClick}
+              className="cursor-pointer"
+            >
               {secondaryAction.label}
             </Button>
           )}

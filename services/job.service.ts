@@ -121,11 +121,8 @@ class JobService extends APIService {
    * @param data - The application data.
    * @returns A promise that resolves to the job application.
    */
-  applyForJob(
-    jobId: string,
-    data: CreateJobApplicationForm,
-  ): Promise<JobApplication> {
-    return this.post(JOB_ENDPOINTS.APPLY_FOR_JOB(jobId), data)
+  applyForJob(data: CreateJobApplicationForm): Promise<JobApplication> {
+    return this.post(JOB_ENDPOINTS.APPLY_FOR_JOB, data)
       .then((response) => response.data)
       .catch((error) => {
         throw error;

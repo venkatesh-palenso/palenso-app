@@ -45,7 +45,7 @@ const PasswordCard: React.FC = () => {
           </p>
           <Button
             onClick={toggleForm}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+            className="text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
           >
             <Lock className="mr-2 h-4 w-4" />
             Change Password

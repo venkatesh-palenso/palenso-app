@@ -1,30 +1,6 @@
-// react
-import React, { useState, useEffect } from "react";
-
-// next
-import Link from "next/link";
-import { useRouter } from "next/router";
-
-// framer motion
-import { motion, AnimatePresence } from "framer-motion";
-
-// lucide icons
-import {
-  Briefcase,
-  ArrowLeft,
-  User,
-  Building,
-  GraduationCap,
-  Globe,
-  FileText,
-  AlertCircle,
-  ArrowRight,
-  MapPin,
-  DollarSign,
-  Clock,
-} from "lucide-react";
-
-// components
+import Spinner from "@/components/spinner";
+import AccessDenied from "@/components/ui/access-denied";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,198 +11,122 @@ import {
 } from "@/components/ui/card";
 import { FormField } from "@/components/ui/form-field";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-
-// services
-import { jobService } from "@/services";
-
-// interfaces
-import { Job } from "@/interfaces/job";
-
-// layout
+import { useStudentAccess } from "@/hooks";
+import { CreateJobApplicationForm } from "@/interfaces";
 import { Layouts } from "@/layouts";
-
-// context
-import { useUser } from "@/context";
-
-// react-hook-form
+import { jobService } from "@/services";
+import { format } from "date-fns";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  Building,
+  Calendar,
+  Clock,
+  DollarSign,
+  FileText,
+  MapPin,
+  User,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const applicationSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(1, "Last name must be at least 1 character"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  university: z.string().optional(),
-  major: z.string().optional(),
-  graduationYear: z.string().optional(),
-  currentRole: z.string().optional(),
-  company: z.string().optional(),
-  coverLetter: z
-    .string()
-    .min(50, "Cover letter must be at least 50 characters"),
-  portfolioUrl: z.string().url().optional().or(z.literal("")),
-  linkedinUrl: z.string().url().optional().or(z.literal("")),
-  githubUrl: z.string().url().optional().or(z.literal("")),
-  agreeToTerms: z
-    .boolean()
-    .refine((val) => val === true, "You must agree to the terms"),
-  agreeToMarketing: z.boolean().optional(),
-});
-
-type ApplicationFormData = z.infer<typeof applicationSchema>;
+import useSWR from "swr";
 
 const ApplyJobPage = () => {
   const router = useRouter();
-  const { jobId } = router.query;
-  const { user } = useUser();
-  const [mounted, setMounted] = useState(false);
-  const [job, setJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const { isReady, query } = router;
+  const jobId = isReady ? (query.jobId as string) : undefined;
+
+  const { isAuthorized, user } = useStudentAccess();
+
+  const shouldFetch = isReady && isAuthorized && !!jobId;
+
+  const {
+    data: jobInfo,
+    error,
+    isLoading,
+    isValidating,
+  } = useSWR(
+    shouldFetch ? ["job", jobId] : null,
+    () => jobService.getJob(jobId!),
+    {
+      revalidateOnFocus: false,
+    },
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
-  } = useForm<ApplicationFormData>({
-    resolver: zodResolver(applicationSchema),
-    defaultValues: {
-      firstName: user?.first_name || "",
-      lastName: user?.last_name || "",
-      email: user?.email || "",
-      phone: user?.mobile_number || "",
-      university: "",
-      major: "",
-      graduationYear: "",
-      currentRole: "",
-      company: "",
-      coverLetter: "",
-      portfolioUrl: "",
-      linkedinUrl: "",
-      githubUrl: "",
-      agreeToTerms: false,
-      agreeToMarketing: false,
-    },
-  });
+    formState: { errors, isSubmitting },
+  } = useForm<CreateJobApplicationForm>();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Router not ready yet — avoid flashing undefined
+  if (!isReady) return <Spinner />;
 
-  useEffect(() => {
-    if (jobId && typeof jobId === "string") {
-      fetchJobDetails(jobId);
-    }
-  }, [jobId]);
+  // Not authorized
+  if (!isAuthorized) {
+    return (
+      <AccessDenied
+        title="Access Denied"
+        message="Only students can apply for jobs. You don't have permission to access this page."
+        primaryAction={{
+          label: "Go to Dashboard",
+          onClick: () => router.push("/dashboard"),
+        }}
+        secondaryAction={{
+          label: "View Jobs",
+          onClick: () => router.push("/jobs"),
+        }}
+      />
+    );
+  }
 
-  useEffect(() => {
-    if (user) {
-      // Prefill form with user data
-      setValue("firstName", user.first_name || "");
-      setValue("lastName", user.last_name || "");
-      setValue("email", user.email || "");
-      setValue("phone", user.mobile_number || "");
-    }
-  }, [user, setValue]);
+  if (isLoading || isValidating) return <Spinner />;
 
-  const fetchJobDetails = async (id: string) => {
+  if (error) {
+    // Render a proper error state
+    return (
+      <AccessDenied
+        title="Something went wrong"
+        message="We couldn't load this job. Please try again."
+        primaryAction={{
+          label: "Back to Jobs",
+          onClick: () => router.push("/jobs"),
+        }}
+      />
+    );
+  }
+
+  if (!jobInfo) {
+    // Optional: handle 404 / not found
+    return (
+      <AccessDenied
+        title="Job not found"
+        message="The job you’re looking for doesn't exist or was removed."
+        primaryAction={{
+          label: "Back to Jobs",
+          onClick: () => router.push("/jobs"),
+        }}
+      />
+    );
+  }
+
+  const onSubmit = async (data: CreateJobApplicationForm) => {
     try {
-      setLoading(true);
-      const jobData = await jobService.getJob(id);
-      setJob(jobData);
+      data["available_from"] = data.available_from
+        ? format(new Date(data.available_from), "yyyy-MM-dd")
+        : "";
+      data["job"] = jobId!;
+      await jobService.applyForJob(data);
     } catch (err) {
-      setError("Failed to load job details. Please try again.");
-      console.error("Error fetching job:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onSubmit = async (data: ApplicationFormData) => {
-    if (!job) return;
-
-    setSubmitting(true);
-    try {
-      // Here you would typically call the application API
-      const applicationData = {
-        job_id: job.id,
-        cover_letter: data.coverLetter,
-        portfolio_url: data.portfolioUrl,
-        linkedin_url: data.linkedinUrl,
-        github_url: data.githubUrl,
-      };
-
-      console.log("Applying for job:", { jobId, data, applicationData });
-
-      // Simulate API call
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Redirect to confirmation page
-      // router.push(`/jobs/${jobId}/application-confirmation`);
-    } catch (err) {
-      setError("Application failed. Please try again.");
       console.error("Application error:", err);
-    } finally {
-      setSubmitting(false);
     }
   };
-
-  const isStudent = user?.role === "student";
-  const isEmployer = user?.role === "employer";
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">
-            Loading job details...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !job) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-        <div className="text-center max-w-md">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Job Not Found
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            {error ||
-              "The job you're looking for doesn't exist or has been removed."}
-          </p>
-          <Link href="/jobs">
-            <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-              Browse Jobs
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -255,7 +155,7 @@ const ApplyJobPage = () => {
                     Apply for Job
                   </h1>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Complete your application for {job.title}
+                    Complete your application for {jobInfo.title}
                   </p>
                 </div>
               </div>
@@ -288,15 +188,15 @@ const ApplyJobPage = () => {
                       <div className="space-y-4">
                         <div>
                           <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-2">
-                            {job.title}
+                            {jobInfo.title}
                           </h3>
                           <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                            {job.job_type}
+                            {jobInfo.job_type}
                           </Badge>
                         </div>
 
                         <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
-                          {job.description}
+                          {jobInfo.description}
                         </p>
 
                         {/* Job Details */}
@@ -317,7 +217,7 @@ const ApplyJobPage = () => {
                                 Location
                               </p>
                               <p className="text-gray-600 dark:text-gray-300">
-                                {job.location}
+                                {jobInfo.location}
                               </p>
                             </div>
                           </div>
@@ -329,8 +229,8 @@ const ApplyJobPage = () => {
                                 Salary
                               </p>
                               <p className="text-gray-600 dark:text-gray-300">
-                                {job.salary_min && job.salary_max
-                                  ? `$${job.salary_min} - $${job.salary_max}`
+                                {jobInfo.salary_min && jobInfo.salary_max
+                                  ? `$${jobInfo.salary_min} - $${jobInfo.salary_max}`
                                   : "Not specified"}
                               </p>
                             </div>
@@ -343,7 +243,9 @@ const ApplyJobPage = () => {
                                 Posted
                               </p>
                               <p className="text-gray-600 dark:text-gray-300">
-                                {new Date(job.created_at).toLocaleDateString()}
+                                {new Date(
+                                  jobInfo.created_at,
+                                ).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
@@ -387,7 +289,6 @@ const ApplyJobPage = () => {
                           </motion.div>
                         )}
                       </AnimatePresence>
-
                       {/* Personal Information */}
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -395,125 +296,80 @@ const ApplyJobPage = () => {
                           Personal Information
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            type="text"
-                            label="First Name"
-                            name="firstName"
-                            register={register}
-                            error={errors.firstName}
-                            required
-                            placeholder="Enter your first name"
-                          />
-                          <FormField
-                            type="text"
-                            label="Last Name"
-                            name="lastName"
-                            register={register}
-                            error={errors.lastName}
-                            required
-                            placeholder="Enter your last name"
-                          />
-                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* First Name */}
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                  First Name
+                                </label>
+                              </div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
+                                {user?.first_name || "Not provided"}
+                              </p>
+                            </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            type="email"
-                            label="Email Address"
-                            name="email"
-                            register={register}
-                            error={errors.email}
-                            required
-                            placeholder="john.doe@example.com"
-                          />
-                          <FormField
-                            type="phone"
-                            label="Phone Number"
-                            name="phone"
-                            setValue={setValue}
-                            watch={watch}
-                            error={errors.phone}
-                            placeholder="Enter your phone number"
-                          />
+                            {/* Last Name */}
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                  Last Name
+                                </label>
+                              </div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
+                                {user?.last_name || "Not provided"}
+                              </p>
+                            </div>
+
+                            {/* Email */}
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                  Email Address
+                                </label>
+                              </div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 break-all">
+                                {user?.email || "Not provided"}
+                              </p>
+                            </div>
+
+                            {/* Contact Number */}
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                  Contact Number
+                                </label>
+                              </div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
+                                {user?.mobile_number || "Not provided"}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Info Note */}
+                          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <div className="flex items-start space-x-2">
+                              <div className="w-1 h-1 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <p className="text-xs text-blue-700 dark:text-blue-300">
+                                This information is automatically filled from
+                                your profile. You can update it in your{" "}
+                                <Link
+                                  href="/profile"
+                                  className="underline hover:text-blue-800 dark:hover:text-blue-200"
+                                >
+                                  profile settings
+                                </Link>
+                                .
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-
-                      {/* Academic Information (for Students) */}
-                      {isStudent && (
-                        <div className="space-y-4">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <GraduationCap className="mr-2 h-5 w-5 text-green-500" />
-                            Academic Information
-                          </h3>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                              type="text"
-                              label="University/Institution"
-                              name="university"
-                              register={register}
-                              error={errors.university}
-                              placeholder="Your university or institution"
-                            />
-                            <FormField
-                              type="text"
-                              label="Major/Field of Study"
-                              name="major"
-                              register={register}
-                              error={errors.major}
-                              placeholder="Your major or field of study"
-                            />
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                              type="text"
-                              label="Graduation Year"
-                              name="graduationYear"
-                              register={register}
-                              error={errors.graduationYear}
-                              placeholder="2024"
-                            />
-                            <FormField
-                              type="text"
-                              label="Current Role"
-                              name="currentRole"
-                              register={register}
-                              error={errors.currentRole}
-                              placeholder="Student, Intern, etc."
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Professional Information (for Employers) */}
-                      {isEmployer && (
-                        <div className="space-y-4">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <Building className="mr-2 h-5 w-5 text-purple-500" />
-                            Professional Information
-                          </h3>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                              type="text"
-                              label="Current Role"
-                              name="currentRole"
-                              register={register}
-                              error={errors.currentRole}
-                              placeholder="Software Engineer, Manager, etc."
-                            />
-                            <FormField
-                              type="text"
-                              label="Company/Organization"
-                              name="company"
-                              register={register}
-                              error={errors.company}
-                              placeholder="Your current company or organization"
-                            />
-                          </div>
-                        </div>
-                      )}
 
                       {/* Cover Letter */}
                       <div className="space-y-4">
@@ -527,114 +383,52 @@ const ApplyJobPage = () => {
                             Cover Letter *
                           </label>
                           <Textarea
-                            {...register("coverLetter")}
+                            {...register("cover_letter")}
                             placeholder="Tell us why you're interested in this position and why you'd be a great fit..."
                             rows={6}
                             className="mt-1 bg-white/50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 rounded-xl"
                           />
-                          {errors.coverLetter && (
+                          {errors.cover_letter && (
                             <p className="text-red-500 text-xs mt-1">
-                              {errors.coverLetter.message}
+                              {errors.cover_letter.message}
                             </p>
                           )}
                         </div>
                       </div>
 
-                      {/* Portfolio & Links */}
+                      {/* expected salary */}
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                          <Globe className="mr-2 h-5 w-5 text-teal-500" />
-                          Portfolio & Links
+                          <DollarSign className="mr-2 h-5 w-5 text-green-500" />
+                          Expected Salary
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            type="url"
-                            label="Portfolio URL"
-                            name="portfolioUrl"
-                            register={register}
-                            error={errors.portfolioUrl}
-                            placeholder="https://your-portfolio.com"
-                          />
-                          <FormField
-                            type="url"
-                            label="LinkedIn Profile"
-                            name="linkedinUrl"
-                            register={register}
-                            error={errors.linkedinUrl}
-                            placeholder="https://linkedin.com/in/your-profile"
-                          />
-                        </div>
-
                         <FormField
-                          type="url"
-                          label="GitHub Profile"
-                          name="githubUrl"
+                          name="expected_salary"
+                          label="Expected Salary"
+                          type="number"
                           register={register}
-                          error={errors.githubUrl}
-                          placeholder="https://github.com/your-username"
+                          error={errors.expected_salary}
+                          placeholder="Enter your expected salary"
                         />
                       </div>
 
-                      {/* Terms and Conditions */}
+                      {/* available from */}
                       <div className="space-y-4">
-                        <div className="flex items-start space-x-3">
-                          <Checkbox
-                            id="agreeToTerms"
-                            checked={watch("agreeToTerms")}
-                            onCheckedChange={(checked) =>
-                              setValue("agreeToTerms", checked as boolean)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="text-sm">
-                            <label
-                              htmlFor="agreeToTerms"
-                              className="text-gray-700 dark:text-gray-300"
-                            >
-                              I agree to the{" "}
-                              <Link
-                                href="/terms-conditions"
-                                className="text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                Terms and Conditions
-                              </Link>{" "}
-                              and{" "}
-                              <Link
-                                href="/privacy-policy"
-                                className="text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                Privacy Policy
-                              </Link>
-                              *
-                            </label>
-                            {errors.agreeToTerms && (
-                              <p className="text-red-500 text-xs mt-1">
-                                {errors.agreeToTerms.message}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                          <Calendar className="mr-2 h-5 w-5 text-red-500" />
+                          Available From
+                        </h3>
 
-                        <div className="flex items-start space-x-3">
-                          <Checkbox
-                            id="agreeToMarketing"
-                            checked={watch("agreeToMarketing")}
-                            onCheckedChange={(checked) =>
-                              setValue("agreeToMarketing", checked as boolean)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="text-sm">
-                            <label
-                              htmlFor="agreeToMarketing"
-                              className="text-gray-700 dark:text-gray-300"
-                            >
-                              I would like to receive updates about future job
-                              opportunities
-                            </label>
-                          </div>
-                        </div>
+                        <FormField
+                          name="available_from"
+                          label="Available From"
+                          type="date"
+                          watch={watch}
+                          setValue={setValue}
+                          error={errors.available_from}
+                          placeholder="Enter your available from date"
+                        />
                       </div>
 
                       {/* Submit Button */}
@@ -642,9 +436,9 @@ const ApplyJobPage = () => {
                         <Button
                           type="submit"
                           className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                          disabled={submitting}
+                          disabled={isSubmitting}
                         >
-                          {submitting ? (
+                          {isSubmitting ? (
                             <div className="flex items-center">
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                               Submitting Application...
@@ -669,6 +463,5 @@ const ApplyJobPage = () => {
   );
 };
 
-ApplyJobPage.getLayout = Layouts.Student;
-
+ApplyJobPage.getLayout = Layouts.Protected;
 export default ApplyJobPage;

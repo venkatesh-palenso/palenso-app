@@ -1,5 +1,13 @@
 // lucide icons
-import { Briefcase, Building, Code, GraduationCap, User } from "lucide-react";
+import {
+  Briefcase,
+  Building,
+  Code,
+  FileText,
+  GraduationCap,
+  Star,
+  User,
+} from "lucide-react";
 
 // components
 import {
@@ -35,14 +43,19 @@ export const STUDENT_PROFILE_SECTIONS = [
     LabelIcon: GraduationCap,
     Component: EducationForm,
   },
-  { label: "Skills", value: "skills", LabelIcon: Code, Component: SkillForm },
+  { label: "Skills", value: "skills", LabelIcon: Star, Component: SkillForm },
   {
     label: "Projects",
     value: "projects",
     LabelIcon: Code,
     Component: ProjectForm,
   },
-  { label: "Resume", value: "resume", LabelIcon: Code, Component: ResumeForm },
+  {
+    label: "Resume",
+    value: "resume",
+    LabelIcon: FileText,
+    Component: ResumeForm,
+  },
 ];
 
 export const EMPLOYER_PROFILE_SECTIONS = [

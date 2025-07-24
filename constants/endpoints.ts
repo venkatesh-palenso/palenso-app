@@ -44,7 +44,7 @@ export const JOB_ENDPOINTS = {
   LIST_CREATE_JOB: "/api/jobs",
   JOB_DETAIL: (jobId: string) => `/api/jobs/${jobId}`,
   JOB_APPLICATIONS: (jobId: string) => `/api/jobs/${jobId}/applications`,
-  APPLY_FOR_JOB: (jobId: string) => `/api/jobs/${jobId}/apply`,
+  APPLY_FOR_JOB: `/api/job-applications`,
   SAVED_JOBS: "/api/saved-jobs",
   SAVE_JOB: (jobId: string) => `/api/saved-jobs/${jobId}`,
   UNSAVE_JOB: (jobId: string) => `/api/saved-jobs/${jobId}`,

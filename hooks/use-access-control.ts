@@ -32,11 +32,6 @@ export const useAccessControl = (
     if (user) {
       const hasPermission = allowedRoles.includes(user.role);
       setIsAuthorized(hasPermission);
-
-      if (!hasPermission && redirectTo) {
-        // Redirect unauthorized users
-        router.push(redirectTo);
-      }
     }
     setIsLoading(false);
   }, [user, router, allowedRoles, redirectTo]);

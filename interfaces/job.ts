@@ -115,12 +115,13 @@ export interface UpdateJobForm extends Partial<CreateJobForm> {
 
 // Job application form interface
 export interface CreateJobApplicationForm {
-  job_id: string;
+  job: string;
   cover_letter: string;
   resume_id?: string;
   expected_salary?: number;
   available_from?: string;
   notes?: string;
+  employer_notes?: string;
 }
 
 // Post job form interface (enhanced version of CreateJobForm)
