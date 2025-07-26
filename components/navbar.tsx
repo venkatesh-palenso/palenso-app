@@ -47,6 +47,26 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* Mobile Auth Buttons */}
+              {!isLoggedIn && (
+                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3 flex flex-col gap-2">
+                  <Link href="/signup" className="w-full">
+                    <Button className="btn-handshake w-full text-sm">
+                      Get Started
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <Link href="/login" className="w-full">
+                    <Button
+                      variant="outline"
+                      className="w-full text-sm border-2 border-primary hover:bg-primary transition-all duration-300"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </SheetContent>
         </Sheet>
@@ -103,7 +123,7 @@ export default function Navbar() {
         {isLoggedIn ? (
           <UserAvatar />
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <Link href="/signup">
               <Button className="btn-handshake text-sm">
                 Get Started
