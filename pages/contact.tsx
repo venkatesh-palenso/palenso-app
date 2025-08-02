@@ -4,9 +4,7 @@ import {
   Linkedin, 
   Mail, 
   MapPin, 
-  Phone, 
-  Clock, 
-  MessageSquare, 
+  Clock,
   Users, 
   Building,
   Send,
@@ -93,38 +91,76 @@ const services = [
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Hero Section */}
-      <section className="pt-20 pb-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge className="mb-4 px-4 py-2 text-sm bg-primary/10 text-primary">
-              Get In Touch
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 heading-handshake">
-              Let's Build Something Amazing Together
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Whether you're a student looking for opportunities, an employer seeking talent, 
-              or a university wanting to partner with us, we're here to help.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="min-h-screen hero-handshake relative overflow-hidden">
+      {/* Background Elements */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+        className="absolute top-20 right-0 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
+      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, delay: 0.5 }}
+        className="absolute top-40 left-0 w-96 h-96 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"
+      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, delay: 1 }}
+        className="absolute -bottom-8 right-20 w-96 h-96 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"
+      />
 
-      {/* Contact Information Cards */}
-      <section className="py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
-          >
+      {/* Floating Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.5 }}
+        className="absolute top-32 left-10 w-24 h-24 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl backdrop-blur-sm border border-white/20 animate-float"
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.7 }}
+        className="absolute top-48 right-16 w-20 h-20 bg-gradient-to-br from-pink-500/20 to-orange-500/20 rounded-2xl backdrop-blur-sm border border-white/20 animate-float animation-delay-2000"
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.9 }}
+        className="absolute bottom-32 left-20 w-16 h-16 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-2xl backdrop-blur-sm border border-white/20 animate-float animation-delay-4000"
+      />
+
+      <div className="max-w-5xl mx-auto px-6 py-20 space-y-16 relative z-10">
+        {/* Hero Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-6"
+        >
+          <Badge className="badge-handshake mb-3 px-4 py-2 text-sm">
+            Get In Touch
+          </Badge>
+          <h1 className="heading-handshake-large text-center">
+            Let&apos;s Build Something Amazing Together
+          </h1>
+          <p className="heading-handshake-subtitle text-center max-w-2xl mx-auto">
+            Whether you&apos;re a student looking for opportunities, an employer seeking talent, 
+            or a university wanting to partner with us, we&apos;re here to help.
+          </p>
+        </motion.section>
+
+        {/* Contact Information Cards */}
+        <motion.section
+          className="space-y-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={info.title}
@@ -133,15 +169,15 @@ export default function Contact() {
                 transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
                 className="group"
               >
-                <Card className="h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
+                <Card className="h-full bg-card border border-border shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                   <CardHeader className="text-center">
                     <div className={`w-12 h-12 bg-gradient-to-br ${info.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
                       <info.icon className="w-6 h-6 text-white" />
                     </div>
-                    <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <CardTitle className="text-xl font-semibold text-card-foreground">
                       {info.title}
                     </CardTitle>
-                    <CardDescription className="text-gray-600 dark:text-gray-300">
+                    <CardDescription className="text-muted-foreground">
                       {info.description}
                     </CardDescription>
                   </CardHeader>
@@ -156,33 +192,25 @@ export default function Contact() {
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </motion.section>
 
-      {/* Services Section */}
-      <section className="py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold mb-4 heading-handshake">
-              How We Can Help You
-            </h2>
+        {/* Services Section */}
+        <motion.section
+          className="space-y-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="text-center mb-8">
+            <h2 className="heading-handshake text-3xl">How We Can Help You</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Discover our comprehensive services designed to connect talent with opportunity
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
@@ -191,47 +219,44 @@ export default function Contact() {
                 transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
                 className="group"
               >
-                <Card className="h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
+                <Card className="h-full bg-card border border-border shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                   <CardHeader className="text-center">
                     <div className={`w-12 h-12 bg-gradient-to-br ${service.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
                       <service.icon className="w-6 h-6 text-white" />
                     </div>
-                    <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <CardTitle className="text-xl font-semibold text-card-foreground">
                       {service.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       {service.description}
                     </p>
-                                         <Button className="w-full bg-primary hover:bg-primary/90 text-white">
-                       Learn More
-                       <ArrowRight className="ml-2 h-4 w-4" />
-                     </Button>
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+                      Learn More
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </motion.section>
 
-      {/* Team Section */}
-      <section className="py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold mb-4 heading-handshake">
-              Meet Our Team
-            </h2>
+        {/* Team Section */}
+        <motion.section
+          className="space-y-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="text-center mb-8">
+            <h2 className="heading-handshake text-3xl">Meet Our Team</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               The passionate people behind Palenso who are dedicated to transforming career opportunities
             </p>
-          </motion.div>
+          </div>
 
           <div className="flex justify-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
@@ -243,18 +268,18 @@ export default function Contact() {
                   transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
                   className="group"
                 >
-                  <Card className="h-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
+                  <Card className="h-full bg-card border border-border shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                     <CardContent className="p-8 text-center">
                       <div className="w-20 h-20 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                         {member.avatar}
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-xl font-semibold text-card-foreground mb-2">
                         {member.name}
                       </h3>
                       <p className="text-primary font-medium mb-4">
                         {member.role}
                       </p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">
+                      <p className="text-muted-foreground text-sm mb-6">
                         {member.bio}
                       </p>
                       
@@ -294,40 +319,38 @@ export default function Contact() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </motion.section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-          >
-            <div className="bg-gradient-to-r from-primary/10 to-blue-600/10 rounded-2xl p-8 border border-primary/20">
-              <Heart className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-                Ready to Get Started?
-              </h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Join thousands of students and employers who are already using Palenso to connect 
-                talent with opportunity. Let's build the future of career development together.
-              </p>
-                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3">
-                   <Send className="mr-2 h-4 w-4" />
-                   Contact Us
-                 </Button>
-                 <Button variant="outline" className="px-8 py-3">
-                   Learn More
-                   <ArrowRight className="ml-2 h-4 w-4" />
-                 </Button>
-               </div>
+        {/* CTA Section */}
+        <motion.section
+          className="space-y-6 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <div className="bg-gradient-to-r from-primary/10 to-blue-600/10 rounded-2xl p-8 border border-primary/20">
+            <Heart className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h3 className="text-2xl font-bold mb-4 text-foreground">
+              Ready to Get Started?
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Join thousands of students and employers who are already using Palenso to connect 
+              talent with opportunity. Let&apos;s build the future of career development together.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3">
+                <Send className="mr-2 h-4 w-4" />
+                Contact Us
+              </Button>
+              <Button variant="outline" className="px-8 py-3">
+                Learn More
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </motion.section>
+      </div>
     </div>
   );
 }
