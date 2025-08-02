@@ -58,7 +58,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       if (status === 401) {
         setLoggedIn(false);
       } else {
-        console.error("Unexpected error:", err);
+        // Only log network errors in development, and only if it's not a connection refused error
+        if (process.env.NODE_ENV === 'development' && err?.code !== 'ERR_NETWORK') {
+          console.warn("User fetch error:", err?.message || 'Unknown error');
+        }
         setLoggedIn(null);
       }
     },

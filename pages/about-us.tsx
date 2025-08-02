@@ -59,37 +59,21 @@ const stats = [
 
 const team = [
   {
-    name: "Alex Johnson",
+    name: "Rahul Vasireddy",
     role: "CEO & Founder",
-    bio: "Former Google engineer with 15+ years in tech. Passionate about democratizing career opportunities.",
-    avatar: "AJ",
+    bio: "M.S in Enterprise Risk Management from Columbia University. Passionate about democratizing opportunities.",
+    avatar: "RV",
     linkedin: "#",
-    achievements: ["Ex-Google", "15+ Years Tech", "Stanford MBA"],
+    achievements: ["Columbia MS", "Risk Management", "Entrepreneur"],
   },
   {
-    name: "Sarah Chen",
-    role: "CTO",
-    bio: "Ex-Microsoft architect. Building scalable platforms that connect talent with opportunity.",
-    avatar: "SC",
+    name: "Rohith Vasireddy",
+    role: "CTO & Co-Founder",
+    bio: "B.Tech in EEE from CBIT. Building scalable platforms that connect talent with opportunity.",
+    avatar: "RV",
     linkedin: "#",
-    achievements: ["Ex-Microsoft", "Cloud Expert", "AI Specialist"],
-  },
-  {
-    name: "Michael Rodriguez",
-    role: "Head of Product",
-    bio: "Product leader with experience at LinkedIn and Handshake. Focused on user experience.",
-    avatar: "MR",
-    linkedin: "#",
-    achievements: ["Ex-LinkedIn", "UX Expert", "Growth Hacker"],
-  },
-  {
-    name: "Emily Davis",
-    role: "Head of Partnerships",
-    bio: "Former university career counselor. Expert in student-employer relationships.",
-    avatar: "ED",
-    linkedin: "#",
-    achievements: ["Career Counselor", "Partnerships", "Education"],
-  },
+    achievements: ["CBIT B.Tech", "Platform Expert", "Tech Leader"],
+  }
 ];
 
 const milestones = [
@@ -664,57 +648,66 @@ export default function AboutUs() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group"
-              >
-                <div className="feature-card-handshake text-center bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-sm border border-white/20 hover:scale-105 transition-all duration-500 group-hover:shadow-2xl">
-                  <div className="p-6">
-                    <motion.div
-                      className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-4 group-hover:scale-110 transition-transform duration-300"
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {member.avatar}
-                    </motion.div>
-                    <h3 className="heading-handshake text-lg mb-2">
-                      {member.name}
-                    </h3>
-                    <p className="text-primary font-medium mb-3">
-                      {member.role}
-                    </p>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {member.bio}
-                    </p>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+              {team.map((member, index) => (
+                <motion.div
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="group"
+                >
+                  <div className="feature-card-handshake text-center bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-800/80 dark:to-gray-900/60 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 hover:scale-105 transition-all duration-500 group-hover:shadow-2xl flex flex-col justify-between h-full w-full min-h-[420px]">
+                    <div className="p-8 flex flex-col flex-1">
+                      <motion.div
+                        className="w-20 h-20 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-bold mx-auto mb-6 group-hover:scale-110 transition-transform duration-300"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        {member.avatar}
+                      </motion.div>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        {member.name}
+                      </h3>
+                      <p className="text-primary font-medium mb-4">
+                        {member.role}
+                      </p>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-6">
+                        {member.bio}
+                      </p>
+                      
+                      {/* Achievements */}
+                      <div className="flex flex-wrap justify-center gap-2 mb-6">
+                        {member.achievements.map((achievement, idx) => (
+                          <div
+                            key={idx}
+                            className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
+                          >
+                            {achievement}
+                          </div>
+                        ))}
+                      </div>
 
-                    {/* Achievements */}
-                    <div className="space-y-1 mb-4">
-                      {member.achievements.map((achievement, idx) => (
-                        <div
-                          key={idx}
-                          className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full inline-block mr-1 mb-1"
-                        >
-                          {achievement}
-                        </div>
-                      ))}
+                      {/* Contact Links */}
+                      <div className="flex justify-center space-x-4">
+                        {member.linkedin && (
+                          <a
+                            href={member.linkedin}
+                            className="text-primary hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-primary/10"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Linkedin className="w-5 h-5" />
+                          </a>
+                        )}
+                      </div>
                     </div>
-
-                    <a
-                      href={member.linkedin}
-                      className="text-primary hover:text-blue-600 transition-colors"
-                    >
-                      <Linkedin className="w-5 h-5 mx-auto" />
-                    </a>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </motion.section>
 
@@ -860,7 +853,7 @@ export default function AboutUs() {
                   <Mail className="w-8 h-8 text-primary" />
                 </motion.div>
                 <h3 className="font-semibold mb-2">Email Us</h3>
-                <p className="text-muted-foreground">hello@palenso.com</p>
+                <p className="text-muted-foreground">socials@palenso.com</p>
               </div>
             </motion.div>
             <motion.div

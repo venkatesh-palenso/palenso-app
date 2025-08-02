@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 // providers
 import { ThemeProvider } from "next-themes";
 import { UserProvider } from "@/context/user";
+import { SWRConfig } from "swr";
 
 // styles
 import "@/styles/globals.css";
@@ -24,7 +25,20 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       enableSystem
       disableTransitionOnChange
     >
-      <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+      <SWRConfig
+        value={{
+          errorRetryCount: 1,
+          errorRetryInterval: 1000,
+          onError: (error) => {
+            // Only log errors in development, and only for actual errors
+            if (process.env.NODE_ENV === 'development' && error.message) {
+              console.warn('SWR Error:', error.message);
+            }
+          },
+        }}
+      >
+        <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+      </SWRConfig>
     </ThemeProvider>
   );
 }

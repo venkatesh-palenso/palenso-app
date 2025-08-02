@@ -78,6 +78,7 @@ export const navHeader: NavItem[] = [
   { label: "Companies", href: "/companies", icon: Building },
   { label: "Events", href: "/events", icon: Handshake },
   { label: "About Us", href: "/about-us", icon: BookOpenText },
+  { label: "Contact", href: "/contact", icon: MessageCircle },
 ];
 
 /**
